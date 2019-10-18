@@ -123,6 +123,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	pBackBuffer->GetDesc(&backBufferSurfaceDesc);
 	pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRtv);
 
+
 	//深度ステンシルテクスチャーの作成
 	D3D11_TEXTURE2D_DESC descDepth;
 	RECT rc;
@@ -174,17 +175,21 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 
 	// Main message loop:
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))
+	ZeroMemory(&msg, sizeof(msg));
+	while (msg.message != WM_QUIT)
 	{
-		float f[4]{ 0.0f,1.0f,0.0f,1.0f };
-		pDeviceContext->ClearRenderTargetView(pRtv, f);
+		if (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+		{
+			float f[4]{ 0.0f,1.0f,0.0f,1.0f };
+			pDeviceContext->ClearRenderTargetView(pRtv, f);
 
-		pDeviceContext->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+			pDeviceContext->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-		pDeviceContext->RSSetState(pRs);
-		pSwapChain->Present(0, 0);
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+			pDeviceContext->RSSetState(pRs);
+			pSwapChain->Present(0, 0);
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 
 	return (int)msg.wParam;
