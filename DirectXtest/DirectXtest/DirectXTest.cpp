@@ -1,9 +1,11 @@
-#include <Windows.h>
+ï»¿#include <Windows.h>
 #include <d3d11.h>
 
-//ƒEƒBƒ“ƒhƒEŠÖ˜A
+
+//#pragma comment ( lib, "D3D11.lib")
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦é–¢é€£
 HWND* pHwnd;
-//DirectX11ƒEƒBƒ“ƒhƒE•\¦ŠÖ˜A
+//DirectX11ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤ºé–¢é€£
 ID3D11Device				*pDevice;
 IDXGISwapChain				*pSwapChain;
 ID3D11DeviceContext			*pDeviceContext;
@@ -56,7 +58,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	ShowWindow(hWnd,nCmdShow);
 	
 	//DirectX
-	//‹@”\ƒŒƒxƒ‹‚Ìİ’è
+	//æ©Ÿèƒ½ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
 	D3D_FEATURE_LEVEL featureLevels[4] =
 	{
 		D3D_FEATURE_LEVEL_11_0,
@@ -67,7 +69,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	UINT featureLevelsNum = 4;
 	D3D_FEATURE_LEVEL featureLevelSupported;
 
-	//ƒfƒoƒCƒX‚Ìì¬
+	//ãƒ‡ãƒã‚¤ã‚¹ã®ä½œæˆ
 	D3D11CreateDevice(
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -81,7 +83,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 		&pDeviceContext
 	);
 
-	//ƒtƒ@ƒNƒgƒŠ‚Ìæ“¾
+	//ãƒ•ã‚¡ã‚¯ãƒˆãƒªã®å–å¾—
 	IDXGIDevice* pDxgiDevice;
 	pDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDxgiDevice);
 	IDXGIAdapter* pDxgiAdapter;
@@ -89,14 +91,14 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	IDXGIFactory* pIdxgiFactory;
 	pDxgiAdapter->GetParent(__uuidof(IDXGIFactory), (void **)&pIdxgiFactory);
 
-	//ƒEƒBƒ“ƒhƒEƒTƒCƒY‚Ìæ“¾
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã®å–å¾—
 	RECT rect;
 	GetClientRect(hWnd, &rect);
 
-	//HWND‚Ì•Û‘¶
+	//HWNDã®ä¿å­˜
 	pHwnd = &hWnd;
 
-	//ƒXƒƒbƒvƒ`ƒFƒCƒ“‚Ìì¬
+	//ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ã®ä½œæˆ
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferCount = 1;
@@ -116,7 +118,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	pDxgiAdapter->Release();
 	pIdxgiFactory->Release();
 
-	//ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒg‚Ìì¬
+	//ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ä½œæˆ
 	ID3D11Texture2D* pBackBuffer = NULL;
 	D3D11_TEXTURE2D_DESC backBufferSurfaceDesc;
 	pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
@@ -124,7 +126,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRtv);
 
 
-	//[“xƒXƒeƒ“ƒVƒ‹ƒeƒNƒXƒ`ƒƒ[‚Ìì¬
+	//æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ¼ã®ä½œæˆ
 	D3D11_TEXTURE2D_DESC descDepth;
 	RECT rc;
 	GetClientRect(hWnd, &rc);
@@ -142,7 +144,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	descDepth.MiscFlags = 0;
 	pDevice->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
 
-	//[“xƒXƒeƒ“ƒVƒ‹ƒrƒ…[‚Ìì¬
+	//æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
 	ZeroMemory(&descDSV, sizeof(descDSV));
 	descDSV.Format = descDepth.Format;
@@ -150,10 +152,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	descDSV.Texture2D.MipSlice = 0;
 	pDevice->CreateDepthStencilView(pDepthStencil, &descDSV, &pDepthStencilView);
 
-	//ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒgİ’è
+	//ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè¨­å®š
 	pDeviceContext->OMSetRenderTargets(1, &pRtv, pDepthStencilView);
 
-	//ƒ‰ƒXƒ^ƒ‰ƒCƒU‚Ìİ’è
+	//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã®è¨­å®š
 	D3D11_RASTERIZER_DESC descRastrizer;
 	ZeroMemory(&descRastrizer, sizeof(descRastrizer));
 	descRastrizer.FillMode = D3D11_FILL_SOLID;
@@ -163,7 +165,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In
 	pDevice->CreateRasterizerState(&descRastrizer, &pRs);
 	pDeviceContext->RSSetState(pRs);
 
-	//ƒrƒ…[ƒ|[ƒg‚Ìİ’è
+	//ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã®è¨­å®š
 	D3D11_VIEWPORT vp;
 	vp.Width = rc.right - rc.left;
 	vp.Height = rc.bottom - rc.top;
