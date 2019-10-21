@@ -1,8 +1,15 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+﻿/////////////////////////////
 // Filename: SystemClass.cpp
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////
 #include "systemclass.h"
 
+///
+///コンストラクタ
+///オブジェクトポインタをNULLポインタとして初期化する
+//In the class constructor I initialize the object pointers to null. 
+//This is important because if the initialization of these objects fail then the ProgramOver function further on will attempt to clean up those objects. 
+//If the objects are not null then it assumes they were valid created objects and that they need to be cleaned up. 
+//It is also good practice to initialize all pointers and variables to null in your applications. Some release builds will fail if you do not do so.
 SystemClass::SystemClass()
 {
 	m_Input = 0;
@@ -13,11 +20,23 @@ SystemClass::SystemClass(const SystemClass& other)
 {
 }
 
-
+//なぜデストラクタがいるのにわざわざ終了関数を作るの？
+//それは、Winsowsアプリは時々終了例外があて、デストラクタを呼ばずにクラス参照を消す場合がありますから
+//You will also notice I don't do any object clean up in the class destructor. 
+//I instead do all my object clean up in the ProgramOver function you will see further down. 
+//The reason being is that I don't trust it to be called. 
+//Certain windows functions like ExitThread() are known for not calling your class destructors resulting in memory leaks. 
+//You can of course call safer versions of these functions now but I'm just being careful when programming on windows.
 SystemClass::~SystemClass()
 {
 }
 
+///
+///イニシャライザー
+///
+//The following Initialize function does all the setup for the application. 
+//It first calls InitializeWindows which will create the window for our application to use. 
+//It also creates and initializes both the input and graphics objects that the application will use for handling user input and rendering graphics to the screen.
 bool SystemClass::Initialize()
 {
 	int screenWidth, screenHeight;
@@ -59,13 +78,10 @@ bool SystemClass::Initialize()
 }
 
 
-//なぜデストラクタがいるのにわざわざ終了関数をていぎするの？
-//それは、Winsowsアプリは時々終了例外があて、デストラクタを呼ばずにクラス参照を消す場合がありますから
-//You will also notice I don't do any object clean up in the class destructor. 
-//I instead do all my object clean up in the Shutdown function you will see further down. 
-//The reason being is that I don't trust it to be called. 
-//Certain windows functions like ExitThread() are known for not calling your class destructors resulting in memory leaks. 
-//You can of course call safer versions of these functions now but I'm just being careful when programming on windows.
+//The Shutdown function does the clean up. 
+//It shuts down and releases everything associated with the graphics and input object. 
+//As well it also shuts down the window and cleans up the handles associated with it.
+
 void SystemClass::ProgramOver()
 {
 	// Release the graphics object.
@@ -88,6 +104,18 @@ void SystemClass::ProgramOver()
 
 	return;
 }
+
+
+//The Run function is where our application will loop and do all the application processing until we decide to quit. 
+//The application processing is done in the Frame function which is called each loop. 
+//This is an important concept to understand as now the rest of our application must be written with this in mind. 
+//The pseudo code looks like the following:
+//////
+////////while not done
+////////check for windows system messages
+////////process system messages
+////////process application loop
+////////check if user wanted to quit during the frame processing
 
 void SystemClass::Run()
 {
@@ -130,6 +158,11 @@ void SystemClass::Run()
 }
 
 
+//The following Frame function is where all the processing for our application is done.
+//So far it is fairly simple, we check the input object to see if the user has pressed escape and wants to quit.
+//If they don't want to quit then we call the graphics object to do its frame processing which will render the graphics for that frame. 
+//As the application grows we'll place more code inside here.
+
 bool SystemClass::Frame()
 {
 	bool result;
@@ -150,6 +183,11 @@ bool SystemClass::Frame()
 
 	return true;
 }
+
+//The MessageHandler function is where we direct the windows system messages into.
+//This way we can listen for certain information that we are interested in. 
+//Currently we will just read if a key is pressed or if a key is released and pass that information on to the input object. 
+//All other information we will pass back to the windows default message handler.
 
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
@@ -180,6 +218,15 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 }
 
 
+//The InitializeWindows function is where we put the code to build the window we will use to render to. 
+//It returns screenWidth and screenHeight back to the calling function so we can make use of them throughout the application.
+//We create the window using some default settings to initialize a plain black window with no borders.
+//The function will make either a small window or make a full screen window depending on a global variable called FULL_SCREEN. 
+//If this is set to true then we make the screen cover the entire users desktop window. 
+//If it is set to false we just make a 800x600 window in the middle of the screen. 
+//I placed the FULL_SCREEN global variable at the top of the 「graphicsclass.h」 file in case you want to modify it.
+//It will make sense later why I placed the global in that file instead of the header for this file.
+
 void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 {
 	WNDCLASSEX wc;
@@ -194,7 +241,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	m_hinstance = GetModuleHandle(NULL);
 
 	// Give the application a name.
-	m_applicationName = L"Engine";
+	m_applicationName = L"DX11Test";
 
 	// Setup the windows class with default settings.
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -202,10 +249,10 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = m_hinstance;
-	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
+	wc.hIcon = LoadIcon(m_hinstance, IDI_WINLOGO);
 	wc.hIconSm = wc.hIcon;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.hbrBackground = (HBRUSH)GetStockObject(COLOR_WINDOW + 1);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = m_applicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
@@ -261,6 +308,10 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	return;
 }
 
+///
+//ShutdownWindows does just that.
+//It returns the screen settings back to normal and releases the window and the handles associated with it.
+
 void SystemClass::ShutdownWindows()
 {
 	// Show the mouse cursor.
@@ -285,6 +336,11 @@ void SystemClass::ShutdownWindows()
 
 	return;
 }
+
+//The WndProc function is where windows sends its messages to.
+//You'll notice we tell windows the name of it when we initialize the window class with wc.lpfnWndProc = WndProc in the InitializeWindows function above.
+//I included it in this class file since we tie it directly into the system class by having it send all the messages to the MessageHandler function defined inside SystemClass. 
+//This allows us to hook the messaging functionality straight into our class and keep the code clean.
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {

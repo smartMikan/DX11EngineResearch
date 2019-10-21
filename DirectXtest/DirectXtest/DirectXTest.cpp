@@ -9,7 +9,7 @@
 //ID3D11Device				*pDevice;
 //IDXGISwapChain				*pSwapChain;
 //ID3D11DeviceContext			*pDeviceContext;
-//ID3D11RasterizerState		*pRs;
+//ID3D11RasterizerState			*pRs;
 //ID3D11RenderTargetView		*pRtv;
 //ID3D11Texture2D				*pDepthStencil = nullptr;
 //ID3D11DepthStencilView		*pDepthStencilView = NULL;
