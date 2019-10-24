@@ -1,28 +1,10 @@
-﻿//参考:http://rastertek.com/dx11s2tut02.html
-//説明(Description):
-//骨組み(Framework):		
-//							WinMain
-//							   |
-//							   |
-//				          SystemClass  
-//							   |
-//							   |
-//		             ---------------------
-//					 |					 |
-//					 |					 |
-//				InputClass			GraphicClass
-
-
-
-
-///mainFile
+﻿///mainFile
 ///メインファイル
 ///WindowsMain
-//このファイルは、メインプログラムセッション(Session)です
+//このファイルは、メインプログラムセッション(MainSession)です
 ////////////////////
 //FileName:main.cpp
 ////////////////////
-
 
 #include "systemclass.h"
 

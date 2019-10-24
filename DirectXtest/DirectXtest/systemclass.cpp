@@ -119,7 +119,7 @@ void SystemClass::ProgramOver()
 
 void SystemClass::Run()
 {
-	MSG msg;
+	MSG msg;  //windows message
 	bool done, result;
 
 
@@ -256,6 +256,8 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = m_applicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.hIconSm = LoadIcon(wc.hInstance, IDI_APPLICATION);
+
 
 	// Register the window class.
 	RegisterClassEx(&wc);
@@ -293,9 +295,28 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 
 	// Create the window with the screen settings and get the handle to it.
-	m_hwnd = CreateWindowEx(WS_EX_APPWINDOW, m_applicationName, m_applicationName,
+	/*m_hwnd = CreateWindowEx(
+		WS_EX_APPWINDOW, 
+		m_applicationName, 
+		m_applicationName,
 		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
-		posX, posY, screenWidth, screenHeight, NULL, NULL, m_hinstance, NULL);
+		posX, posY, 
+		screenWidth, screenHeight, 
+		NULL, 
+		NULL, 
+		m_hinstance, 
+		NULL);*/
+	 m_hwnd = CreateWindow(
+		m_applicationName,
+		m_applicationName,
+		WS_OVERLAPPEDWINDOW,
+		posX, posY,  //LeftUpperLocation Of Screen ,アプリウィンドの左上位置
+		screenWidth, screenHeight,
+		NULL,
+		NULL,
+		m_hinstance,
+		NULL);
+
 
 	// Bring the window up on the screen and set it as main focus.
 	ShowWindow(m_hwnd, SW_SHOW);

@@ -1,7 +1,14 @@
 ﻿//The graphics class is the other object that is created by the system class.
 //All the graphics functionality in this application will be encapsulated in this class.
 //I will also use the header in this file for all the graphics related global settings that we may want to change such as full screen or windowed mode.
-//Currently this class will be empty but in future tutorials will contain all the graphics objects.
+//As you can see the D3DClass will be located inside the GraphicsClass.
+//The previous tutorial mentioned that all new graphics related classes 
+//will be encapsulated in the GraphicsClassand that is why it is the best location 
+//for the new D3DClass.
+
+
+
+
 
 
 /////////////////////////////
@@ -14,7 +21,15 @@
 //////////////
 // INCLUDES //
 //////////////
-#include <windows.h>
+//#include <windows.h>
+
+//Here is the first change.
+//We have taken out the include for windows.h
+//and instead included the new d3dclass.h.
+///////////////////////
+// MY CLASS INCLUDES //
+///////////////////////
+#include "d3dclass.h"
 
 
 /////////////
@@ -46,7 +61,10 @@ private:
 	bool Render();
 
 private:
-
+	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
+	//In case you were wondering I use the prefix 「m_」on all class variables.
+	//That way when I'm coding I can remember quickly which variables are members of the class and which are not.
+	D3DClass* m_Direct3D;
 };
 
 #endif
