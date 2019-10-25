@@ -241,7 +241,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	m_hinstance = GetModuleHandle(NULL);
 
 	// Give the application a name.
-	m_applicationName = L"DX11Test";
+	m_applicationName = "DX11Test";
 
 	// Setup the windows class with default settings.
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -254,7 +254,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(COLOR_WINDOW + 1);
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = m_applicationName;
+	wc.lpszClassName = m_applicationName.c_str();
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.hIconSm = LoadIcon(wc.hInstance, IDI_APPLICATION);
 
@@ -307,10 +307,10 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		m_hinstance, 
 		NULL);*/
 	 m_hwnd = CreateWindow(
-		m_applicationName,
-		m_applicationName,
+		m_applicationName.c_str(),
+		m_applicationName.c_str(),
 		WS_OVERLAPPEDWINDOW,
-		posX, posY,  //LeftUpperLocation Of Screen ,アプリウィンドの左上位置
+		posX, posY,						//LeftUpperLocation Of Screen ,アプリウィンドの左上位置
 		screenWidth, screenHeight,
 		NULL,
 		NULL,
@@ -349,7 +349,7 @@ void SystemClass::ShutdownWindows()
 	m_hwnd = NULL;
 
 	// Remove the application instance.
-	UnregisterClass(m_applicationName, m_hinstance);
+	UnregisterClass(m_applicationName.c_str(), m_hinstance);
 	m_hinstance = NULL;
 
 	// Release the pointer to this class.

@@ -1,6 +1,6 @@
 #pragma once
 //²Î¿¼:http://rastertek.com/dx11s2tut02.html
-//ÕhÃ÷(Description):
+//ÕhÃEDescription):
 /*¹Ç½M¤ß(Framework):
 							WinMain
 							   |

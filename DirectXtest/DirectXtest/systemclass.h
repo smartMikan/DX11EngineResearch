@@ -16,6 +16,8 @@
 
 
 #include <windows.h>
+#include <tchar.h>
+#include <string>
 //
 #include "inputclass.h"
 #include "graphicsclass.h"
@@ -43,7 +45,7 @@ private:
 	void ShutdownWindows();
 
 private:
-	LPCWSTR m_applicationName;
+	std::string m_applicationName;
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 
