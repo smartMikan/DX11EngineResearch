@@ -30,6 +30,9 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "d3dclass.h"
+#include "cameraclass.h"
+#include "modelclass.h"
+#include "colorshaderclass.h"
 
 
 /////////////
@@ -59,12 +62,17 @@ public:
 
 private:
 	bool Render();
-
+	bool Update();
 private:
 	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
 	//In case you were wondering I use the prefix 「m_」on all class variables.
 	//That way when I'm coding I can remember quickly which variables are members of the class and which are not.
 	D3DClass* m_Direct3D;
+	CameraClass* m_Camera;
+	ModelClass* m_Model;
+	ColorShaderClass* m_ColorShader;
+
+	int framesincestart;
 };
 
 #endif

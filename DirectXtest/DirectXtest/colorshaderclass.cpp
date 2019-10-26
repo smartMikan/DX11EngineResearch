@@ -26,7 +26,7 @@ bool ColorShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"../Engine/color.vs", L"../Engine/color.ps");
+	result = InitializeShader(device, hwnd, L"color.vs", L"color.ps");
 	if (!result)
 	{
 		return false;
@@ -78,7 +78,11 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	vertexShaderBuffer = 0;
 	pixelShaderBuffer = 0;
 
+
+
+
 	// Compile the vertex shader code.
+
 	result = D3DCompileFromFile(vsFilename, NULL, NULL, "ColorVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
 		&vertexShaderBuffer, &errorMessage);
 	if (FAILED(result))
@@ -99,6 +103,7 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	}
 
 	// Compile the pixel shader code.
+
 	result = D3DCompileFromFile(psFilename, NULL, NULL, "ColorPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
 		&pixelShaderBuffer, &errorMessage);
 	if (FAILED(result))
@@ -117,6 +122,22 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 
 		return false;
 	}
+
+	/*result = CompileShaderFromFile(vsFilename, "ColorVertexShader", "vs_5_0", &vertexShaderBuffer);
+	if (FAILED(result))
+	{
+		MessageBoxW(nullptr,
+			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+		return false;
+	}
+	result = CompileShaderFromFile(psFilename, "ColorPixelShader", "ps_5_0", &pixelShaderBuffer);
+	if (FAILED(result))
+	{
+		MessageBoxW(nullptr,
+			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+		return false;
+	}
+*/
 	// Create the vertex shader from the buffer.
 	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
 	if (FAILED(result))
@@ -307,4 +328,38 @@ void ColorShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int inde
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;
+}
+
+
+HRESULT ColorShaderClass::CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+{
+	HRESULT hr = S_OK;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#ifdef _DEBUG
+	// Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
+	// Setting this flag improves the shader debugging experience, but still allows 
+	// the shaders to be optimized and to run exactly the way they will run in 
+	// the release configuration of this program.
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+
+	// Disable optimizations to further improve shader debugging
+	dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	ID3DBlob* pErrorBlob = nullptr;
+	hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
+		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
+	if (FAILED(hr))
+	{
+		if (pErrorBlob)
+		{
+			OutputDebugStringA(reinterpret_cast<const char*>(pErrorBlob->GetBufferPointer()));
+			pErrorBlob->Release();
+		}
+		return hr;
+	}
+	if (pErrorBlob) pErrorBlob->Release();
+
+	return S_OK;
 }

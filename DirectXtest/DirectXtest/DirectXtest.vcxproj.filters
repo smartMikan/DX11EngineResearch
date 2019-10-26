@@ -39,6 +39,9 @@
     <ClCompile Include="modelclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="cameraclass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphicsclass.h">
@@ -59,22 +62,25 @@
     <ClInclude Include="colorshaderclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
+    <ClInclude Include="modelclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="modelclass.h">
+    <ClInclude Include="cameraclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="color.vs">
-      <Filter>ソース ファイル\shader</Filter>
+    <None Include="colorps.cso">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="colorvs.cso">
+      <Filter>リソース ファイル</Filter>
     </None>
     <None Include="color.ps">
-      <Filter>ソース ファイル\shader</Filter>
+      <Filter>ソース ファイル</Filter>
     </None>
-    <None Include="..\x64\Debug\colorvs.cso">
-      <Filter>リソース ファイル</Filter>
+    <None Include="color.vs">
+      <Filter>ソース ファイル</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

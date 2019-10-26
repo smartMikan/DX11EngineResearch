@@ -1,7 +1,7 @@
 #pragma once
-//²Î¿¼:http://rastertek.com/dx11s2tut02.html
-//ÕhÃEDescription):
-/*¹Ç½M¤ß(Framework):
+//å‚è€ƒ:http://rastertek.com/dx11s2tut02.html
+//èª¬æ˜(Description):
+/*éª¨çµ„ã¿(Framework):
 							WinMain
 							   |
 							   |
