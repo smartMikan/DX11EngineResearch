@@ -73,5 +73,16 @@
     <None Include="color.ps">
       <Filter>ソース ファイル\shader</Filter>
     </None>
+    <None Include="..\x64\Debug\colorvs.cso">
+      <Filter>リソース ファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="colorvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="colorps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
