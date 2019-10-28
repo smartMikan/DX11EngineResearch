@@ -12,10 +12,12 @@
 				 |					 |
 			InputClass			GraphicClass
 									 |
-		  ___________________________|____________________
-		 |				|		        |                 |
-	  D3DClass      ModelClass       CameraClass      ColorShaderClass
-
+		  ___________________________|__________________________________________________
+		 |				|		        |                 |							    |
+	  D3DClass      ModelClass       CameraClass      ColorShaderClass				TextureShaderClass
+						|
+						|
+					TextureClass
 
 
 
