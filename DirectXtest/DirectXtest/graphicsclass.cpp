@@ -17,12 +17,16 @@ GraphicsClass::GraphicsClass()
 	m_Direct3D = 0;
 	m_Camera = 0;
 	m_Model = 0;
+<<<<<<< HEAD
 
 	m_ColorShader = 0;
 	m_TextureShader = 0;
 
 	m_LightShader = 0;
 	m_Light = 0;
+=======
+	m_ColorShader = 0;
+>>>>>>> origin/master
 }
 
 
@@ -71,7 +75,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
+<<<<<<< HEAD
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+=======
+	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+>>>>>>> origin/master
 
 	// Create the model object.
 	m_Model = new ModelClass;
@@ -81,6 +89,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
+<<<<<<< HEAD
 	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "pic8026.tga");
 	//result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "hoge.tga");
 
@@ -146,6 +155,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light = new LightClass;
 	if (!m_Light)
 	{
+=======
+	result = m_Model->Initialize(m_Direct3D->GetDevice());
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+>>>>>>> origin/master
 		return false;
 	}
 	
@@ -157,6 +172,24 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 
 
+
+	framesincestart = 0;
+
+
+	// Create the color shader object.
+	m_ColorShader = new ColorShaderClass;
+	if (!m_ColorShader)
+	{
+		return false;
+	}
+
+	// Initialize the color shader object.
+	result = m_ColorShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
+		return false;
+	}
 
 	framesincestart = 0;
 
@@ -175,6 +208,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::ProgramEnd()
 {
 
+<<<<<<< HEAD
 	// Release the light object.
 	if (m_Light)
 	{
@@ -197,6 +231,8 @@ void GraphicsClass::ProgramEnd()
 		delete m_TextureShader;
 		m_TextureShader = 0;
 	}
+=======
+>>>>>>> origin/master
 	// Release the color shader object.
 	if (m_ColorShader)
 	{
@@ -236,6 +272,7 @@ bool GraphicsClass::Frame()
 {
 	bool result;
 
+<<<<<<< HEAD
 	static float rotation = 0.0f;
 
 	// Update the rotation variable each frame.
@@ -246,6 +283,8 @@ bool GraphicsClass::Frame()
 	}
 	
 
+=======
+>>>>>>> origin/master
 	result = Update();
 	if (!result)
 	{
@@ -289,6 +328,7 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
+<<<<<<< HEAD
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	worldMatrix = XMMatrixRotationY(rotation);
 
@@ -310,11 +350,22 @@ bool GraphicsClass::Render(float rotation)
 	
 
 
+=======
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_Model->Render(m_Direct3D->GetDeviceContext());
+
+	// Render the model using the color shader.
+	result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+>>>>>>> origin/master
 	if (!result)
 	{
 		return false;
 	}
 
+<<<<<<< HEAD
+=======
+	
+>>>>>>> origin/master
 
 
 	// Present the rendered scene to the screen.

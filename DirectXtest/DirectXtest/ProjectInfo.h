@@ -12,9 +12,15 @@
 				 |					 |
 			InputClass			GraphicClass
 									 |
+<<<<<<< HEAD
 		  ___________________________|_____________________________________________________________________________________
 		 |				|		        |                 |						    |                   |				   |
 	  D3DClass      ModelClass       CameraClass      ColorShaderClass	   TextureShaderClass    LightShaderClass     LightClass
+=======
+		  ___________________________|__________________________________________________
+		 |				|		        |                 |							    |
+	  D3DClass      ModelClass       CameraClass      ColorShaderClass				TextureShaderClass
+>>>>>>> origin/master
 						|
 						|
 					TextureClass

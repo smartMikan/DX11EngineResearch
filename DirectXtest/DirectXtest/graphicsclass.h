@@ -34,7 +34,10 @@
 #include "cameraclass.h"
 #include "modelclass.h"
 #include "colorshaderclass.h"
+<<<<<<< HEAD
 #include "textureshaderclass.h"
+=======
+>>>>>>> origin/master
 
 #include "lightshaderclass.h"
 #include "lightclass.h"
@@ -65,7 +68,11 @@ public:
 	bool Frame();
 
 private:
+<<<<<<< HEAD
 	bool Render(float);
+=======
+	bool Render();
+>>>>>>> origin/master
 	bool Update();
 private:
 	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
@@ -74,6 +81,7 @@ private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
+<<<<<<< HEAD
 
 	ColorShaderClass* m_ColorShader;
 
@@ -82,6 +90,10 @@ private:
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
 
+=======
+	ColorShaderClass* m_ColorShader;
+
+>>>>>>> origin/master
 	int framesincestart;
 };
 
