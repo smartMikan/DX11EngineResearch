@@ -1,4 +1,5 @@
-﻿///
+﻿#pragma once
+///
 //To keep the tutorials simple I used the windows input for the time being until I do a tutorial on DirectInput (which is far superior). 
 //The input class handles the user input from the keyboard. 
 //This class is given input from the SystemClass::MessageHandler function.

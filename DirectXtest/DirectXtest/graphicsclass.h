@@ -1,4 +1,5 @@
-﻿//The graphics class is the other object that is created by the system class.
+﻿#pragma once
+//The graphics class is the other object that is created by the system class.
 //All the graphics functionality in this application will be encapsulated in this class.
 //I will also use the header in this file for all the graphics related global settings that we may want to change such as full screen or windowed mode.
 //As you can see the D3DClass will be located inside the GraphicsClass.
@@ -30,7 +31,13 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "d3dclass.h"
+#include "cameraclass.h"
+#include "modelclass.h"
+#include "colorshaderclass.h"
+#include "textureshaderclass.h"
 
+#include "lightshaderclass.h"
+#include "lightclass.h"
 
 /////////////
 // GLOBALS //
@@ -58,13 +65,24 @@ public:
 	bool Frame();
 
 private:
-	bool Render();
-
+	bool Render(float);
+	bool Update();
 private:
 	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
 	//In case you were wondering I use the prefix 「m_」on all class variables.
 	//That way when I'm coding I can remember quickly which variables are members of the class and which are not.
 	D3DClass* m_Direct3D;
+	CameraClass* m_Camera;
+	ModelClass* m_Model;
+
+	ColorShaderClass* m_ColorShader;
+
+	TextureShaderClass* m_TextureShader;
+
+	LightShaderClass* m_LightShader;
+	LightClass* m_Light;
+
+	int framesincestart;
 };
 
 #endif

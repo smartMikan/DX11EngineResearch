@@ -1,7 +1,7 @@
 #pragma once
-//²Î¿¼:http://rastertek.com/dx11s2tut02.html
-//ÕhÃ÷(Description):
-/*¹Ç½M¤ß(Framework):
+//å‚è€ƒ:http://rastertek.com/dx11s2tut02.html
+//èª¬æ˜(Description):
+/*éª¨çµ„ã¿(Framework):
 							WinMain
 							   |
 							   |
@@ -12,10 +12,12 @@
 				 |					 |
 			InputClass			GraphicClass
 									 |
-		  ___________________________|____________________
-		 |				|		        |                 |
-	  D3DClass      ModelClass       CameraClass      ColorShaderClass
-
+		  ___________________________|_____________________________________________________________________________________
+		 |				|		        |                 |						    |                   |				   |
+	  D3DClass      ModelClass       CameraClass      ColorShaderClass	   TextureShaderClass    LightShaderClass     LightClass
+						|
+						|
+					TextureClass
 
 
 
