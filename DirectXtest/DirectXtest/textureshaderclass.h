@@ -12,7 +12,6 @@ using namespace std;
 
 class TextureShaderClass
 {
-<<<<<<< HEAD
 private:
 	struct MatrixBufferType
 	{
@@ -21,8 +20,6 @@ private:
 		XMMATRIX projection;
 	};
 
-=======
->>>>>>> origin/master
 public:
 	TextureShaderClass();
 	TextureShaderClass(const TextureShaderClass&);
@@ -35,15 +32,9 @@ public:
 private:
 	bool InitializeShader(ID3D11Device*, HWND, const WCHAR*, const WCHAR*);
 	void ShutdownShader();
-<<<<<<< HEAD
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND , const WCHAR* );
 	
 	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
-=======
-	void OutputShaderErrorMessage(ID3D11DeviceContext*,XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
-	
-	void SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
->>>>>>> origin/master
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:

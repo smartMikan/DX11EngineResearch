@@ -44,7 +44,6 @@ bool TextureShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCou
 	bool result;
 
 	//Set the shader parameters that it will use for rendering.
-<<<<<<< HEAD
 	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix,  projectionMatrix, texture);
 	if (!result)
 	{
@@ -201,22 +200,10 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 	}
 
 	return true;
-=======
-	//result = SetShaderParameters();
-
-	return false;
-}
-
-
-bool TextureShaderClass::InitializeShader(ID3D11Device *, HWND, const WCHAR *, const WCHAR *)
-{
-	return false;
->>>>>>> origin/master
 }
 
 void TextureShaderClass::ShutdownShader()
 {
-<<<<<<< HEAD
 	// Release the sampler state.
 	if (m_sampleState)
 	{
@@ -349,18 +336,4 @@ void TextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int in
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;
-=======
-}
-
-void TextureShaderClass::OutputShaderErrorMessage(ID3D11DeviceContext *, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView *)
-{
-}
-
-void TextureShaderClass::SetShaderParameters(ID3D11DeviceContext *, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView *)
-{
-}
-
-void TextureShaderClass::RenderShader(ID3D11DeviceContext *, int)
-{
->>>>>>> origin/master
 }

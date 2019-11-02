@@ -8,11 +8,8 @@ ModelClass::ModelClass()
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
-<<<<<<< HEAD
 
 	m_Texture = 0;
-=======
->>>>>>> origin/master
 }
 
 
@@ -26,11 +23,7 @@ ModelClass::~ModelClass()
 }
 //The Initialize function will call the initialization functions for the vertex and index buffers.
 
-<<<<<<< HEAD
 bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const char* textureFilename)
-=======
-bool ModelClass::Initialize(ID3D11Device* device)
->>>>>>> origin/master
 {
 	bool result;
 
@@ -42,7 +35,6 @@ bool ModelClass::Initialize(ID3D11Device* device)
 		return false;
 	}
 
-<<<<<<< HEAD
 	// Load the texture for this model.
 	result = LoadTexture(device, deviceContext, textureFilename);
 	if (!result)
@@ -51,21 +43,16 @@ bool ModelClass::Initialize(ID3D11Device* device)
 	}
 
 
-=======
->>>>>>> origin/master
 	return true;
 }
 //The Shutdown function will call the shutdown functions for the vertex and index buffers.
 
 void ModelClass::Shutdown()
 {
-<<<<<<< HEAD
 
 	// Release the model texture.
 	ReleaseTexture();
 
-=======
->>>>>>> origin/master
 	// Shutdown the vertex and index buffers.
 	ShutdownBuffers();
 
@@ -80,7 +67,6 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 
 	return;
 }
-<<<<<<< HEAD
 
 ID3D11ShaderResourceView* ModelClass::GetTexture()
 {
@@ -88,10 +74,6 @@ ID3D11ShaderResourceView* ModelClass::GetTexture()
 }
 
 //GetIndexCount returns the number of indexes in the model.The color shader will need this information to draw this model.
-=======
-//GetIndexCount returns the number of indexes in the model.The color shader will need this information to draw this model.
-
->>>>>>> origin/master
 int ModelClass::GetIndexCount()
 {
 	return m_indexCount;
@@ -108,17 +90,10 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	//First create two temporary arrays to hold the vertex and index data that we will use later to populate the final buffers with.
 
 	// Set the number of vertices in the vertex array.
-<<<<<<< HEAD
 	m_vertexCount = 3;
 
 	// Set the number of indices in the index array.
 	m_indexCount = 3;
-=======
-	m_vertexCount = 8;
-
-	// Set the number of indices in the index array.
-	m_indexCount = 36;
->>>>>>> origin/master
 
 	// Create the vertex array.
 	vertices = new VertexType[m_vertexCount];
@@ -139,7 +114,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	
 
 
-<<<<<<< HEAD
 	// Load the vertex array with data.
 	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
 	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
@@ -286,132 +260,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 //
 //
 //
-=======
-	//// Load the vertex array with data.
-	//vertices[0].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-	//vertices[0].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	//vertices[1].position = XMFLOAT3(-1.0f, 1.0f, 0.0f);  // Top left.
-	//vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-
-	//vertices[2].position = XMFLOAT3(1.0f, 1.0f, 0.0f);  // Top right.
-	//vertices[2].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-
-	//vertices[3].position = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
-	//vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-
-
-	//// Load the index array with data.
-	//indices[0] = 2;  // Top left.
-	//indices[1] = 0;  // Bottom left.
-	//indices[2] = 1;  // Top right.
-	//
-	//indices[3] = 2;  // Bottom left.
-	//indices[4] = 3;  // Bottom right.
-	//indices[5] = 0;  // Top right.
-	
-	
-	//Cube
-	/*		   
-	  (-1,1,1) 6 ____________  4(1,1,1)
-				/|			/|
-			   / |		   / |
-			  /	 |		  /  |
-(-1,1,-1) 1  /___|_______/2  | (1,1,-1)
-			 |   |_______|___|
-   (-1,-1,1) | 7 /       |   /  5(1,-1,1)
-			 |	/    	 |  /
-			 | /		 | /
-			 |/__________|/
-		0(-1,-1,-1)			3(1,-1,-1)
-
-
-	*/
-	// Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);  // Bottom left.
-	vertices[0].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);  // Top left.
-	vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-
-	vertices[2].position = XMFLOAT3(1.0f, 1.0f, -1.0f);  // Top right.
-	vertices[2].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-
-	vertices[3].position = XMFLOAT3(1.0f, -1.0f, -1.0f);  // Bottom right.
-	vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-	
-	vertices[4].position = XMFLOAT3(1.0f, 1.0f, 1.0f);  // Bottom left.
-	vertices[4].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);  // Top left.
-	vertices[5].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-
-	vertices[6].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);  // Top right.
-	vertices[6].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-
-	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);  // Bottom right.
-	vertices[7].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-
-
-	// Load the index array with data.
-	//Front
-	indices[0] = 0;  // Bottom left.
-	indices[1] = 1;  // Top left.
-	indices[2] = 2;  // Top right.
-	
-	indices[3] = 2;  // Top right.
-	indices[4] = 3;  // Bottom right.
-	indices[5] = 0;  // Bottom left.
-
-	
-	//Right
-	indices[6] = 3;  // Bottom left.
-	indices[7] = 2;  // Top left.
-	indices[8] = 4;  // Top right.
-
-	indices[9] = 4;  // Top right.
-	indices[10] = 5;  // Bottom right.
-	indices[11] = 3;  // Bottom left.
-
-	//Back
-	indices[12] = 5;  // Bottom left.
-	indices[13] = 4;  // Top left.
-	indices[14] = 6;  // Top right.
-
-	indices[15] = 6;  // Top right.
-	indices[16] = 7;  // Bottom right.
-	indices[17] = 5;  // Bottom left.
-
-	//Left
-	indices[18] = 7;  // Bottom left.
-	indices[19] = 6;  // Top left.
-	indices[20] = 1;  // Top right.
-
-	indices[21] = 1;  // Top right.
-	indices[22] = 0;  // Bottom right.
-	indices[23] = 7;  // Bottom left.
-
-	//Top
-	indices[24] = 1;  // Bottom left.
-	indices[25] = 6;  // Top left.
-	indices[26] = 4;  // Top right.
-
-	indices[27] = 4;  // Top right.
-	indices[28] = 2;  // Bottom right.
-	indices[29] = 1;  // Bottom left.
-
-	//Bottom
-	indices[30] = 7;  // Bottom left.
-	indices[31] = 0;  // Top left.
-	indices[32] = 3;  // Top right.
-
-	indices[33] = 0;  // Top right.
-	indices[34] = 3;  // Bottom right.
-	indices[35] = 5;  // Bottom left.
-
-
-
->>>>>>> origin/master
 
 
 	//With the vertex array and index array filled out we can now use those to create the vertex buffer and index buffer.Creating both buffers is done in the same fashion.First fill out a description of the buffer.In the description the ByteWidth(size of the buffer) and the BindFlags(type of buffer) are what you need to ensure are filled out correctly.After the description is filled out you need to also fill out a subresource pointer which will point to either your vertex or index array you previously created.With the description and subresource pointer you can call CreateBuffer using the D3D device and it will return a pointer to your new buffer.
@@ -509,7 +357,6 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	return;
 }
-<<<<<<< HEAD
 
 
 
@@ -547,5 +394,3 @@ void ModelClass::ReleaseTexture()
 
 	return;
 }
-=======
->>>>>>> origin/master

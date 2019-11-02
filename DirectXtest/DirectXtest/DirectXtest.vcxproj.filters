@@ -45,7 +45,6 @@
     <ClCompile Include="textureshaderclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="textureclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -55,8 +54,6 @@
     <ClCompile Include="lightclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-=======
->>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphicsclass.h">
@@ -86,7 +83,6 @@
     <ClInclude Include="textureshaderclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="textureclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -99,8 +95,6 @@
     <ClInclude Include="lightclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-=======
->>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <None Include="colorps.cso">
@@ -109,7 +103,6 @@
     <None Include="colorvs.cso">
       <Filter>リソース ファイル</Filter>
     </None>
-<<<<<<< HEAD
     <None Include="..\x64\Debug\TextureVertexShader.cso">
       <Filter>リソース ファイル</Filter>
     </None>
@@ -129,15 +122,6 @@
       <Filter>リソース ファイル</Filter>
     </None>
     <None Include="color.vs">
-=======
-    <None Include="color.ps">
-      <Filter>ソース ファイル</Filter>
-    </None>
-    <None Include="color.vs">
-      <Filter>ソース ファイル</Filter>
-    </None>
-    <None Include="..\x64\Debug\TextureVertexShader.cso">
->>>>>>> origin/master
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>
@@ -154,7 +138,6 @@
     <FxCompile Include="TexturePixelShader.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-<<<<<<< HEAD
     <FxCompile Include="PixelShader2.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
@@ -183,7 +166,5 @@
     <ResourceCompile Include="DirectXtest.rc">
       <Filter>リソース ファイル</Filter>
     </ResourceCompile>
-=======
->>>>>>> origin/master
   </ItemGroup>
 </Project>
