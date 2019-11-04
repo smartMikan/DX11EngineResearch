@@ -118,6 +118,9 @@
     <None Include="Shader\colorvs.cso">
       <Filter>リソース ファイル\Shader</Filter>
     </None>
+    <None Include="Scene.fbx">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitmap1.bmp">
@@ -140,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="3DModel\Cube.txt">
+      <Filter>リソース ファイル\3DModel</Filter>
+    </Text>
+    <Text Include="3DModel\mayacube.txt">
       <Filter>リソース ファイル\3DModel</Filter>
     </Text>
   </ItemGroup>
@@ -165,5 +171,10 @@
     <FxCompile Include="Shader\TextureVertexShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="3DModel\cube.obj">
+      <Filter>リソース ファイル\3DModel</Filter>
+    </Object>
   </ItemGroup>
 </Project>

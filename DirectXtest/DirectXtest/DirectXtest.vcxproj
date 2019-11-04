@@ -188,6 +188,7 @@
     <ClInclude Include="textureshaderclass.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Scene.fbx" />
     <None Include="Shader.dgsl" />
     <None Include="Shader\color.ps" />
     <None Include="Shader\color.vs" />
@@ -205,6 +206,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="3DModel\Cube.txt" />
+    <Text Include="3DModel\mayacube.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\colorps.hlsl">
@@ -240,6 +242,11 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="3DModel\cube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

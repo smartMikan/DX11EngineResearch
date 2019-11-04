@@ -328,8 +328,8 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	}
 	//After the vertex buffer and index buffer have been created you can delete the vertex and index arrays as they are no longer needed since the data was copied into the buffers.
 
-		// Release the arrays now that the vertex and index buffers have been created and loaded.
-		delete[] vertices;
+	// Release the arrays now that the vertex and index buffers have been created and loaded.
+	delete[] vertices;
 	vertices = 0;
 
 	delete[] indices;
