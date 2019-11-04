@@ -9,6 +9,7 @@ SamplerState SampleType;
 
 cbuffer LightBuffer
 {
+	float4 ambientColor;
 	float4 diffuseColor;
 	float3 lightDirection;
 	float padding;
@@ -44,16 +45,32 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	//The light intensity value is calculated as 
 	//the dot product between the normal vector of triangle and the light direction vector.
 
+	// Set the default output color to the ambient light value for all pixels.
+	color = ambientColor;
+
 	// Invert the light direction for calculations.
 	lightDir = -lightDirection;
 
 	// Calculate the amount of light on this pixel.
 	lightIntensity = saturate(dot(input.normal, lightDir));
 	
-	//And finally the diffuse value of the light is combined with the texture pixel value to produce the color result.
+	//Check if the N dot L is greater than zero.If it is then add the diffuse color to the ambient color.If not then you need to be careful to not add the diffuse color.The reason being is that the diffuse color could be negative and it will subtract away some of the ambient color in the addition which is not correct.
+
 
 	// Determine the final amount of diffuse color based on the diffuse color combined with the light intensity.
-	color = saturate(diffuseColor * lightIntensity);
+	//color = saturate(diffuseColor * lightIntensity);
+
+	if (lightIntensity > 0.0f)
+	{
+		// Determine the final diffuse color based on the diffuse color and the amount of light intensity.
+		color += (diffuseColor * lightIntensity);
+	}
+	//And finally the diffuse value of the light is combined with the texture pixel value to produce the color result.
+
+	//Make sure to saturate the final output light color since the combination of ambient and diffuse could have been greater than 1.
+
+	// Saturate the final light color.
+	color = saturate(color);
 
 	// Multiply the texture pixel and the final diffuse color to get the final pixel color result.
 	color = color * textureColor;
