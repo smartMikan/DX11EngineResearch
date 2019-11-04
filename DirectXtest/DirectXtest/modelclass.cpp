@@ -10,6 +10,8 @@ ModelClass::ModelClass()
 	m_indexBuffer = 0;
 
 	m_Texture = 0;
+
+	m_model = 0;
 }
 
 
@@ -23,9 +25,16 @@ ModelClass::~ModelClass()
 }
 //The Initialize function will call the initialization functions for the vertex and index buffers.
 
-bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const char* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const char* modelFilename, const char* textureFilename)
 {
 	bool result;
+
+	// Load in the model data,
+	result = LoadModel(modelFilename);
+	if (!result)
+	{
+		return false;
+	}
 
 
 	// Initialize the vertex and index buffers.
@@ -55,6 +64,9 @@ void ModelClass::Shutdown()
 
 	// Shutdown the vertex and index buffers.
 	ShutdownBuffers();
+
+	// Release the model data.
+	ReleaseModel();
 
 	return;
 }
@@ -87,13 +99,15 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
-	//First create two temporary arrays to hold the vertex and index data that we will use later to populate the final buffers with.
+	int i;
+	////First create two temporary arrays to hold the vertex and index data that we will use later to populate the final buffers with.
 
-	// Set the number of vertices in the vertex array.
-	m_vertexCount = 3;
+	//// Set the number of vertices in the vertex array.
+	//m_vertexCount = 3;
 
-	// Set the number of indices in the index array.
-	m_indexCount = 3;
+	//// Set the number of indices in the index array.
+	//m_indexCount = 3;
+
 
 	// Create the vertex array.
 	vertices = new VertexType[m_vertexCount];
@@ -111,21 +125,30 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	//Now fill both the vertex and index array with the three points of the triangle as well as the index to each of the points.Please note that I create the points in the clockwise order of drawing them.If you do this counter clockwise it will think the triangle is facing the opposite direction and not draw it due to back face culling.Always remember that the order in which you send your vertices to the GPU is very important.The color is set here as well since it is part of the vertex description.I set the color to green.
 
 
-	
+	// Load the vertex array and index array with data.
+	for (i = 0; i<m_vertexCount; i++)
+	{
+		vertices[i].position = XMFLOAT3(m_model[i].x, m_model[i].y, m_model[i].z);
+		vertices[i].texture = XMFLOAT2(m_model[i].tu, m_model[i].tv);
+		vertices[i].normal = XMFLOAT3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
+
+		indices[i] = i;
+	}
+
 
 
 	// Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
-	vertices[0].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	//vertices[0].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
+	//vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
+	//vertices[0].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	vertices[1].position = XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top left.
-	vertices[1].texture = XMFLOAT2(0.5f, 0.0f);
-	vertices[1].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	//vertices[1].position = XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top left.
+	//vertices[1].texture = XMFLOAT2(0.5f, 0.0f);
+	//vertices[1].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 
-	vertices[2].position = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Top right.
-	vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
-	vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
+	//vertices[2].position = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Top right.
+	//vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
+	//vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
 	
 	//
 	//vertices[3].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
@@ -144,10 +167,10 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	//vertices[3].texture = XMFLOAT2(0.0f, 1.0f);
 
 
-	// Load the index array with data.
-	indices[0] = 0;  // Top left.
-	indices[1] = 1;  // Bottom left.
-	indices[2] = 2;  // Top right.
+	//// Load the index array with data.
+	//indices[0] = 0;  // Top left.
+	//indices[1] = 1;  // Bottom left.
+	//indices[2] = 2;  // Top right.
 	//
 	//indices[4] = 5;  // Top left.
 	//indices[5] = 4;  // Bottom left.
@@ -314,6 +337,11 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	return true;
 }
+
+
+
+
+
 //The ShutdownBuffers function just releases the vertex buffer and index buffer that were created in the InitializeBuffers function.
 
 void ModelClass::ShutdownBuffers()
@@ -390,6 +418,78 @@ void ModelClass::ReleaseTexture()
 		m_Texture->Shutdown();
 		delete m_Texture;
 		m_Texture = 0;
+	}
+
+	return;
+}
+
+
+
+bool ModelClass::LoadModel(const char* filename)
+{
+	ifstream fin;
+	char input;
+	int i;
+
+
+	// Open the model file.
+	fin.open(filename);
+
+	// If it could not open the file then exit.
+	if (fin.fail())
+	{
+		return false;
+	}
+
+	// Read up to the value of vertex count.
+	fin.get(input);
+	while (input != ':')
+	{
+		fin.get(input);
+	}
+
+	// Read in the vertex count.
+	fin >> m_vertexCount;
+
+	// Set the number of indices to be the same as the vertex count.
+	m_indexCount = m_vertexCount;
+
+	// Create the model using the vertex count that was read in.
+	m_model = new ModelType[m_vertexCount];
+	if (!m_model)
+	{
+		return false;
+	}
+
+	// Read up to the beginning of the data.
+	fin.get(input);
+	while (input != ':')
+	{
+		fin.get(input);
+	}
+	fin.get(input);
+	fin.get(input);
+
+	// Read in the vertex data.
+	for (i = 0; i<m_vertexCount; i++)
+	{
+		fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
+		fin >> m_model[i].tu >> m_model[i].tv;
+		fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
+	}
+
+	// Close the model file.
+	fin.close();
+
+	return true;
+}
+
+void ModelClass::ReleaseModel()
+{
+	if (m_model)
+	{
+		delete[] m_model;
+		m_model = 0;
 	}
 
 	return;

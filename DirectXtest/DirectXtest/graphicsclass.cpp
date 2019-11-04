@@ -81,7 +81,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "pic8026.tga");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),"./3DModel/Cube.txt", "./3DModel/Texture/pic8026.tga");
 	//result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "hoge.tga");
 
 	if (!result)
@@ -152,7 +152,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//The color of the light is set to purple and the light direction is set to point down the positive Z axis.
 
 	// Initialize the light object.
-	m_Light->SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 
 

@@ -81,7 +81,7 @@ private:
 
 
 
-//DXイニシャライズの流れ:
+
 /*RefreshRateを取得------------->   CreateDXGIFactory
 											|
 									factory->EnumAdapters

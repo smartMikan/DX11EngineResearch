@@ -35,7 +35,7 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 	// Initialize the vertex and pixel shaders.
 	
-	result = InitializeShader(device, hwnd, L"LightVertexShader.hlsl", L"LightPixelShader.hlsl");
+	result = InitializeShader(device, hwnd, L"./Shader/LightVertexShader.hlsl", L"./Shader/LightPixelShader.hlsl");
 	if (!result)
 	{
 		return false;

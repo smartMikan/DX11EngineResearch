@@ -13,7 +13,13 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ソース ファイル\shader">
+    <Filter Include="リソース ファイル\3DModel">
+      <UniqueIdentifier>{d84adc4f-a2f8-459f-8143-cb3a1f893723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\3DModel\Texture">
+      <UniqueIdentifier>{d75ca869-ba5d-4e72-a9d5-6c724b942b3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shader">
       <UniqueIdentifier>{a6eae81d-3101-4588-947f-38f4a3519708}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -97,74 +103,67 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="colorps.cso">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="colorvs.cso">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="..\x64\Debug\TextureVertexShader.cso">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="..\x64\Debug\TexturePixelShader.cso">
-      <Filter>リソース ファイル</Filter>
-    </None>
     <None Include="Shader.dgsl">
       <Filter>リソース ファイル</Filter>
     </None>
-    <None Include="..\x64\Debug\LightVertexShader.cso">
-      <Filter>リソース ファイル</Filter>
+    <None Include="Shader\color.ps">
+      <Filter>リソース ファイル\Shader</Filter>
     </None>
-    <None Include="..\x64\Debug\LightPixelShader.cso">
-      <Filter>リソース ファイル</Filter>
+    <None Include="Shader\color.vs">
+      <Filter>リソース ファイル\Shader</Filter>
     </None>
-    <None Include="color.ps">
-      <Filter>リソース ファイル</Filter>
+    <None Include="Shader\colorps.cso">
+      <Filter>リソース ファイル\Shader</Filter>
     </None>
-    <None Include="color.vs">
-      <Filter>リソース ファイル</Filter>
+    <None Include="Shader\colorvs.cso">
+      <Filter>リソース ファイル\Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="colorvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="colorps.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="TextureVertexShader.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="TexturePixelShader.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="PixelShader2.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="LightVertexShader.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="LightPixelShader.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="pic8026.tga">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="hoge.tga">
-      <Filter>リソース ファイル</Filter>
-    </Image>
     <Image Include="bitmap1.bmp">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="icon1.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="3DModel\Texture\hoge.tga">
+      <Filter>リソース ファイル\3DModel\Texture</Filter>
+    </Image>
+    <Image Include="3DModel\Texture\pic8026.tga">
+      <Filter>リソース ファイル\3DModel\Texture</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXtest.rc">
       <Filter>リソース ファイル</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="3DModel\Cube.txt">
+      <Filter>リソース ファイル\3DModel</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\colorps.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\colorvs.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LightPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LightVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PixelShader2.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\TexturePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\TextureVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
