@@ -488,7 +488,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	  This matrix is used for rendering 2D elements like user interfaces on the screen allowing us to skip the 3D rendering.
 	  You will see this used in later tutorials when we look at rendering 2D graphics and fonts to the screen.*/
 
-	  // Create an orthographic projection matrix for 2D rendering.
+	// Create an orthographic projection matrix for 2D rendering.
 	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
 
 	return true;
