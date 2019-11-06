@@ -57,14 +57,13 @@ void LightShaderClass::Shutdown()
 //The Render function now takes in the light direction and light diffuse color as inputs.
 //These variables are then sent into the SetShaderParameters function and finally set inside the shader itself.
 
-bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 cameraPosition, XMFLOAT4 specularColor, float specularPower)
+bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, ID3D11ShaderResourceView* texture, MatrixBufferType wvpMatrixBuffer, CameraBufferType cameraBuffer, LightBufferType lightBuffer)
 {
 	bool result;
 
 
 	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, lightDirection, ambientColor, diffuseColor, cameraPosition, specularColor, specularPower);
+	result = SetShaderParameters(deviceContext, wvpMatrixBuffer, texture, cameraBuffer, lightBuffer);
 	if (!result)
 	{
 		return false;
@@ -74,6 +73,34 @@ bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 	RenderShader(deviceContext, indexCount);
 
 	return true;
+}
+
+LightShaderClass::MatrixBufferType LightShaderClass::GenarateMatrixBuffer(XMMATRIX world, XMMATRIX view, XMMATRIX projection)
+{
+	MatrixBufferType temp;
+	temp.world = world;
+	temp.view = view;
+	temp.projection = projection;
+	return temp;
+}
+
+LightShaderClass::CameraBufferType LightShaderClass::GenerateCameraBuffer(XMFLOAT3 cameraPosition, float padding)
+{
+	CameraBufferType temp;
+	temp.cameraPosition = cameraPosition;
+	temp.padding = padding;
+	return temp;
+}
+
+LightShaderClass::LightBufferType LightShaderClass::GenerateLightBuffer(XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor)
+{
+	LightBufferType temp;
+	temp.ambientColor = ambientColor;
+	temp.diffuseColor = diffuseColor;
+	temp.lightDirection = lightDirection;
+	temp.specularColor = specularColor;
+	temp.specularPower = specularPower;
+	return temp;
 }
 
 
@@ -375,9 +402,9 @@ void LightShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND h
 }
 //The SetShaderParameters function now takes in lightDirection and diffuseColor as inputs.
 
-bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection, XMFLOAT4 ambientColor,
-	XMFLOAT4 diffuseColor, XMFLOAT3 cameraPosition, XMFLOAT4 specularColor, float specularPower)
+bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
+	MatrixBufferType wvpMatrixBuffer, ID3D11ShaderResourceView* texture, 
+	CameraBufferType cameraBuffer, LightBufferType lightBuffer)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -387,9 +414,12 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	CameraBufferType* dataPtr3;
 
 	// Transpose the matrices to prepare them for the shader.
-	worldMatrix = XMMatrixTranspose(worldMatrix);
+	wvpMatrixBuffer.world = XMMatrixTranspose(wvpMatrixBuffer.world);
+	wvpMatrixBuffer.view = XMMatrixTranspose(wvpMatrixBuffer.view);
+	wvpMatrixBuffer.projection = XMMatrixTranspose(wvpMatrixBuffer.projection);
+	/*worldMatrix = XMMatrixTranspose(worldMatrix);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
-	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);*/
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -402,9 +432,9 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	// Copy the matrices into the constant buffer.
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
+	dataPtr->world = wvpMatrixBuffer.world;
+	dataPtr->view = wvpMatrixBuffer.view;
+	dataPtr->projection = wvpMatrixBuffer.projection;
 
 	// Unlock the constant buffer.
 	deviceContext->Unmap(m_matrixBuffer, 0);
@@ -429,7 +459,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	dataPtr3 = (CameraBufferType*)mappedResource.pData;
 
 	// Copy the camera position into the constant buffer.
-	dataPtr3->cameraPosition = cameraPosition;
+	dataPtr3->cameraPosition = cameraBuffer.cameraPosition;
 	dataPtr3->padding = 0.0f;
 
 	// Unlock the camera constant buffer.
@@ -461,12 +491,12 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 	dataPtr2 = (LightBufferType*)mappedResource.pData;
 
 	// Copy the lighting variables into the constant buffer.
-	dataPtr2->ambientColor = ambientColor;
-	dataPtr2->diffuseColor = diffuseColor;
-	dataPtr2->lightDirection = lightDirection;
+	dataPtr2->ambientColor = lightBuffer.ambientColor;
+	dataPtr2->diffuseColor = lightBuffer.diffuseColor;
+	dataPtr2->lightDirection = lightBuffer.lightDirection;
 	//dataPtr2->padding = 0.0f;
-	dataPtr2->specularColor = specularColor;
-	dataPtr2->specularPower = specularPower;
+	dataPtr2->specularColor = lightBuffer.specularColor;
+	dataPtr2->specularPower = lightBuffer.specularPower;
 
 
 	// Unlock the constant buffer.

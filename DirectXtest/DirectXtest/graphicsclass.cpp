@@ -311,25 +311,20 @@ bool GraphicsClass::Render(float rotation)
 	//result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
 
 
+
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
-									m_Model->GetIndexCount(), 
-									worldMatrix, viewMatrix, projectionMatrix,
-									m_Model->GetTexture(), 
-									m_Light->GetDirection(),
-									m_Light->GetAmbientColor(),
-									m_Light->GetDiffuseColor(),
-									m_Camera->GetPosition(),
-									m_Light->GetSpecularColor(),
-									m_Light->GetSpecularPower());
-	
-
-
+								   m_Model->GetIndexCount(), 
+								   m_Model->GetTexture(),
+								   m_LightShader->GenarateMatrixBuffer(worldMatrix, viewMatrix, projectionMatrix),
+								   m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
+								   m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor())
+								   );
+									
 	if (!result)
 	{
 		return false;
 	}
-
 
 
 	// Present the rendered scene to the screen.
