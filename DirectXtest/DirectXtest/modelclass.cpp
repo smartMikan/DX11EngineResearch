@@ -25,7 +25,7 @@ ModelClass::~ModelClass()
 }
 //The Initialize function will call the initialization functions for the vertex and index buffers.
 
-bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const char* modelFilename, const char* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR * modelFilename, const WCHAR * textureFilename)
 {
 	bool result;
 
@@ -388,7 +388,7 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 
 
-bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const char* filename)
+bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR * filename)
 {
 	bool result;
 
@@ -425,7 +425,7 @@ void ModelClass::ReleaseTexture()
 
 
 
-bool ModelClass::LoadModel(const char* filename)
+bool ModelClass::LoadModel(const WCHAR * filename)
 {
 	ifstream fin;
 	char input;

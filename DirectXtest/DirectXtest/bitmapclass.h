@@ -33,7 +33,7 @@ private:
 	struct VertexType
 	{
 		XMFLOAT3 position;
-		XMFLOAT3 texture;
+		XMFLOAT2 texture;
 	};
 
 public:
@@ -41,7 +41,7 @@ public:
 	BitmapClass(const BitmapClass&);
 	~BitmapClass();
 
-	bool Initialize(ID3D11Device*, int, int, WCHAR*, int, int);
+	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, const WCHAR * textureFilename, int bitmapWidth, int bitmapHeight);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, int);
 
@@ -54,7 +54,7 @@ private:
 	bool UpdateBuffers(ID3D11DeviceContext*, int, int);
 	void RenderBuffers(ID3D11DeviceContext*);
 
-	bool LoadTexture(ID3D11Device*, WCHAR*);
+	bool LoadTexture(ID3D11Device*, ID3D11DeviceContext* , const WCHAR * filename);
 	void ReleaseTexture();
 
 private:

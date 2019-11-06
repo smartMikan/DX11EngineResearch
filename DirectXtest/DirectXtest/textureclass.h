@@ -37,7 +37,7 @@ public:
 	TextureClass(const TextureClass&);
 	~TextureClass();
 
-	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, const char*);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, const WCHAR * filename);
 	void Shutdown();
 
 	ID3D11ShaderResourceView* GetTexture();
@@ -45,7 +45,7 @@ public:
 private:
 	//Here we have our targa reading function.If you wanted to support more formats you would add reading functions here.
 
-	bool LoadTarga(const char*, int&, int&);
+	bool LoadTarga(const WCHAR * filename, int&, int&);
 
 private:
 	//This class has three member variables.The first one holds the raw targa data read straight in from the file.The second variable called m_texture will hold the structured texture data that DirectX will use for rendering.And the third variable is the resource view that the shader uses to access the texture data when drawing.

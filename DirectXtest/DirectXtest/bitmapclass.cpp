@@ -15,7 +15,7 @@ BitmapClass::~BitmapClass()
 {
 }
 
-bool BitmapClass::Initialize(ID3D11Device* device, int screenWidth, int screenHeight, WCHAR* textureFilename, int bitmapWidth, int bitmapHeight)
+bool BitmapClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screenWidth, int screenHeight, const WCHAR * textureFilename, int bitmapWidth, int bitmapHeight)
 {
 	bool result;
 	//In the Initialize function both the screen sizeand image size are stored.
@@ -48,7 +48,7 @@ bool BitmapClass::Initialize(ID3D11Device* device, int screenWidth, int screenHe
 	}
 
 	// Load the texture for this model.
-	result = LoadTexture(device, textureFilename);
+	result = LoadTexture(device, deviceContext, textureFilename);
 	if (!result)
 	{
 		return false;
@@ -203,24 +203,173 @@ bool BitmapClass::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
+//ShutdownBuffers releases the vertex and index buffers.
 void BitmapClass::ShutdownBuffers()
 {
+	// Release the index buffer.
+	if (m_indexBuffer)
+	{
+		m_indexBuffer->Release();
+		m_indexBuffer = 0;
+	}
+
+	// Release the vertex buffer.
+	if (m_vertexBuffer)
+	{
+		m_vertexBuffer->Release();
+		m_vertexBuffer = 0;
+	}
+
+	return;
 }
 
-bool BitmapClass::UpdateBuffers(ID3D11DeviceContext*, int, int)
+//The UpdateBuffers function is called each frame to update the contents of the dynamic vertex buffer to re-position the 2D bitmap image on the screen if need be.
+bool BitmapClass::UpdateBuffers(ID3D11DeviceContext* deviceContext, int positionX, int positionY)
 {
-	return false;
+	float left, right, top, bottom;
+	VertexType* vertices;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	VertexType* verticesPtr;
+	HRESULT result;
+
+	//We check if the position to render this image has changed.
+	//If it hasn't changed then we just exit since the vertex buffer doesn't need any changes for this frame.
+	//This check can save us a lot of processing.
+	// If the position we are rendering this bitmap to has not changed then don't update the vertex buffer since it
+	// currently has the correct parameters.
+	if ((positionX == m_previousPosX) && (positionY == m_previousPosY))
+	{
+		return true;
+	}
+	//If the position to render this image has changed then we record the new location for the next time we come through this function.
+
+	// If it has changed then update the position it is being rendered to.
+	m_previousPosX = positionX;
+	m_previousPosY = positionY;
+
+	//The four sides of the image need to be calculated.
+	// Calculate the screen coordinates of the left side of the bitmap.
+	left = (float)((m_screenWidth / 2) * -1) + (float)positionX;
+
+	// Calculate the screen coordinates of the right side of the bitmap.
+	right = left + (float)m_bitmapWidth;
+
+	// Calculate the screen coordinates of the top of the bitmap.
+	top = (float)(m_screenHeight / 2) - (float)positionY;
+
+	// Calculate the screen coordinates of the bottom of the bitmap.
+	bottom = top - (float)m_bitmapHeight;
+
+	//Now that the coordinates are calculated create a temporary vertex arrayand fill it with the new six vertex points.
+	// Create the vertex array.
+	vertices = new VertexType[m_vertexCount];
+	if (!vertices)
+	{
+		return false;
+	}
+
+	// Load the vertex array with data.
+	// First triangle.
+	vertices[0].position = XMFLOAT3(left, top, 0.0f);  // Top left.
+	vertices[0].texture = XMFLOAT2(0.0f, 0.0f);
+
+	vertices[1].position = XMFLOAT3(right, bottom, 0.0f);  // Bottom right.
+	vertices[1].texture = XMFLOAT2(1.0f, 1.0f);
+
+	vertices[2].position = XMFLOAT3(left, bottom, 0.0f);  // Bottom left.
+	vertices[2].texture = XMFLOAT2(0.0f, 1.0f);
+
+	// Second triangle.
+	vertices[3].position = XMFLOAT3(left, top, 0.0f);  // Top left.
+	vertices[3].texture = XMFLOAT2(0.0f, 0.0f);
+
+	vertices[4].position = XMFLOAT3(right, top, 0.0f);  // Top right.
+	vertices[4].texture = XMFLOAT2(1.0f, 0.0f);
+
+	vertices[5].position = XMFLOAT3(right, bottom, 0.0f);  // Bottom right.
+	vertices[5].texture = XMFLOAT2(1.0f, 1.0f);
+	
+	//Now copy the contents of the vertex array into the vertex buffer using the Mapand memcpy functions.
+
+	// Lock the vertex buffer so it can be written to.
+	result = deviceContext->Map(m_vertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the vertex buffer.
+	verticesPtr = (VertexType*)mappedResource.pData;
+
+	// Copy the data into the vertex buffer.
+	memcpy(verticesPtr, (void*)vertices, (sizeof(VertexType) * m_vertexCount));
+
+	// Unlock the vertex buffer.
+	deviceContext->Unmap(m_vertexBuffer, 0);
+
+	// Release the vertex array as it is no longer needed.
+	delete[] vertices;
+	vertices = 0;
+
+	return true;
 }
 
-void BitmapClass::RenderBuffers(ID3D11DeviceContext*)
+//The RenderBuffers function sets up the vertexand index buffers on the gpu to be drawn by the shader.
+void BitmapClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
+	unsigned int stride;
+	unsigned int offset;
+
+
+	// Set vertex buffer stride and offset.
+	stride = sizeof(VertexType);
+	offset = 0;
+
+	// Set the vertex buffer to active in the input assembler so it can be rendered.
+	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+
+	// Set the index buffer to active in the input assembler so it can be rendered.
+	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	return;
 }
 
-bool BitmapClass::LoadTexture(ID3D11Device*, WCHAR*)
+//The following function loads the texture that will be used for drawing the 2D image.
+bool BitmapClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR * filename)
 {
-	return false;
+	bool result;
+
+
+	// Create the texture object.
+	m_Texture = new TextureClass;
+	if (!m_Texture)
+	{
+		return false;
+	}
+
+	// Initialize the texture object.
+	result = m_Texture->Initialize(device,deviceContext, filename);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
 }
 
+//This ReleaseTexture function releases the texture that was loaded.
 void BitmapClass::ReleaseTexture()
 {
+	// Release the texture object.
+	if (m_Texture)
+	{
+		m_Texture->Shutdown();
+		delete m_Texture;
+		m_Texture = 0;
+	}
+
+	return;
 }

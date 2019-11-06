@@ -21,7 +21,7 @@ TextureClass::~TextureClass()
 
 }
 
-bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext,const char* filename)
+bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR * filename)
 {
 	bool result;
 	int height, width;
@@ -116,7 +116,7 @@ ID3D11ShaderResourceView* TextureClass::GetTexture()
 	return m_textureView;
 }
 
-bool TextureClass::LoadTarga(const char* filename, int& height, int& width)
+bool TextureClass::LoadTarga(const WCHAR * filename, int& height, int& width)
 {
 	int error, bpp, imageSize, index, i, j, k;
 	FILE* filePtr;
@@ -125,7 +125,7 @@ bool TextureClass::LoadTarga(const char* filename, int& height, int& width)
 	unsigned char* targaImage;
 
 	//Open the targa file for reading in binary;
-	error = fopen_s(&filePtr, filename, "rb");
+	error = _wfopen_s(&filePtr, filename, L"rb");
 	if (error != 0) {
 		return false;
 	}

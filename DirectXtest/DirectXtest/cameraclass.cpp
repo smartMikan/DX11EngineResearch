@@ -108,7 +108,8 @@ void CameraClass::Render()
 
 	return;
 }
-//After the Render function has been called to create the view matrix we can provide the updated view matrix to calling functions using this GetViewMatrix function.The view matrix will be one of the three main matrices used in the HLSL vertex shader.
+//After the Render function has been called to create the view matrix we can provide the updated view matrix to calling functions using this GetViewMatrix function.
+//The view matrix will be one of the three main matrices used in the HLSL vertex shader.
 
 void CameraClass::GetViewMatrix(XMMATRIX& viewMatrix)
 {

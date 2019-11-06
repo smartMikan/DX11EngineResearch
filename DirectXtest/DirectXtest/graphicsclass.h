@@ -39,6 +39,8 @@
 #include "lightshaderclass.h"
 #include "lightclass.h"
 
+#include "bitmapclass.h"
+
 /////////////
 // GLOBALS //
 /////////////
@@ -83,6 +85,8 @@ private:
 	LightClass* m_Light;
 
 	int framesincestart;
+
+	BitmapClass* m_Bitmap;
 };
 
 #endif

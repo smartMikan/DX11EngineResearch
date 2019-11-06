@@ -23,6 +23,8 @@ GraphicsClass::GraphicsClass()
 
 	m_LightShader = 0;
 	m_Light = 0;
+
+	m_Bitmap = 0;
 }
 
 
@@ -81,7 +83,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),"./3DModel/Cube.txt", "./3DModel/Texture/pic8026.tga");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/Cube.txt", L"./3DModel/Texture/pic8026.tga");
 	//result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "hoge.tga");
 
 	if (!result)
@@ -108,22 +110,36 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 	*/
 
-	//// Create the texture shader object.
-	//m_TextureShader = new TextureShaderClass;
-	//if (!m_TextureShader)
-	//{
-	//	return false;
-	//}
+	// Create the texture shader object.
+	m_TextureShader = new TextureShaderClass;
+	if (!m_TextureShader)
+	{
+		return false;
+	}
 
-	//// Initialize the texture shader object.
-	//result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
-	//if (!result)
-	//{
-	//	MessageBoxW(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
-	//	return false;
-	//}
-	//
+	// Initialize the texture shader object.
+	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the color shader object.", L"Error", MB_OK);
+		return false;
+	}
+	
 
+	// Create the bitmap object.
+	m_Bitmap = new BitmapClass;
+	if (!m_Bitmap)
+	{
+		return false;
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, L"./3DModel/Texture/pic8026.tga", 256, 256);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -181,7 +197,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::ProgramEnd()
 {
-
+	// Release the bitmap object.
+	if (m_Bitmap)
+	{
+		m_Bitmap->Shutdown();
+		delete m_Bitmap;
+		m_Bitmap = 0;
+	}
 	// Release the light object.
 	if (m_Light)
 	{
@@ -275,7 +297,7 @@ bool GraphicsClass::Frame()
 bool GraphicsClass::Render(float rotation)
 {
 
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	bool result;
 
 	//// Clear the buffers to begin the scene.
@@ -296,6 +318,39 @@ bool GraphicsClass::Render(float rotation)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
+	//We now also get the ortho matrix from the D3DClass for 2D rendering.
+	//We will pass this in instead of the projection matrix.
+	m_Direct3D->GetOrthoMatrix(orthoMatrix);
+
+	//The Z buffer is turned off before we do any 2D rendering.
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_Direct3D->TurnZBufferOff();
+	
+	//We then render the bitmap to the 100, 100 location on the screen.
+	//You can change this to wherever you want it rendered.
+	// Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_Bitmap->Render(m_Direct3D->GetDeviceContext(), 0, 0);
+	if (!result)
+	{
+		return false;
+	}
+
+	//Once the vertex/index buffers are prepared we draw them using the texture shader. 
+	//Notice we send in the orthoMatrix instead of the projectionMatrix for rendering 2D. 
+	//Due note also that if your view matrix is changing you will need to create a default one for 2D rendering and use it instead of the regular view matrix. 
+	//In this tutorial using the regular view matrix is fine as the camera in this tutorial is stationary.
+
+	// Render the bitmap with the texture shader.
+	result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Bitmap->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_Direct3D->TurnZBufferOn();
+
+	
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	worldMatrix = XMMatrixRotationY(rotation);
 
