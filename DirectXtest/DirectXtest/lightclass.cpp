@@ -57,13 +57,6 @@ XMFLOAT4 LightClass::GetAmbientColor()
 }
 
 
-
-XMFLOAT4 LightClass::GetAmbientColor()
-{
-	return m_ambientColor;
-}
-
-
 XMFLOAT4 LightClass::GetDiffuseColor()
 {
 	return m_diffuseColor;

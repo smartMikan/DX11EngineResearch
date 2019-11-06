@@ -51,6 +51,9 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 	// Set the default output color to the ambient light value for all pixels.
 	color = ambientColor;
 
+     // Initialize the specular color.
+    specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
 	// Invert the light direction for calculations.
 	lightDir = -lightDirection;
 
@@ -78,7 +81,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 		//The amount of specular light is then calculated using the reflection vector and the viewing direction.The smaller the angle between the viewer and the light source the greater the specular light reflection will be.The result is taken to the power of the specularPower value.The lower the specularPower value the greater the final effect is.
 
 		// Determine the amount of specular light based on the reflection vector, viewing direction, and specular power.
-		specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
+        specular = specularColor * pow(saturate(dot(reflection, input.viewDirection)), specularPower);
 
 	}
 	//And finally the diffuse value of the light is combined with the texture pixel value to produce the color result.
