@@ -55,7 +55,7 @@ private:
 	int m_screenWidth, m_screenHeight;
 	XMMATRIX m_baseViewMatrix;
 
-	//We will use two sentences in this tutorial.
+	//We will use two sentences in this project.
 
 	SentenceType* m_sentence1;
 	SentenceType* m_sentence2;

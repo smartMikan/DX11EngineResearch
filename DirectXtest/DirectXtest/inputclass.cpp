@@ -1,4 +1,4 @@
-﻿////////////////////////////
+////////////////////////////
 // Filename: inputclass.cpp
 ////////////////////////////
 
@@ -182,7 +182,7 @@ bool InputClass::Frame()
 //The only two that we want to recover from are if the focus is lost or if it becomes un-acquired. 
 //If this is the case we call acquire each frame until we do get control back. 
 //The window may be minimized in which case Acquire will fail, but once the window comes to the foreground again then Acquire will succeed and we will be able to read the keyboard state. 
-//The other three error types I don't want to recover from in this tutorial.
+//The other three error types I don't want to recover from in this project.
 
 bool InputClass::ReadKeyboard()
 {
@@ -235,7 +235,7 @@ bool InputClass::ReadMouse()
 }
 
 //The ProcessInput function is where we deal with the changes that have happened in the input devices since the last frame. 
-//For this tutorial we will just do a simple mouse location update similar to how Windows keeps track of where the mouse cursor is. 
+//For this project we will just do a simple mouse location update similar to how Windows keeps track of where the mouse cursor is. 
 //To do so we use the m_mouseX and m_mouseY variables that were initialized to zero and simply add the changes in the mouse position to these two variables. 
 //This will maintain the position of the mouse based on the user moving the mouse around.
 

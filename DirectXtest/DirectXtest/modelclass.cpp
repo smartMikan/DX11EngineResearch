@@ -90,7 +90,7 @@ int ModelClass::GetIndexCount()
 {
 	return m_indexCount;
 }
-//The InitializeBuffers function is where we handle creating the vertex and index buffers.Usually you would read in a model and create the buffers from that data file.For this tutorial we will just set the points in the vertex and index buffer manually since it is only a single triangle.
+//The InitializeBuffers function is where we handle creating the vertex and index buffers.Usually you would read in a model and create the buffers from that data file.For this project we will just set the points in the vertex and index buffer manually since it is only a single triangle.
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
@@ -362,7 +362,7 @@ void ModelClass::ShutdownBuffers()
 
 	return;
 }
-//RenderBuffers is called from the Render function.The purpose of this function is to set the vertex buffer and index buffer as active on the input assembler in the GPU.Once the GPU has an active vertex buffer it can then use the shader to render that buffer.This function also defines how those buffers should be drawn such as triangles, lines, fans, and so forth.In this tutorial we set the vertex buffer and index buffer as active on the input assembler and tell the GPU that the buffers should be drawn as triangles using the IASetPrimitiveTopology DirectX function.
+//RenderBuffers is called from the Render function.The purpose of this function is to set the vertex buffer and index buffer as active on the input assembler in the GPU.Once the GPU has an active vertex buffer it can then use the shader to render that buffer.This function also defines how those buffers should be drawn such as triangles, lines, fans, and so forth.In this project we set the vertex buffer and index buffer as active on the input assembler and tell the GPU that the buffers should be drawn as triangles using the IASetPrimitiveTopology DirectX function.
 
 void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {

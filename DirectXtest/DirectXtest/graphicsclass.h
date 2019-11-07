@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 //The graphics class is the other object that is created by the system class.
 //All the graphics functionality in this application will be encapsulated in this class.
 //I will also use the header in this file for all the graphics related global settings that we may want to change such as full screen or windowed mode.
 //As you can see the D3DClass will be located inside the GraphicsClass.
-//The previous tutorial mentioned that all new graphics related classes 
+//The previous project mentioned that all new graphics related classes 
 //will be encapsulated in the GraphicsClassand that is why it is the best location 
 //for the new D3DClass.
 

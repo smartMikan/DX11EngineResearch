@@ -1,4 +1,4 @@
-﻿
+
 
 
 
@@ -410,7 +410,7 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	//Once the vertex/index buffers are prepared we draw them using the texture shader. 
 	//Notice we send in the orthoMatrix instead of the projectionMatrix for rendering 2D. 
 	//Due note also that if your view matrix is changing you will need to create a default one for 2D rendering and use it instead of the regular view matrix. 
-	//In this tutorial using the regular view matrix is fine as the camera in this tutorial is stationary.
+	//In this project using the regular view matrix is fine as the camera in this project is stationary.
 
 	// Render the bitmap with the texture shader.
 	result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Bitmap->GetTexture());

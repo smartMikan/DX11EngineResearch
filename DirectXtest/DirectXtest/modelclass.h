@@ -24,7 +24,7 @@ using namespace DirectX;
 class ModelClass
 {
 private:
-	//Here is the definition of our vertex type that will be used with the vertex buffer in this ModelClass.Also take note that this typedef must match the layout in the ColorShaderClass that will be looked at later in the tutorial.
+	//Here is the definition of our vertex type that will be used with the vertex buffer in this ModelClass.Also take note that this typedef must match the layout in the ColorShaderClass that will be looked at later in the project.
 
 	//struct VertexType
 	//{

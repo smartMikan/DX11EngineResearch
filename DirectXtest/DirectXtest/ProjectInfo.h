@@ -50,7 +50,7 @@
 //Dynamic Vertex Buffers
 //
 //Another new concept that will be introduced is dynamic vertex buffers.
-//So far we have used static vertex buffers in the previous tutorials.
+//So far we have used static vertex buffers in the previous projects.
 //The issue with static vertex buffers is that you can't change the data inside the buffer ever. 
 //Dynamic vertex buffers on the other hand allow us to manipulate the information inside the vertex buffer each frame if we need to. 
 //These buffers are much slower than static vertex buffers but that is the trade off for the extra functionality.

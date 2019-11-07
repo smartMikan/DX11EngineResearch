@@ -74,7 +74,8 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
 
 		// Saturate the ambient and diffuse color.
 		color = saturate(color);
-		//The reflection vector for specular lighting is calculated here in the pixel shader provided the light intensity is greater than zero.This is the same equation as listed at the beginning of the tutorial.
+		//The reflection vector for specular lighting is calculated here in the pixel shader provided the light intensity is greater than zero.
+        //This is the same equation as listed at the beginning of the project.
 
 		// Calculate the reflection vector based on the light intensity, normal vector, and light direction.
 		reflection = normalize(2 * lightIntensity * input.normal - lightDir);

@@ -58,7 +58,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 		return false;
 	}
 
-	//Create and initialize the two strings that will be used for this tutorial. 
+	//Create and initialize the two strings that will be used for this project. 
 	//One string says Hello in white at 100, 100 and the other says Goodbye in yellow at 100, 200. 
 	//The UpdateSentence function can be called to change the contents, location, and color of the strings at any time.
 

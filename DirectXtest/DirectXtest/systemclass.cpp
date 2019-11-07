@@ -15,6 +15,7 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	m_Sound = 0;
 }
 
 SystemClass::SystemClass(const SystemClass& other)
@@ -84,6 +85,25 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
+	//Here is where we create the SoundClass object and then initialize it for use. 
+	//Note that in this tutorial the initialization will also start the wave file playing.
+
+	// Create the sound object.
+	m_Sound = new SoundClass;
+	if (!m_Sound)
+	{
+		return false;
+	}
+
+	// Initialize the sound object.
+	result = m_Sound->Initialize(m_hwnd);
+	if (!result)
+	{
+		MessageBoxW(m_hwnd, L"Could not initialize Direct Sound.", L"Error", MB_OK);
+		return false;
+	}
+
+
 	return true;
 }
 
@@ -94,6 +114,14 @@ bool SystemClass::Initialize()
 
 void SystemClass::ProgramOver()
 {
+
+	// Release the sound object.
+	if (m_Sound)
+	{
+		m_Sound->Shutdown();
+		delete m_Sound;
+		m_Sound = 0;
+	}
 	// Release the graphics object.
 	if (m_Graphics)
 	{

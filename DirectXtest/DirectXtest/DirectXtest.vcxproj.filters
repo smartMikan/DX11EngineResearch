@@ -243,4 +243,9 @@
       <Filter>リソース ファイル\3DModel</Filter>
     </Object>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\01. 無伴奏チェロ組曲 第一番.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿////////////////////////////
+////////////////////////////
 // Filename: d3dclass.cpp
 ////////////////////////////
 #include "d3dclass.h"
@@ -35,8 +35,8 @@ D3DClass::~D3DClass()
 }
 
 //The Initialize function is what does the entire setup of Direct3D for DirectX 11. 
-//I have placed all the code necessary in here as well as some extra stuff that will facilitate future tutorials.
-//I could have simplified it and taken out some items but it is probably better to get all of this covered in a single tutorial dedicated to it.
+//I have placed all the code necessary in here as well as some extra stuff that will facilitate future projects.
+//I could have simplified it and taken out some items but it is probably better to get all of this covered in a single project dedicated to it.
 
 //The screenWidth and screenHeight variables that are given to this function are the width and height of the window we created in the SystemClass.Direct3D will use these to initialize and use the same window dimensions.
 //The hwnd variable is a handle to the window.
@@ -423,7 +423,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
-	//Now that the render targets are setup we can continue on to some extra functions that will give us more control over our scenes for future tutorials.
+	//Now that the render targets are setup we can continue on to some extra functions that will give us more control over our scenes for future projects.
 	//First thing is we'll create is a rasterizer state. 
 	//This will give us control over how polygons are rendered. 
 	//We can do things like make our scenes render in wireframe mode or have DirectX draw both the front and back faces of polygons. 
@@ -489,11 +489,11 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	/*This is where you would generally create a view matrix.
 	  The view matrix is used to calculate the position of where we are looking at the scene from.
 	  You can think of it as a camera and you only view the scene through this camera.
-	  Because of its purpose I am going to create it in a camera class in later tutorials since logically it fits better thereand just skip it for now.
+	  Because of its purpose I am going to create it in a camera class in later projects since logically it fits better thereand just skip it for now.
 
 	  And the final thing we will setup in the Initialize function is an orthographic projection matrix.
 	  This matrix is used for rendering 2D elements like user interfaces on the screen allowing us to skip the 3D rendering.
-	  You will see this used in later tutorials when we look at rendering 2D graphics and fonts to the screen.*/
+	  You will see this used in later projects when we look at rendering 2D graphics and fonts to the screen.*/
 
 	// Create an orthographic projection matrix for 2D rendering.
 	m_orthoMatrix = XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
@@ -711,7 +711,7 @@ ID3D11DeviceContext* D3DClass::GetDeviceContext()
 //to calling functions.
 //Most shaders will need these matrices for rendering 
 //so there needed to be an easy way for outside objects to get a copy of them.
-//We won't call these functions in this tutorial but I'm just explaining why they are in the code.
+//We won't call these functions in this project but I'm just explaining why they are in the code.
 
 void D3DClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 {
