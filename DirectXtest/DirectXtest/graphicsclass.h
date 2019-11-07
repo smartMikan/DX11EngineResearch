@@ -65,7 +65,7 @@ public:
 
 	bool Initialize(int, int, HWND hwnd);
 	void ProgramEnd();
-	bool Frame(int mouseX, int mouseY);
+	bool Frame(int mouseX, int mouseY, int fps, int cpu, float frameTime);
 
 private:
 	bool Render(float rotation, int mouseX, int mouseY);
@@ -84,8 +84,6 @@ private:
 
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
-
-	int framesincestart;
 
 	BitmapClass* m_Bitmap;
 

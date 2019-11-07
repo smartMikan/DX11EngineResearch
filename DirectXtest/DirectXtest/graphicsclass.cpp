@@ -203,11 +203,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light->SetSpecularPower(32.0f);
 
 
-
-
-	framesincestart = 0;
-
-
 	return true;
 }
 
@@ -290,7 +285,7 @@ void GraphicsClass::ProgramEnd()
 
 //The Frame function has been updated so that it now calls the Render function each frame.
 
-bool GraphicsClass::Frame(int mouseX, int mouseY)
+bool GraphicsClass::Frame(int mouseX, int mouseY, int fps, int cpu, float frameTime)
 {
 	bool result;
 
@@ -303,6 +298,21 @@ bool GraphicsClass::Frame(int mouseX, int mouseY)
 		rotation -= 360.0f;
 	}
 	
+	// Set the frames per second.
+	result = m_Text->SetFps(fps, m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Set the cpu usage.
+	result = m_Text->SetCpu(cpu, m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
+
 	// Set the location of the mouse.
 	result = m_Text->SetMousePosition(mouseX, mouseY, m_Direct3D->GetDeviceContext());
 	if (!result)
@@ -335,14 +345,8 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix,rotatedWorldMatrix;
 	bool result;
 
-	//// Clear the buffers to begin the scene.
-	//m_Direct3D->BeginScene(1.0f, 1.0f, 0.0f, 1.0f);
-
-
 	// Clear the buffers to begin the scene.
-	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
-	//m_Camera->SetPosition(sinf((float)framesincestart/180.0f), 0, cosf((float)framesincestart/180.0f));
+	m_Direct3D->BeginScene(1.0f, 1.0f, 0.0f, 1.0f);
 
 
 	// Generate the view matrix based on the camera's position.
@@ -447,11 +451,6 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 }
 
 bool GraphicsClass::Update() {
-
-	/*if (framesincestart == NULL)
-		return false;*/
-
-	framesincestart += 1;
 
 	return true;
 }
