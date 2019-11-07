@@ -177,7 +177,8 @@ bool TextureClass::LoadTarga(const WCHAR * filename, int& height, int& width)
 
 	// Initialize the index into the targa image data.
 	//kの位置:ロードしたtargafile画像元データ一番左下 
-	k = (width * height * 4) - (width * 4);
+	//k = (width * height * 4) - (width * 4);
+	k = 0;
 
 	// Now copy the targa image data into the targa destination array in the correct order since the targa format is stored upside down; 
 	for (j = 0; j < height; j++)
@@ -197,7 +198,7 @@ bool TextureClass::LoadTarga(const WCHAR * filename, int& height, int& width)
 
 		//set the targa image data index back to the preceding row at the beginning of the colum since its reading it in upside down.
 		//kの位置を 行尾 から 上の一行の行頭に移動
-		k -= (width * 8);
+		//k -= (width * 8);
 
 	}
 	//release the targa image data now that it was copied into the destination array.

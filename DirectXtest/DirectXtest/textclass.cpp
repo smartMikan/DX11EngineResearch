@@ -1,4 +1,4 @@
-#include "textclass.h"
+﻿#include "textclass.h"
 
 TextClass::TextClass()
 {
@@ -90,6 +90,27 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 		return false;
 	}
 
+	result = InitializeSentence(&m_sentence3, 16, device);
+	if (!result)
+	{
+		return false;
+	}
+	result = UpdateSentence(m_sentence3, "", 50, 500, 1.0f, 1.0f, 1.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = InitializeSentence(&m_sentence4, 16, device);
+	if (!result)
+	{
+		return false;
+	}
+	result = UpdateSentence(m_sentence4, "", 50, 550, 1.0f, 1.0f, 1.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -101,6 +122,10 @@ void TextClass::Shutdown()
 
 	// Release the second sentence.
 	ReleaseSentence(&m_sentence2);
+
+	ReleaseSentence(&m_sentence3);
+
+	ReleaseSentence(&m_sentence4);
 
 	// Release the font shader object.
 	if (m_FontShader)
@@ -136,6 +161,58 @@ bool TextClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix,
 
 	// Draw the second sentence.
 	result = RenderSentence(deviceContext, m_sentence2, worldMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = RenderSentence(deviceContext, m_sentence3, worldMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = RenderSentence(deviceContext, m_sentence4, worldMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+//We now have a new function in the TextClass which converts the mouse X and Y position into two strings and then updates the two sentences so that the position of the mouse can be rendered to the screen.
+
+bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[16];
+	char mouseString[16];
+	bool result;
+
+
+	// Convert the mouseX integer to string format.
+	_itoa_s(mouseX, tempString, 10);
+
+	// Setup the mouseX string.
+	strcpy_s(mouseString, "Mouse X: ");
+	strcat_s(mouseString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = UpdateSentence(m_sentence3, mouseString, 50, 500, 1.0f, 1.0f, 1.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Convert the mouseY integer to string format.
+	_itoa_s(mouseY, tempString, 10);
+
+	// Setup the mouseY string.
+	strcpy_s(mouseString, "Mouse Y: ");
+	strcat_s(mouseString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = UpdateSentence(m_sentence4, mouseString, 50, 550, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result)
 	{
 		return false;

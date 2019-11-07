@@ -41,6 +41,8 @@ public:
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX orthoMatrix);
 
+	bool SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* deviceContext);
+
 private:
 	bool InitializeSentence(SentenceType** sentence, int maxLength, ID3D11Device* device);
 	bool UpdateSentence(SentenceType* sentence, const char * text, int positionX, int positionY, float red, float green, float blue, ID3D11DeviceContext* deviceContext);
@@ -57,6 +59,8 @@ private:
 
 	SentenceType* m_sentence1;
 	SentenceType* m_sentence2;
+	SentenceType* m_sentence3;
+	SentenceType* m_sentence4;
 };
 
 #endif

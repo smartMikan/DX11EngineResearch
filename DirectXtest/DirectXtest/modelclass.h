@@ -81,6 +81,7 @@ private:
 	TextureClass* m_Texture;
 
 	ModelType* m_model;
+
 };
 
 #endif

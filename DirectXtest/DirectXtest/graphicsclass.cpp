@@ -158,7 +158,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the bitmap object.
-	result = m_Bitmap->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, L"./3DModel/Texture/pic8026.tga", 256, 256);
+	result = m_Bitmap->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, L"./Resources/sword.tga", 48, 48);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
@@ -290,7 +290,7 @@ void GraphicsClass::ProgramEnd()
 
 //The Frame function has been updated so that it now calls the Render function each frame.
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(int mouseX, int mouseY)
 {
 	bool result;
 
@@ -303,6 +303,12 @@ bool GraphicsClass::Frame()
 		rotation -= 360.0f;
 	}
 	
+	// Set the location of the mouse.
+	result = m_Text->SetMousePosition(mouseX, mouseY, m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
 
 	result = Update();
 	if (!result)
@@ -311,7 +317,7 @@ bool GraphicsClass::Frame()
 	}
 
 	// Render the graphics scene.
-	result = Render(rotation);
+	result = Render(rotation, mouseX, mouseY);
 	if (!result)
 	{
 		return false;
@@ -323,10 +329,10 @@ bool GraphicsClass::Frame()
 //We call the m_Direct3D object to clear the screen to a grey color. 
 //After that we call EndScene so that the grey color is presented to the window.
 
-bool GraphicsClass::Render(float rotation)
+bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 {
 
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix,rotatedWorldMatrix;
 	bool result;
 
 	//// Clear the buffers to begin the scene.
@@ -351,14 +357,51 @@ bool GraphicsClass::Render(float rotation)
 	//We will pass this in instead of the projection matrix.
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
+
+	
+	// Rotate the world matrix by the rotation value so that the triangle will spin.
+	//worldMatrix = XMMatrixRotationY(rotation);
+	rotatedWorldMatrix = worldMatrix;
+	rotatedWorldMatrix = XMMatrixRotationY(rotation);
+	
+
+
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_Model->Render(m_Direct3D->GetDeviceContext());
+
+	//// Render the model using the color shader.
+	//result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+
+
+	// Render the model using the texture shader.
+	//result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
+
+
+
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
+								   m_Model->GetIndexCount(), 
+								   m_Model->GetTexture(),
+								   m_LightShader->GenarateMatrixBuffer(rotatedWorldMatrix, viewMatrix, projectionMatrix),
+								   m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
+								   m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor())
+								   );
+									
+	if (!result)
+	{
+		return false;
+	}
+
+
+
 	//The Z buffer is turned off before we do any 2D rendering.
 	// Turn off the Z buffer to begin all 2D rendering.
 	m_Direct3D->TurnZBufferOff();
-	
+
 	//We then render the bitmap to the 100, 100 location on the screen.
 	//You can change this to wherever you want it rendered.
 	// Put the bitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_Bitmap->Render(m_Direct3D->GetDeviceContext(), 0, 0);
+	result = m_Bitmap->Render(m_Direct3D->GetDeviceContext(), mouseX, mouseY);
 	if (!result)
 	{
 		return false;
@@ -375,6 +418,8 @@ bool GraphicsClass::Render(float rotation)
 	{
 		return false;
 	}
+
+
 
 	//Here we turn on alpha blending so the text will blend with the background.
 	// Turn on the alpha blending before rendering the text.
@@ -394,37 +439,6 @@ bool GraphicsClass::Render(float rotation)
 
 	// Turn the Z buffer back on now that all 2D rendering has completed.
 	m_Direct3D->TurnZBufferOn();
-
-	
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	worldMatrix = XMMatrixRotationY(rotation);
-
-
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_Direct3D->GetDeviceContext());
-
-	//// Render the model using the color shader.
-	//result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-
-
-	// Render the model using the texture shader.
-	//result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture());
-
-
-
-	// Render the model using the light shader.
-	result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
-								   m_Model->GetIndexCount(), 
-								   m_Model->GetTexture(),
-								   m_LightShader->GenarateMatrixBuffer(worldMatrix, viewMatrix, projectionMatrix),
-								   m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
-								   m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor())
-								   );
-									
-	if (!result)
-	{
-		return false;
-	}
 
 
 	// Present the rendered scene to the screen.

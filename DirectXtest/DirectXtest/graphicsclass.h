@@ -63,12 +63,12 @@ public:
 	GraphicsClass(const GraphicsClass&);
 	~GraphicsClass();
 
-	bool Initialize(int, int, HWND);
+	bool Initialize(int, int, HWND hwnd);
 	void ProgramEnd();
-	bool Frame();
+	bool Frame(int mouseX, int mouseY);
 
 private:
-	bool Render(float);
+	bool Render(float rotation, int mouseX, int mouseY);
 	bool Update();
 private:
 	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
