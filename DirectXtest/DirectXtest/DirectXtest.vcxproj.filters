@@ -22,6 +22,15 @@
     <Filter Include="リソース ファイル\Shader">
       <UniqueIdentifier>{a6eae81d-3101-4588-947f-38f4a3519708}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\Font">
+      <UniqueIdentifier>{93f7a989-c846-42b9-adc9-71b2907e8051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Loader">
+      <UniqueIdentifier>{5c3b664a-6354-4f8e-8650-c5ff5142436b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Loader">
+      <UniqueIdentifier>{ee82bd85-ab40-4eff-b368-148736e97ecc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,6 +70,21 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="bitmapclass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="fontclass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ddstextureClass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Loader\DDSTextureLoader.cpp">
+      <Filter>ソース ファイル\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="fontshaderclass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="textclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,6 +131,21 @@
     <ClInclude Include="bitmapclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="fontclass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ddstextureClass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader\DDSTextureLoader.h">
+      <Filter>ヘッダー ファイル\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="fontshaderclass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="textclass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.dgsl">
@@ -129,17 +168,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmap1.bmp">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="icon1.ico">
-      <Filter>リソース ファイル</Filter>
-    </Image>
     <Image Include="3DModel\Texture\hoge.tga">
       <Filter>リソース ファイル\3DModel\Texture</Filter>
     </Image>
     <Image Include="3DModel\Texture\pic8026.tga">
       <Filter>リソース ファイル\3DModel\Texture</Filter>
+    </Image>
+    <Image Include="Font\font.dds">
+      <Filter>リソース ファイル\Font</Filter>
+    </Image>
+    <Image Include="Resources\icon1.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Resources\bitmap1.bmp">
+      <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +195,9 @@
     </Text>
     <Text Include="3DModel\mayacube.txt">
       <Filter>リソース ファイル\3DModel</Filter>
+    </Text>
+    <Text Include="Font\Format.txt">
+      <Filter>リソース ファイル\Font</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +220,12 @@
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\TextureVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FontPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FontVertexShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
   </ItemGroup>

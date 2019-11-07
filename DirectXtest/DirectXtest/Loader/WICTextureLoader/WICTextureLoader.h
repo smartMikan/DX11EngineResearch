@@ -1,10 +1,17 @@
 //--------------------------------------------------------------------------------------
-// File: DDSTextureLoader.h
+// File: WICTextureLoader.h
 //
-// Functions for loading a DDS texture and creating a Direct3D runtime resource for it
+// Function for loading a WIC image and creating a Direct3D runtime texture for it
+// (auto-generating mipmaps if possible)
 //
-// Note these functions are useful as a light-weight runtime loader for DDS files. For
-// a full-featured DDS file reader, writer, and texture processing pipeline see
+// Note: Assumes application has already called CoInitializeEx
+//
+// Warning: CreateWICTexture* functions are not thread-safe if given a d3dContext instance for
+//          auto-gen mipmap support.
+//
+// Note these functions are useful for images created as simple 2D textures. For
+// more complex resources, DDSTextureLoader is an excellent light-weight runtime loader.
+// For a full-featured DDS file reader, writer, and texture processing pipeline see
 // the 'Texconv' sample and the 'DirectXTex' library.
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
@@ -22,69 +29,62 @@
 
 namespace DirectX
 {
-    enum DDS_ALPHA_MODE
+    enum WIC_LOADER_FLAGS
     {
-        DDS_ALPHA_MODE_UNKNOWN       = 0,
-        DDS_ALPHA_MODE_STRAIGHT      = 1,
-        DDS_ALPHA_MODE_PREMULTIPLIED = 2,
-        DDS_ALPHA_MODE_OPAQUE        = 3,
-        DDS_ALPHA_MODE_CUSTOM        = 4,
+        WIC_LOADER_DEFAULT      = 0,
+        WIC_LOADER_FORCE_SRGB   = 0x1,
+        WIC_LOADER_IGNORE_SRGB  = 0x2,
     };
 
     // Standard version
-    HRESULT CreateDDSTextureFromMemory(
+    HRESULT CreateWICTextureFromMemory(
         _In_ ID3D11Device* d3dDevice,
-        _In_reads_bytes_(ddsDataSize) const uint8_t* ddsData,
-        _In_ size_t ddsDataSize,
+        _In_reads_bytes_(wicDataSize) const uint8_t* wicData,
+        _In_ size_t wicDataSize,
         _Outptr_opt_ ID3D11Resource** texture,
         _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _In_ size_t maxsize = 0,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _In_ size_t maxsize = 0);
 
-    HRESULT CreateDDSTextureFromFile(
+    HRESULT CreateWICTextureFromFile(
         _In_ ID3D11Device* d3dDevice,
         _In_z_ const wchar_t* szFileName,
         _Outptr_opt_ ID3D11Resource** texture,
         _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _In_ size_t maxsize = 0,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _In_ size_t maxsize = 0);
 
     // Standard version with optional auto-gen mipmap support
-    HRESULT CreateDDSTextureFromMemory(
+    HRESULT CreateWICTextureFromMemory(
         _In_ ID3D11Device* d3dDevice,
         _In_opt_ ID3D11DeviceContext* d3dContext,
-        _In_reads_bytes_(ddsDataSize) const uint8_t* ddsData,
-        _In_ size_t ddsDataSize,
+        _In_reads_bytes_(wicDataSize) const uint8_t* wicData,
+        _In_ size_t wicDataSize,
         _Outptr_opt_ ID3D11Resource** texture,
         _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _In_ size_t maxsize = 0,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _In_ size_t maxsize = 0);
 
-    HRESULT CreateDDSTextureFromFile(
+    HRESULT CreateWICTextureFromFile(
         _In_ ID3D11Device* d3dDevice,
         _In_opt_ ID3D11DeviceContext* d3dContext,
         _In_z_ const wchar_t* szFileName,
         _Outptr_opt_ ID3D11Resource** texture,
         _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _In_ size_t maxsize = 0,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _In_ size_t maxsize = 0);
 
     // Extended version
-    HRESULT CreateDDSTextureFromMemoryEx(
+    HRESULT CreateWICTextureFromMemoryEx(
         _In_ ID3D11Device* d3dDevice,
-        _In_reads_bytes_(ddsDataSize) const uint8_t* ddsData,
-        _In_ size_t ddsDataSize,
+        _In_reads_bytes_(wicDataSize) const uint8_t* wicData,
+        _In_ size_t wicDataSize,
         _In_ size_t maxsize,
         _In_ D3D11_USAGE usage,
         _In_ unsigned int bindFlags,
         _In_ unsigned int cpuAccessFlags,
         _In_ unsigned int miscFlags,
-        _In_ bool forceSRGB,
+        _In_ unsigned int loadFlags,
         _Outptr_opt_ ID3D11Resource** texture,
-        _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _Outptr_opt_ ID3D11ShaderResourceView** textureView);
 
-    HRESULT CreateDDSTextureFromFileEx(
+    HRESULT CreateWICTextureFromFileEx(
         _In_ ID3D11Device* d3dDevice,
         _In_z_ const wchar_t* szFileName,
         _In_ size_t maxsize,
@@ -92,28 +92,26 @@ namespace DirectX
         _In_ unsigned int bindFlags,
         _In_ unsigned int cpuAccessFlags,
         _In_ unsigned int miscFlags,
-        _In_ bool forceSRGB,
+        _In_ unsigned int loadFlags,
         _Outptr_opt_ ID3D11Resource** texture,
-        _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _Outptr_opt_ ID3D11ShaderResourceView** textureView);
 
     // Extended version with optional auto-gen mipmap support
-    HRESULT CreateDDSTextureFromMemoryEx(
+    HRESULT CreateWICTextureFromMemoryEx(
         _In_ ID3D11Device* d3dDevice,
         _In_opt_ ID3D11DeviceContext* d3dContext,
-        _In_reads_bytes_(ddsDataSize) const uint8_t* ddsData,
-        _In_ size_t ddsDataSize,
+        _In_reads_bytes_(wicDataSize) const uint8_t* wicData,
+        _In_ size_t wicDataSize,
         _In_ size_t maxsize,
         _In_ D3D11_USAGE usage,
         _In_ unsigned int bindFlags,
         _In_ unsigned int cpuAccessFlags,
         _In_ unsigned int miscFlags,
-        _In_ bool forceSRGB,
+        _In_ unsigned int loadFlags,
         _Outptr_opt_ ID3D11Resource** texture,
-        _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _Outptr_opt_ ID3D11ShaderResourceView** textureView);
 
-    HRESULT CreateDDSTextureFromFileEx(
+    HRESULT CreateWICTextureFromFileEx(
         _In_ ID3D11Device* d3dDevice,
         _In_opt_ ID3D11DeviceContext* d3dContext,
         _In_z_ const wchar_t* szFileName,
@@ -122,8 +120,8 @@ namespace DirectX
         _In_ unsigned int bindFlags,
         _In_ unsigned int cpuAccessFlags,
         _In_ unsigned int miscFlags,
-        _In_ bool forceSRGB,
+        _In_ unsigned int loadFlags,
         _Outptr_opt_ ID3D11Resource** texture,
-        _Outptr_opt_ ID3D11ShaderResourceView** textureView,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+        _Outptr_opt_ ID3D11ShaderResourceView** textureView);
 }
+

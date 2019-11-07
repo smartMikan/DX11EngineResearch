@@ -25,6 +25,8 @@ GraphicsClass::GraphicsClass()
 	m_Light = 0;
 
 	m_Bitmap = 0;
+
+	m_Text = 0;
 }
 
 
@@ -47,7 +49,7 @@ GraphicsClass::~GraphicsClass()
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
-
+	XMMATRIX baseViewMatrix;
 
 	// Create the Direct3D object.
 	m_Direct3D = new D3DClass;
@@ -72,6 +74,28 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	//We create a new view matrix from the camera object for the TextClass to use.
+	//It will always use this view matrix so that the text is always drawn in the same location on the screen.
+	
+	// Initialize a base view matrix with the camera for 2D user interface rendering.
+	m_Camera->SetPosition(0.0f, 0.0f, -1.0f);
+	m_Camera->Render();
+	m_Camera->GetViewMatrix(baseViewMatrix);
+
+	//Here we createand initialize the new TextClass object.
+	// Create the text object.
+	m_Text = new TextClass;
+	if (!m_Text)
+	{
+		return false;
+	}
+	// Initialize the text object.
+  	result = m_Text->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the text object.", L"Error", MB_OK);
+		return false;
+	}
 	// Set the initial position of the camera.
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 
@@ -197,20 +221,12 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::ProgramEnd()
 {
-	// Release the bitmap object.
-	if (m_Bitmap)
-	{
-		m_Bitmap->Shutdown();
-		delete m_Bitmap;
-		m_Bitmap = 0;
-	}
 	// Release the light object.
 	if (m_Light)
 	{
 		delete m_Light;
 		m_Light = 0;
 	}
-
 	// Release the light shader object.
 	if (m_LightShader)
 	{
@@ -218,7 +234,13 @@ void GraphicsClass::ProgramEnd()
 		delete m_LightShader;
 		m_LightShader = 0;
 	}
-
+	// Release the bitmap object.
+	if (m_Bitmap)
+	{
+		m_Bitmap->Shutdown();
+		delete m_Bitmap;
+		m_Bitmap = 0;
+	}
 	// Release the texture shader object.
 	if (m_TextureShader)
 	{
@@ -232,6 +254,13 @@ void GraphicsClass::ProgramEnd()
 		m_ColorShader->Shutdown();
 		delete m_ColorShader;
 		m_ColorShader = 0;
+	}
+	// Release the text object.
+	if (m_Text)
+	{
+		m_Text->Shutdown();
+		delete m_Text;
+		m_Text = 0;
 	}
 
 	// Release the model object.
@@ -346,6 +375,22 @@ bool GraphicsClass::Render(float rotation)
 	{
 		return false;
 	}
+
+	//Here we turn on alpha blending so the text will blend with the background.
+	// Turn on the alpha blending before rendering the text.
+	m_Direct3D->TurnOnAlphaBlending();
+
+	//We call the text object to render all its sentences to the screen here. 
+	//And just like with 2D images we disable the Z buffer before drawing and then enable it again after all the 2D has been drawn.
+	// Render the text strings.
+	result = m_Text->Render(m_Direct3D->GetDeviceContext(), worldMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+	// Turn off alpha blending after rendering the text.
+	m_Direct3D->TurnOffAlphaBlending();
+
 
 	// Turn the Z buffer back on now that all 2D rendering has completed.
 	m_Direct3D->TurnZBufferOn();

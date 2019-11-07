@@ -19,6 +19,9 @@ D3DClass::D3DClass()
 	m_rasterState = 0;
 
 	m_depthDisabledStencilState = 0;
+
+	m_alphaEnableBlendingState = 0;
+	m_alphaDisableBlendingState = 0;
 }
 
 
@@ -67,6 +70,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
 
+	D3D11_BLEND_DESC blendStateDescription;
 	// Store the vsync setting.
 	m_vsync_enabled = vsync;
 
@@ -520,6 +524,41 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	// Clear the blend state description.
+	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+
+	//To create an alpha enabled blend state description change BlendEnable to TRUE and DestBlend to D3D11_BLEND_INV_SRC_ALPHA.
+	//The other settings are set to their default values which can be looked up in the Windows DirectX Graphics Documentation.
+	// Create an alpha enabled blend state description.
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	//We then create an alpha enabled blending state using the description we just setup.
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	//Now to create an alpha disabled state we change the description we just made to set BlendEnable to FALSE.
+	//The rest of the settings can be left as they are.
+	// Modify the description to create an alpha disabled blend state description.
+	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+	//We then create an alpha disabled blending state using the modified blend state description. 
+	//We now have two blending states we can switch between to turn on and off alpha blending.
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState);
+	if (FAILED(result))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -538,10 +577,16 @@ void D3DClass::Shutdown()
 		m_swapChain->SetFullscreenState(false, NULL);
 	}
 
-	if (m_depthDisabledStencilState)
+	if (m_alphaEnableBlendingState)
 	{
-		m_depthDisabledStencilState->Release();
-		m_depthDisabledStencilState = 0;
+		m_alphaEnableBlendingState->Release();
+		m_alphaEnableBlendingState = 0;
+	}
+
+	if (m_alphaDisableBlendingState)
+	{
+		m_alphaDisableBlendingState->Release();
+		m_alphaDisableBlendingState = 0;
 	}
 
 	if (m_rasterState)
@@ -554,6 +599,12 @@ void D3DClass::Shutdown()
 	{
 		m_depthStencilView->Release();
 		m_depthStencilView = 0;
+	}
+
+	if (m_depthDisabledStencilState)
+	{
+		m_depthDisabledStencilState->Release();
+		m_depthDisabledStencilState = 0;
 	}
 
 	if (m_depthStencilState)
@@ -702,6 +753,42 @@ void D3DClass::TurnZBufferOn()
 void D3DClass::TurnZBufferOff()
 {
 	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
+	return;
+}
+
+//The first new function TurnOnAlphaBlending allows us to turn on alpha blending by using the OMSetBlendState function with our m_alphaEnableBlendingState blending state.
+void D3DClass::TurnOnAlphaBlending()
+{
+	float blendFactor[4];
+
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn on the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
+
+	return;
+}
+
+//The second new function TurnOffAlphaBlending allows us to turn off alpha blending by using the OMSetBlendState function with our m_alphaDisableBlendingState blending state.
+void D3DClass::TurnOffAlphaBlending()
+{
+	float blendFactor[4];
+
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn off the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
+
 	return;
 }
 

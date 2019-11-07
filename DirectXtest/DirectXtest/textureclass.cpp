@@ -176,7 +176,7 @@ bool TextureClass::LoadTarga(const WCHAR * filename, int& height, int& width)
 	index = 0;
 
 	// Initialize the index into the targa image data.
-	//k‚ÌˆÊ’u:ƒ[ƒh‚µ‚½targafile‰æ‘œŒ³ƒf[ƒ^ˆê”Ô¶‰º 
+	//kã®ä½ç½®:ãƒ­ãƒ¼ãƒ‰ã—ãŸtargafileç”»åƒå…ƒãƒ‡ãƒ¼ã‚¿ä¸€ç•ªå·¦ä¸‹ 
 	k = (width * height * 4) - (width * 4);
 
 	// Now copy the targa image data into the targa destination array in the correct order since the targa format is stored upside down; 
@@ -190,13 +190,13 @@ bool TextureClass::LoadTarga(const WCHAR * filename, int& height, int& width)
 			m_targaData[index + 3] = targaImage[k + 3];  // Alpha
 			
 			//Increment the indexed into the targa data
-			//¶‚©‚ç‰E‚Éƒ[ƒh
+			//å·¦ã‹ã‚‰å³ã«ãƒ­ãƒ¼ãƒ‰
 			k += 4;
 			index += 4;
 		}
 
 		//set the targa image data index back to the preceding row at the beginning of the colum since its reading it in upside down.
-		//k‚ÌˆÊ’u‚ğ s”ö ‚©‚ç ã‚Ìˆês‚Ìs“ª‚ÉˆÚ“®
+		//kã®ä½ç½®ã‚’ è¡Œå°¾ ã‹ã‚‰ ä¸Šã®ä¸€è¡Œã®è¡Œé ­ã«ç§»å‹•
 		k -= (width * 8);
 
 	}

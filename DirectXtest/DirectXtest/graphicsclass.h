@@ -41,6 +41,7 @@
 
 #include "bitmapclass.h"
 
+#include "textclass.h"
 /////////////
 // GLOBALS //
 /////////////
@@ -87,6 +88,8 @@ private:
 	int framesincestart;
 
 	BitmapClass* m_Bitmap;
+
+	TextClass* m_Text;
 };
 
 #endif
