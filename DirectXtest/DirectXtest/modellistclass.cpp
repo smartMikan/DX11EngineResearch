@@ -1,9 +1,9 @@
 #include "modellistclass.h"
 
-
-
+//The class constructor initializes the model information list to null.
 ModelListClass::ModelListClass()
 {
+	m_ModelInfoList = 0;
 }
 
 ModelListClass::ModelListClass(const ModelListClass & other)
@@ -15,12 +15,14 @@ ModelListClass::~ModelListClass()
 {
 }
 
+
 bool ModelListClass::Initialize(int numModels)
 {
 	int i;
 	float red, green, blue;
 
-	//store models number
+	//First store the number of models that will be used and then create the list array of them using the ModelInfoType structure.
+	// Store the number of models.
 	m_modelCount = numModels;
 
 	//Create a list of arrat of the model info
@@ -29,8 +31,11 @@ bool ModelListClass::Initialize(int numModels)
 		return false;
 	}
 
+	//Seed the random number generator with the current timeand then randomly generate the position of color of the modelsand store them in the list array.
+	// Seed the random generator with the current time.
 	srand((unsigned int)time(NULL));
 
+	// Go through all the models and randomly generate the model color and position.
 	for (i = 0; i < m_modelCount; i++)
 	{
 		// Generate a random color for the model.
@@ -49,23 +54,26 @@ bool ModelListClass::Initialize(int numModels)
 	return true;
 }
 
+//The Shutdown function releases the model information list array.
 void ModelListClass::Shutdown()
 {
 	//Release the model information list.
-		if (m_ModelInfoList)
-		{
-			delete[] m_ModelInfoList;
-			m_ModelInfoList = 0;
-		}
+	if (m_ModelInfoList)
+	{
+		delete[] m_ModelInfoList;
+		m_ModelInfoList = 0;
+	}
 
 	return;
 }
 
+//GetModelCount returns the number of models that this class maintains information about.
 int ModelListClass::GetModelCount()
 {
 	return m_modelCount;
 }
 
+//The GetData function extracts the position and color of a sphere at the given input index location.
 void ModelListClass::GetData(int index, float& positionX, float& positionY, float& positionZ, XMFLOAT4& color)
 {
 	positionX = m_ModelInfoList[index].positionX;

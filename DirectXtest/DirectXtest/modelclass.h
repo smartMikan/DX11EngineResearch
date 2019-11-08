@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: modelclass.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,6 +13,8 @@
 #include <directxmath.h>
 #include "textureclass.h"
 #include <fstream>
+
+
 using namespace std;
 using namespace DirectX;
 
@@ -79,6 +81,7 @@ private:
 	int m_vertexCount, m_indexCount;
 
 	TextureClass* m_Texture;
+
 
 	ModelType* m_model;
 
