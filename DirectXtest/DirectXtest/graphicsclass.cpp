@@ -27,6 +27,9 @@ GraphicsClass::GraphicsClass()
 	m_Bitmap = 0;
 
 	m_Text = 0;
+
+	m_ModelList = 0;
+	m_Frustum = 0;
 }
 
 
@@ -202,6 +205,21 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
+	m_ModelList = new ModelListClass;
+	if (!m_ModelList) {
+		return false;
+	}
+
+	result = m_ModelList->Initialize(25);
+	if (!result) {
+		MessageBoxW(hwnd, L"Could not initialize the model list object", L"Error", MB_OK);
+		return false;
+	}
+
+	m_Frustum = new FrustumClass;
+	if (!m_Frustum) {
+		return false;
+	}
 
 	return true;
 }
@@ -216,6 +234,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::ProgramEnd()
 {
+
+	if (m_Frustum) {
+		delete m_Frustum;
+		m_Frustum = 0;
+	}
+
+	if (m_ModelList) {
+		m_ModelList->Shutdown();
+		delete m_ModelList;
+		m_ModelList = 0;
+	}
+
 	// Release the light object.
 	if (m_Light)
 	{
@@ -285,7 +315,7 @@ void GraphicsClass::ProgramEnd()
 
 //The Frame function has been updated so that it now calls the Render function each frame.
 
-bool GraphicsClass::Frame(int mouseX, int mouseY, int fps, int cpu, float frameTime)
+bool GraphicsClass::Frame(int fps, int cpu, float frameTime, int mouseY = 0, int mouseX = 0, float rotationY = 0)
 {
 	bool result;
 
@@ -320,6 +350,10 @@ bool GraphicsClass::Frame(int mouseX, int mouseY, int fps, int cpu, float frameT
 		return false;
 	}
 
+	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetRotation(0.0f, rotationY, 0.0f);
+
+
 	result = Update();
 	if (!result)
 	{
@@ -343,10 +377,14 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 {
 
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix,rotatedWorldMatrix;
-	bool result;
+	
+	int modelCount, renderCount, index;
+	float positionX, positionY, positionZ, radius;
+	XMFLOAT4 color;
+	bool renderModel, result;
 
 	// Clear the buffers to begin the scene.
-	m_Direct3D->BeginScene(1.0f, 1.0f, 0.0f, 1.0f);
+	m_Direct3D->BeginScene(0.0f, 0.0f, 1.0f, 1.0f);
 
 
 	// Generate the view matrix based on the camera's position.
@@ -362,16 +400,53 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
 
+	//Construct the frustum
+	m_Frustum->ConstructFrustum(SCREEN_DEPTH, projectionMatrix, viewMatrix);
+
+	//Get the number of the models that have been rendered
+	modelCount = m_ModelList->GetModelCount();
+
+	renderCount = 0;
+
+	for (index = 0; index < modelCount; index++)
+	{
+		m_ModelList->GetData(index, positionX, positionY, positionZ, color);
+	
+		radius = 1.0f;
+
+		renderModel = m_Frustum->CheckSphere(positionX, positionY, positionZ,radius);
+
+		if (renderModel) {
+			worldMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
+		}
+
+		m_Model->Render(m_Direct3D->GetDeviceContext());
+
+
+		m_LightShader->Render(m_Direct3D->GetDeviceContext(),
+			m_Model->GetIndexCount(),
+			m_Model->GetTexture(),
+			m_LightShader->GenarateMatrixBuffer(worldMatrix, viewMatrix, projectionMatrix),
+			m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
+			m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
+		);
+
+		m_Direct3D->GetWorldMatrix(worldMatrix);
+
+		renderCount++;
+
+	}
+
 	
 	// Rotate the world matrix by the rotation value so that the triangle will spin.
 	//worldMatrix = XMMatrixRotationY(rotation);
-	rotatedWorldMatrix = worldMatrix;
+	/*rotatedWorldMatrix = worldMatrix;
 	rotatedWorldMatrix = XMMatrixRotationY(rotation);
-	
+	*/
 
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_Direct3D->GetDeviceContext());
+	//m_Model->Render(m_Direct3D->GetDeviceContext());
 
 	//// Render the model using the color shader.
 	//result = m_ColorShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
@@ -383,19 +458,26 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 
 
 	// Render the model using the light shader.
-	result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
+	/*result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
 								   m_Model->GetIndexCount(), 
 								   m_Model->GetTexture(),
 								   m_LightShader->GenarateMatrixBuffer(rotatedWorldMatrix, viewMatrix, projectionMatrix),
 								   m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
 								   m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor())
-								   );
+								   );*/
 									
-	if (!result)
+	/*if (!result)
 	{
 		return false;
 	}
+*/
 
+	result = m_Text->SetRenderCount(renderCount, m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+	return false;
+	}
+	
 
 
 	//The Z buffer is turned off before we do any 2D rendering.

@@ -48,6 +48,7 @@ private:
 	bool LoadTarga(const WCHAR * filename, int&, int&);
 
 private:
+
 	//This class has three member variables.The first one holds the raw targa data read straight in from the file.The second variable called m_texture will hold the structured texture data that DirectX will use for rendering.And the third variable is the resource view that the shader uses to access the texture data when drawing.
 
 	unsigned char* m_targaData;

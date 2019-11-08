@@ -421,6 +421,8 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);*/
 
+	//deviceContext->UpdateSubresource(m_matrixBuffer, 0, nullptr, &wvpMatrixBuffer, sizeof(XMMATRIX),0);
+
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))

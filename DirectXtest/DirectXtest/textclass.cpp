@@ -7,6 +7,10 @@ TextClass::TextClass()
 
 	m_sentence1 = 0;
 	m_sentence2 = 0;
+	m_sentence3 = 0;
+	m_sentence4 = 0;
+	m_sentence5 = 0;
+	m_sentence6 = 0;
 }
 
 TextClass::TextClass(const TextClass&)
@@ -70,7 +74,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	}
 
 	// Now update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence1, "Hello", 100, 300, 1.0f, 1.0f, 1.0f, deviceContext);
+	result = UpdateSentence(m_sentence1, "", 100, 300, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result)
 	{
 		return false;
@@ -254,6 +258,32 @@ bool TextClass::SetMousePosition(int mouseX, int mouseY, ID3D11DeviceContext* de
 		return false;
 	}
 
+	return true;
+}
+
+bool TextClass::SetRenderCount(int count, ID3D11DeviceContext * deviceContext)
+{
+
+	char tempString[16];
+	char countString[16];
+	bool result;
+
+
+	// Convert the mouseX integer to string format.
+	_itoa_s(count, tempString, 10);
+
+	// Setup the mouseX string.
+	strcpy_s(countString, "Count: ");
+	strcat_s(countString, tempString);
+
+	// Update the sentence vertex buffer with the new string information.
+	result = UpdateSentence(m_sentence1, countString, 100, 300, 1.0f, 1.0f, 1.0f, deviceContext);
+	if (!result)
+	{
+		return false;
+	}
+
+	
 	return true;
 }
 

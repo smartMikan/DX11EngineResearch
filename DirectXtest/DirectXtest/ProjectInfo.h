@@ -7,22 +7,22 @@
 							   |
 						  SystemClass
 							   |
-				  _____________|____________________________________________________________________________________________________________
-				 |					 |							|							|						|						|
-				 |					 |							|							|						|						|
-			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass
+				  _____________|____________________________________________________________________________________________________________________________________
+				 |					 |							|							|						|						|						|
+				 |					 |							|							|						|						|						|
+			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass				PositionClass
 									 |
-		  ___________________________|__________________________________________________________________________________________________________________________________
-		 |				|		        |                 |						    |                   |				   |				   |					    |
-	  D3DClass      ModelClass       CameraClass      ColorShaderClass	   TextureShaderClass    LightShaderClass     LightClass			BitmapClass   		     TextClass
-						|																													   |						|
-						|																													   |				 _______|_______
-					TextureClass																											TextureClass		|				|
-																																								|				|	
-																																							FontClass		FontShaderClass
-																																								|
-																																								|
-																																						   TextureClass
+		  ___________________________|__________________________________________________________________________________________________________________________________________________________________________________
+		  |				|		        |                 |						    |                   |				   |				   |					    |						|						|
+		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass     LightClass			  BitmapClass   		     TextClass
+										|																																					    |					    |
+										|																																					    |				 _______|_______
+									TextureClass																																		   TextureClass			|				|
+																																																				|				|	
+																																																			FontClass		FontShaderClass
+																																																				|
+																																																				|
+																																																		   TextureClass
 */
 
 

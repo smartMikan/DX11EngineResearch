@@ -42,6 +42,12 @@
 #include "bitmapclass.h"
 
 #include "textclass.h"
+
+#include "modellistclass.h"
+#include "frustumclass.h"
+
+
+
 /////////////
 // GLOBALS //
 /////////////
@@ -56,6 +62,10 @@ const float SCREEN_NEAR = 0.1f;
 /////////////////////////////
 // Class name: GraphicsClass
 /////////////////////////////
+
+
+using namespace DirectX;
+
 class GraphicsClass
 {
 public:
@@ -65,7 +75,7 @@ public:
 
 	bool Initialize(int, int, HWND hwnd);
 	void ProgramEnd();
-	bool Frame(int mouseX, int mouseY, int fps, int cpu, float frameTime);
+	bool Frame(int fps, int cpu, float frameTime, int mouseY, int mouseX, float rotationY);
 
 private:
 	bool Render(float rotation, int mouseX, int mouseY);
@@ -88,6 +98,10 @@ private:
 	BitmapClass* m_Bitmap;
 
 	TextClass* m_Text;
+
+	ModelListClass* m_ModelList;
+	FrustumClass* m_Frustum;
+
 };
 
 #endif

@@ -269,6 +269,26 @@ bool InputClass::IsEscapePressed()
 	return false;
 }
 
+bool InputClass::IsLeftArrowPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	if (m_keyboardState[DIK_LEFTARROW] & 0x80)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool InputClass::IsRightArrowPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	if (m_keyboardState[DIK_RIGHTARROW] & 0x80)
+	{
+		return true;
+	}
+	return false;
+}
+
 //GetMouseLocation is a helper function I wrote which returns the location of the mouse. 
 //GraphicsClass can get this info and then use TextClass to render the mouse X and Y position to the screen.
 void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
