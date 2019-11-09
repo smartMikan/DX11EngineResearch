@@ -110,7 +110,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/Cube.txt", L"./3DModel/Texture/pic8026.tga");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/sphere.txt", L"./3DModel/Texture/pic8026.tga");
 	//result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "hoge.tga");
 
 	if (!result)

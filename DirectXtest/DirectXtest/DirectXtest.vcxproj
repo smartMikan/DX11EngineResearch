@@ -224,6 +224,7 @@
   <ItemGroup>
     <Image Include="3DModel\Texture\hoge.tga" />
     <Image Include="3DModel\Texture\pic8026.tga" />
+    <Image Include="3DModel\Texture\seafloor.dds" />
     <Image Include="Resources\bitmap1.bmp" />
     <Image Include="Font\font.dds" />
     <Image Include="Resources\icon1.ico" />
@@ -236,6 +237,7 @@
   <ItemGroup>
     <Text Include="3DModel\Cube.txt" />
     <Text Include="3DModel\mayacube.txt" />
+    <Text Include="3DModel\sphere.txt" />
     <Text Include="Font\Format.txt" />
   </ItemGroup>
   <ItemGroup>

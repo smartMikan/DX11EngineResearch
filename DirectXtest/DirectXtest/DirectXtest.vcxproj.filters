@@ -231,6 +231,9 @@
     <Image Include="Resources\sword.dds">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="3DModel\Texture\seafloor.dds">
+      <Filter>リソース ファイル\3DModel\Texture</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXtest.rc">
@@ -246,6 +249,9 @@
     </Text>
     <Text Include="Font\Format.txt">
       <Filter>リソース ファイル\Font</Filter>
+    </Text>
+    <Text Include="3DModel\sphere.txt">
+      <Filter>リソース ファイル\3DModel</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
