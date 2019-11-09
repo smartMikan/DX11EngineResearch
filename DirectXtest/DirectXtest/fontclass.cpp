@@ -6,7 +6,7 @@
 FontClass::FontClass()
 {
 	m_Font = 0;
-	m_Texture = 0;
+	m_DDSTexture = 0;
 }
 FontClass::FontClass(const FontClass& other)
 {
@@ -124,14 +124,14 @@ bool FontClass::LoadTexture(ID3D11Device* device, const WCHAR* filename)
 
 
 	// Create the texture object.
-	m_Texture = new DDSTextureClass;
-	if (!m_Texture)
+	m_DDSTexture = new DDSTextureClass;
+	if (!m_DDSTexture)
 	{
 		return false;
 	}
 
 	// Initialize the texture object.
-	result = m_Texture->Initialize(device, filename);
+	result = m_DDSTexture->Initialize(device, filename);
 	if (!result)
 	{
 		return false;
@@ -143,11 +143,11 @@ bool FontClass::LoadTexture(ID3D11Device* device, const WCHAR* filename)
 void FontClass::ReleaseTexture()
 {
 	// Release the texture object.
-	if (m_Texture)
+	if (m_DDSTexture)
 	{
-		m_Texture->Shutdown();
-		delete m_Texture;
-		m_Texture = 0;
+		m_DDSTexture->Shutdown();
+		delete m_DDSTexture;
+		m_DDSTexture = 0;
 	}
 
 	return;
@@ -157,7 +157,7 @@ void FontClass::ReleaseTexture()
 
 ID3D11ShaderResourceView* FontClass::GetTexture()
 {
-	return m_Texture->GetTexture();
+	return m_DDSTexture->GetTexture();
 }
 
 //BuildVertexArray will be called by the TextClass to build vertex buffers out of the text sentences it sends to this function as input.

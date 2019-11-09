@@ -228,6 +228,9 @@
     <Image Include="Resources\sword.tga">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="Resources\sword.dds">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXtest.rc">

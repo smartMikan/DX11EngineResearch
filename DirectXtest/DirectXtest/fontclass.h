@@ -67,7 +67,7 @@ private:
 
 private:
 	FontType* m_Font;
-	DDSTextureClass* m_Texture;
+	DDSTextureClass* m_DDSTexture;
 };
 
 #endif

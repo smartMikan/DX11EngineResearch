@@ -16,6 +16,7 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "textureclass.h"
+#include "ddstextureClass.h"
 
 using namespace std;
 using namespace DirectX;
@@ -61,6 +62,7 @@ private:
 	ID3D11Buffer* m_vertexBuffer, * m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 	TextureClass* m_Texture;
+	DDSTextureClass* m_DDSTexture;
 	
 	//The BitmapClass will need to maintain some extra information that a 3D model wouldn't 
 	//such as the screen size, the bitmap size, and the last place it was rendered. 

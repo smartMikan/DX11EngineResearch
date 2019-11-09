@@ -227,6 +227,7 @@
     <Image Include="Resources\bitmap1.bmp" />
     <Image Include="Font\font.dds" />
     <Image Include="Resources\icon1.ico" />
+    <Image Include="Resources\sword.dds" />
     <Image Include="Resources\sword.tga" />
   </ItemGroup>
   <ItemGroup>

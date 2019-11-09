@@ -161,7 +161,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the bitmap object.
-	result = m_Bitmap->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, L"./Resources/sword.tga", 48, 48);
+	result = m_Bitmap->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, L"./Resources/sword.dds", 48, 48);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
@@ -205,16 +205,24 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
+
+	//Here we create the new ModelListClass object and have it create 25 randomly placed/colored sphere models.
+	// Create the model list object.
 	m_ModelList = new ModelListClass;
 	if (!m_ModelList) {
 		return false;
 	}
 
+	// Initialize the model list object.
 	result = m_ModelList->Initialize(25);
 	if (!result) {
 		MessageBoxW(hwnd, L"Could not initialize the model list object", L"Error", MB_OK);
 		return false;
 	}
+
+	//Here we create the new FrustumClass object. 
+	//It doesn't need any initialization since that is done every frame using the ConstructFrustum function.
+	// Create the frustum object.
 
 	m_Frustum = new FrustumClass;
 	if (!m_Frustum) {
@@ -234,12 +242,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::ProgramEnd()
 {
-
+	// Release the frustum object.
 	if (m_Frustum) {
 		delete m_Frustum;
 		m_Frustum = 0;
 	}
 
+	// Release the model list object.
 	if (m_ModelList) {
 		m_ModelList->Shutdown();
 		delete m_ModelList;
@@ -400,41 +409,60 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
 
+	//The major change to the Render function is that we now construct the viewing frustum each frame based on the updated viewing matrix. 
+	//This construction has to occur each time the view matrix changes or the frustum culling checks we do will not be correct.
+
 	//Construct the frustum
 	m_Frustum->ConstructFrustum(SCREEN_DEPTH, projectionMatrix, viewMatrix);
 
 	//Get the number of the models that have been rendered
 	modelCount = m_ModelList->GetModelCount();
 
+	// Initialize the count of models that have been rendered.
 	renderCount = 0;
+
+	//Now loop through all the models in the ModelListClass object.
+	// Go through all the models and render them only if they can be seen by the camera view.
 
 	for (index = 0; index < modelCount; index++)
 	{
+		// Get the position and color of the sphere model at this index.
 		m_ModelList->GetData(index, positionX, positionY, positionZ, color);
-	
+		
+		// Set the radius of the sphere to 1.0 since this is already known.
 		radius = 1.0f;
 
+
+		//Here is where we use the new FrustumClass object. 
+		//We check if the sphere is viewable in the viewing frustum. 
+		//If it can be seen we render it, if it cannot be seen we skip it and check the next one. 
+		//This is where we will gain all the speed by using frustum culling.
+		// Check if the sphere model is in the view frustum.
 		renderModel = m_Frustum->CheckSphere(positionX, positionY, positionZ,radius);
 
+		// If it can be seen then render it, if not skip this model and check the next sphere.
 		if (renderModel) {
+			// Move the model to the location it should be rendered at.
 			worldMatrix = XMMatrixTranslation(positionX, positionY, positionZ);
+
+			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+			m_Model->Render(m_Direct3D->GetDeviceContext());
+
+			// Render the model using the light shader.
+			m_LightShader->Render(m_Direct3D->GetDeviceContext(),
+				m_Model->GetIndexCount(),
+				m_Model->GetTexture(),
+				m_LightShader->GenarateMatrixBuffer(worldMatrix, viewMatrix, projectionMatrix),
+				m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
+				m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), color/*m_Light->GetDiffuseColor()*/, m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
+			);
+
+			// Reset to the original world matrix.
+			m_Direct3D->GetWorldMatrix(worldMatrix);
+
+			// Since this model was rendered then increase the count for this frame.
+			renderCount++;
 		}
-
-		m_Model->Render(m_Direct3D->GetDeviceContext());
-
-
-		m_LightShader->Render(m_Direct3D->GetDeviceContext(),
-			m_Model->GetIndexCount(),
-			m_Model->GetTexture(),
-			m_LightShader->GenarateMatrixBuffer(worldMatrix, viewMatrix, projectionMatrix),
-			m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
-			m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
-		);
-
-		m_Direct3D->GetWorldMatrix(worldMatrix);
-
-		renderCount++;
-
 	}
 
 	

@@ -296,6 +296,7 @@ bool SystemClass::Frame()
 	m_Fps->Frame();
 	m_Cpu->Frame();
 
+	//During each frame the PositionClass object is update with the frame time.
 	// Set the frame time for calculating the updated position.
 	m_Position->SetFrameTime(m_Timer->GetTime());
 
@@ -313,11 +314,14 @@ bool SystemClass::Frame()
 	// Get the location of the mouse from the input object,
 	m_Input->GetMouseLocation(mouseX, mouseY);
 
+	// Check if the left or right arrow key has been pressed, if so rotate the camera accordingly.
 	keyDown = m_Input->IsLeftArrowPressed();
 	m_Position->TurnLeft(keyDown);
 
 	keyDown = m_Input->IsRightArrowPressed();
 	m_Position->TurnRight(keyDown);
+
+	// The new rotation of the camera is retrieved and sent to the Graphics::Frame function to update the camera position.
 	// Get the current view point rotation.
 	m_Position->GetRotation(rotationY);
 

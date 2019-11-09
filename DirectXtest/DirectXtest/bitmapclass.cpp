@@ -5,6 +5,7 @@ BitmapClass::BitmapClass()
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
 	m_Texture = 0;
+	m_DDSTexture = 0;
 }
 
 BitmapClass::BitmapClass(const BitmapClass&)
@@ -104,7 +105,8 @@ int BitmapClass::GetIndexCount()
 //The shader will call this function so it has access to the image when drawing the buffers.
 ID3D11ShaderResourceView* BitmapClass::GetTexture()
 {
-	return m_Texture->GetTexture();
+	return m_DDSTexture->GetTexture();
+	//return m_Texture->GetTexture();
 }
 
 //InitializeBuffers is the function that is used to build the vertex and index buffer that will be used to draw the 2D image.
@@ -343,15 +345,29 @@ bool BitmapClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	bool result;
 
 
+	//// Create the texture object.
+	//m_Texture = new TextureClass;
+	//if (!m_Texture)
+	//{
+	//	return false;
+	//}
+
+	//// Initialize the texture object.
+	//result = m_Texture->Initialize(device,deviceContext, filename);
+	//if (!result)
+	//{
+	//	return false;
+	//}
+	
 	// Create the texture object.
-	m_Texture = new TextureClass;
-	if (!m_Texture)
+	m_DDSTexture = new DDSTextureClass;
+	if (!m_DDSTexture)
 	{
 		return false;
 	}
 
 	// Initialize the texture object.
-	result = m_Texture->Initialize(device,deviceContext, filename);
+	result = m_DDSTexture->Initialize(device, filename);
 	if (!result)
 	{
 		return false;
@@ -363,6 +379,15 @@ bool BitmapClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceC
 //This ReleaseTexture function releases the texture that was loaded.
 void BitmapClass::ReleaseTexture()
 {
+	//Release the ddstexture object.
+	if (m_DDSTexture)
+	{
+		m_DDSTexture->Shutdown();
+		delete m_DDSTexture;
+		m_DDSTexture = 0;
+	}
+
+
 	// Release the texture object.
 	if (m_Texture)
 	{
