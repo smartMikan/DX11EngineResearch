@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 //参考:http://rastertek.com/dx11s2tut02.html
 //説明(Description):
 /*骨組み(Framework):
@@ -12,17 +12,17 @@
 				 |					 |							|							|						|						|						|
 			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass				PositionClass
 									 |
-		  ___________________________|__________________________________________________________________________________________________________________________________________________________________________________
-		  |				|		        |                 |						    |                   |				   |				   |					    |						|						|
-		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass     LightClass			  BitmapClass   		     TextClass
-										|																																					    |					    |
-										|																																					    |				 _______|_______
-									TextureClass																																		   TextureClass			|				|
-																																																				|				|	
-																																																			FontClass		FontShaderClass
-																																																				|
-																																																				|
-																																																		   TextureClass
+		  ___________________________|________________________________________________________________________________________________________________________________________________________________________________________________________________
+		  |				|		        |                 |						    |                   |				   |				   |					    |						    |						|						  |
+		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiShaderClass             LightClass			      BitmapClass   		  TextClass
+										|																																					                                |					      |
+										|																																					                                |				   _______|_______
+									TextureArrayClass																																		                            TextureClass		  |				  |
+																																																				                              |				  |	
+																																																			                              FontClass		  FontShaderClass
+																																																				                              |
+																																																				                              |
+																																																		                                  TextureClass
 */
 
 
@@ -63,3 +63,9 @@
 //Secondly never destroy and recreate a static vertex buffer each frame, this can completely lock the video card 
 //(which I have seen on ATI but not on Nvidia) and is far worse in overall performance 
 //when compared to using dynamic vertex buffers.
+
+//Blend:
+//blendColor = basePixel * colorPixel * gammaCorrection;
+
+//bumpNormal
+//bumpNormal = (bumpMap.x * input.tangent) + (bumpMap.y * input.binormal) + (bumpMap.z * input.normal);

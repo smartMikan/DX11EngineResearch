@@ -36,6 +36,8 @@
 #include "colorshaderclass.h"
 #include "textureshaderclass.h"
 
+#include "multitextureshaderclass.h"
+
 #include "lightshaderclass.h"
 #include "lightclass.h"
 
@@ -91,6 +93,7 @@ private:
 	ColorShaderClass* m_ColorShader;
 
 	TextureShaderClass* m_TextureShader;
+	MultiTextureShaderClass* m_MultiTextureShader;
 
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;

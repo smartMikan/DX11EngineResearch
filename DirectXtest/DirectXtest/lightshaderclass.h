@@ -68,7 +68,7 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, ID3D11ShaderResourceView*, MatrixBufferType, CameraBufferType, LightBufferType);
+	bool Render(ID3D11DeviceContext*, int, ID3D11ShaderResourceView ** textureArray, MatrixBufferType, CameraBufferType, LightBufferType);
 
 	MatrixBufferType GenarateMatrixBuffer(XMMATRIX world, XMMATRIX view, XMMATRIX projection);
 	CameraBufferType GenerateCameraBuffer(XMFLOAT3 cameraPosition, float padding);
@@ -79,7 +79,7 @@ private:
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const WCHAR*);
 
-	bool SetShaderParameters(ID3D11DeviceContext*, MatrixBufferType, ID3D11ShaderResourceView*, CameraBufferType, LightBufferType);
+	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, MatrixBufferType wvpMatrixBuffer, ID3D11ShaderResourceView** textureArray, CameraBufferType cameraBuffer, LightBufferType lightBuffer);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:

@@ -20,6 +20,7 @@ GraphicsClass::GraphicsClass()
 
 	m_ColorShader = 0;
 	m_TextureShader = 0;
+	m_MultiTextureShader = 0;
 
 	m_LightShader = 0;
 	m_Light = 0;
@@ -110,8 +111,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/sphere.txt", L"./3DModel/Texture/pic8026.tga");
-	//result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(), "hoge.tga");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/Cube.txt", L"./3DModel/Texture/stone02.dds", L"./3DModel/Texture/bump02.dds", L"./3DModel/Texture/spec02.dds");
 
 	if (!result)
 	{
@@ -152,6 +152,20 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 	
+	// Create the multitexture shader object.
+	m_MultiTextureShader = new MultiTextureShaderClass;
+	if (!m_MultiTextureShader)
+	{
+		return false;
+	}
+
+	// Initialize the multitexture shader object.
+	result = m_MultiTextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the multitexture shader object.", L"Error", MB_OK);
+		return false;
+	}
 
 	// Create the bitmap object.
 	m_Bitmap = new BitmapClass;
@@ -201,7 +215,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	
 	//m_Light->SetDirection(1.0f, 0.0f, 0.0f);
 	
-	m_Light->SetDirection(1.0f, 0.0f, 1.0f);
+	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
@@ -214,7 +228,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model list object.
-	result = m_ModelList->Initialize(25);
+	result = m_ModelList->Initialize(5);
 	if (!result) {
 		MessageBoxW(hwnd, L"Could not initialize the model list object", L"Error", MB_OK);
 		return false;
@@ -282,6 +296,15 @@ void GraphicsClass::ProgramEnd()
 		delete m_TextureShader;
 		m_TextureShader = 0;
 	}
+
+	// Release the multitexture shader object.
+	if (m_MultiTextureShader)
+	{
+		m_MultiTextureShader->Shutdown();
+		delete m_MultiTextureShader;
+		m_MultiTextureShader = 0;
+	}
+
 	// Release the color shader object.
 	if (m_ColorShader)
 	{
@@ -359,7 +382,7 @@ bool GraphicsClass::Frame(int fps, int cpu, float frameTime, int mouseY = 0, int
 		return false;
 	}
 
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
 	m_Camera->SetRotation(0.0f, rotationY, 0.0f);
 
 
@@ -408,7 +431,10 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	//We will pass this in instead of the projection matrix.
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
-
+	// Rotate the world matrix by the rotation value so that the triangle will spin.
+	//worldMatrix = XMMatrixRotationY(rotation);
+	rotatedWorldMatrix = worldMatrix;
+	rotatedWorldMatrix = XMMatrixRotationY(rotation);
 	//The major change to the Render function is that we now construct the viewing frustum each frame based on the updated viewing matrix. 
 	//This construction has to occur each time the view matrix changes or the frustum culling checks we do will not be correct.
 
@@ -448,13 +474,18 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 			m_Model->Render(m_Direct3D->GetDeviceContext());
 
+
+			//// Render the model using the multitexture shader.
+			//m_MultiTextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+			//m_Model->GetTextureArray());
+
 			// Render the model using the light shader.
 			m_LightShader->Render(m_Direct3D->GetDeviceContext(),
 				m_Model->GetIndexCount(),
-				m_Model->GetTexture(),
-				m_LightShader->GenarateMatrixBuffer(worldMatrix, viewMatrix, projectionMatrix),
+				m_Model->GetTextureArray(),
+				m_LightShader->GenarateMatrixBuffer(rotatedWorldMatrix, viewMatrix, projectionMatrix),
 				m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
-				m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), color/*m_Light->GetDiffuseColor()*/, m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
+				m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), /*color*/m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
 			);
 
 			// Reset to the original world matrix.
@@ -466,11 +497,8 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	}
 
 	
-	// Rotate the world matrix by the rotation value so that the triangle will spin.
-	//worldMatrix = XMMatrixRotationY(rotation);
-	/*rotatedWorldMatrix = worldMatrix;
-	rotatedWorldMatrix = XMMatrixRotationY(rotation);
-	*/
+
+	
 
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
