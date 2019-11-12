@@ -64,6 +64,11 @@ public:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
 
+	//There is now a new function called GetDepthStencilView for getting access to the depth stencil view and a new function called SetBackBufferRenderTarget for setting the back buffer render target in this class to be the active one.
+	ID3D11DepthStencilView* GetDepthStencilView();
+	void SetBackBufferRenderTarget();
+
+
 
 private:
 	bool m_vsync_enabled;

@@ -792,4 +792,20 @@ void D3DClass::TurnOffAlphaBlending()
 	return;
 }
 
+//I will just cover the functions that have changed in this class since the previous tutorial.
+ID3D11DepthStencilView * D3DClass::GetDepthStencilView()
+{
+	return m_depthStencilView;
+}
+
+//The SetBackBufferRenderTarget function will set the back buffer in this class as the current render target.
+//This will usually be called after the render to texture has completed and we want to render the scene to the back buffer again.
+void D3DClass::SetBackBufferRenderTarget()
+{
+	// Bind the render target view and depth stencil buffer to the output render pipeline.
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
+	return;
+}
+
 

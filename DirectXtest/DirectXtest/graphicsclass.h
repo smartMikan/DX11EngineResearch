@@ -41,6 +41,8 @@
 #include "lightshaderclass.h"
 #include "lightclass.h"
 
+#include "fogshaderclass.h"
+
 #include "bitmapclass.h"
 
 #include "textclass.h"
@@ -49,6 +51,8 @@
 #include "frustumclass.h"
 
 
+#include "rendertextureclass.h"
+#include "debugwindowclass.h"
 
 /////////////
 // GLOBALS //
@@ -82,6 +86,10 @@ public:
 private:
 	bool Render(float rotation, int mouseX, int mouseY);
 	bool Update();
+
+	bool RenderToTexture(float rotation);
+	bool RenderScene(float rotation);
+
 private:
 	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
 	//In case you were wondering I use the prefix 「m_」on all class variables.
@@ -93,7 +101,10 @@ private:
 	ColorShaderClass* m_ColorShader;
 
 	TextureShaderClass* m_TextureShader;
+	
 	MultiTextureShaderClass* m_MultiTextureShader;
+
+	FogShaderClass* m_FogShader;
 
 	LightShaderClass* m_LightShader;
 	LightClass* m_Light;
@@ -104,6 +115,11 @@ private:
 
 	ModelListClass* m_ModelList;
 	FrustumClass* m_Frustum;
+
+	RenderTextureClass* m_RenderTexture;
+	DebugWindowClass* m_DebugWindow;
+
+	XMMATRIX baseViewMatrix;
 
 };
 

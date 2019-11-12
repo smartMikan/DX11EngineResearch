@@ -12,17 +12,17 @@
 				 |					 |							|							|						|						|						|
 			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass				PositionClass
 									 |
-		  ___________________________|________________________________________________________________________________________________________________________________________________________________________________________________________________
-		  |				|		        |                 |						    |                   |				   |				   |					    |						    |						|						  |
-		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiShaderClass             LightClass			      BitmapClass   		  TextClass
-										|																																					                                |					      |
-										|																																					                                |				   _______|_______
-									TextureArrayClass																																		                            TextureClass		  |				  |
-																																																				                              |				  |	
-																																																			                              FontClass		  FontShaderClass
-																																																				                              |
-																																																				                              |
-																																																		                                  TextureClass
+		  ___________________________|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+		  |				|		        |                 |						    |                   |				   |				   |					    |						|        				|						|						  |									  |										|
+		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiShaderClass			FogShaderClass			LightClass			      BitmapClass   		  TextClass								RenderTextureClass					DebugWindowClass
+										|																																																		 |					      |
+										|																																																	     |				   _______|_______
+									TextureArrayClass																																													    TextureClass		  |				  |
+																																																											                      |				  |	
+																																																											                  FontClass		  FontShaderClass
+																																																										                         |
+																																																										                         |
+																																																										                     TextureClass
 */
 
 
@@ -67,5 +67,20 @@
 //Blend:
 //blendColor = basePixel * colorPixel * gammaCorrection;
 
-//bumpNormal
+//BumpNormal
 //bumpNormal = (bumpMap.x * input.tangent) + (bumpMap.y * input.binormal) + (bumpMap.z * input.normal);
+
+//Fog:
+//Linear fog adds a linear amount of fog based on the distance you are viewing the object from:
+
+//Linear Fog = (FogEnd - ViewpointDistance) / (FogEnd - FogStart)
+//Exponential fog adds exponentially more fog the further away an object is inside the fog :
+//
+//Exponential Fog = 1.0 / 2.71828 power(ViewpointDistance * FogDensity)
+//Exponential 2 fog adds even more exponential fog than the previous equation giving a very thick fog appearance :
+//
+//Exponential Fog 2 = 1.0 / 2.71828 power((ViewpointDistance * FogDensity) * (ViewpointDistance * FogDensity))
+//All three equations produce a fog factor.To apply that fog factor to the model's texture and produce a final pixel color value we use the following equation:
+//
+//Fog Color = FogFactor * TextureColor + (1.0 - FogFactor) * FogColor
+//For this tutorial we will generate the fog factor in the vertex shader and then calculate the final fog color in the pixel shader.

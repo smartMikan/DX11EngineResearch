@@ -102,7 +102,7 @@ bool FrustumClass::CheckPoint(float x, float y, float z) {
 	vectror.m128_f32[2] = z;
 
 
-	for (int i = 0; i < 6; i++)
+	for (i = 0; i < 6; i++)
 	{
 		// Check if the point is inside all six planes of the view frustum.
 		if (XMPlaneDotCoord(m_planes[i], vectror).m128_f32[0] < 0.0f) {
