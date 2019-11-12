@@ -17,6 +17,7 @@ GraphicsClass::GraphicsClass()
 	m_Direct3D = 0;
 	m_Camera = 0;
 	m_Model = 0;
+	m_Plane = 0;
 
 	m_ColorShader = 0;
 	m_TextureShader = 0;
@@ -37,12 +38,17 @@ GraphicsClass::GraphicsClass()
 	m_RenderTexture = 0;
 	m_DebugWindow = 0;
 
+	m_ClipPlaneShader = 0;
+
+	m_TranslateShader = 0;
+
 	baseViewMatrix = XMMatrixIdentity();
 }
 
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
 {
+	
 }
 
 
@@ -118,7 +124,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/Cube.txt", L"./3DModel/Texture/seafloor.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L"./3DModel/Cube.txt", L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 
 	if (!result)
 	{
@@ -159,6 +165,39 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 	
+
+	//// Create the plane.
+	//m_Plane = new ModelClass;
+	//if (!m_Plane)
+	//{
+	//	return false;
+	//}
+
+	//// Initialize the planw object.
+	//result = m_Plane->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./3DModel/Cube.txt", L"./3DModel/Texture/seafloor.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+
+	//if (!result)
+	//{
+	//	MessageBoxW(hwnd, L"Could not initialize the plane object.", L"Error", MB_OK);
+	//	return false;
+	//}
+
+	//// Create the clip plane shader object.
+	//m_ClipPlaneShader = new ClipPlaneShaderClass;
+	//if (!m_ClipPlaneShader)
+	//{
+	//	return false;
+	//}
+
+	//// Initialize the clip plane shader object.
+	//result = m_ClipPlaneShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	//if (!result)
+	//{
+	//	MessageBoxW(hwnd, L"Could not initialize the clip plane shader object.", L"Error", MB_OK);
+	//	return false;
+	//}
+
+
 	// Create the multitexture shader object.
 	m_MultiTextureShader = new MultiTextureShaderClass;
 	if (!m_MultiTextureShader)
@@ -190,7 +229,20 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// Create the texture translation shader object.
+	m_TranslateShader = new TranslateShaderClass;
+	if (!m_TranslateShader)
+	{
+		return false;
+	}
 
+	// Initialize the texture translation shader object.
+	result = m_TranslateShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the texture translation shader object.", L"Error", MB_OK);
+		return false;
+	}
 
 
 	// Create the bitmap object.
@@ -273,37 +325,38 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//We create and initialize the new render to texture object here. 
 	//Notice for the size of the texture I send in the screen width and height as I want to render the entire screen evenly to a texture of the same size.
 	// Create the render to texture object.
-	m_RenderTexture = new RenderTextureClass;
-	if (!m_RenderTexture)
-	{
-		return false;
-	}
+	//m_RenderTexture = new RenderTextureClass;
+	//if (!m_RenderTexture)
+	//{
+	//	return false;
+	//}
 
-	// Initialize the render to texture object.
-	result = m_RenderTexture->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight);
-	if (!result)
-	{
-		return false;
-	}
+	//// Initialize the render to texture object.
+	//result = m_RenderTexture->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight);
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	//Here we create and initialize a new debug window object. Notice I have made the window size 100x100. 
 	//There will obviously be some distortion since we will be mapping a full screen image down to a 100x100 texture. 
 	//To fix the aspect ratio (if it is important for your purposes) then just make sure the debug window is sized smaller but with the same aspect ratio.
 
-	// Create the debug window object.
-	m_DebugWindow = new DebugWindowClass;
-	if (!m_DebugWindow)
-	{
-		return false;
-	}
+	//// Create the debug window object.
+	//m_DebugWindow = new DebugWindowClass;
+	//if (!m_DebugWindow)
+	//{
+	//	return false;
+	//}
 
-	// Initialize the debug window object.
-	result = m_DebugWindow->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight, 100, 100);
-	if (!result)
-	{
-		MessageBoxW(hwnd, L"Could not initialize the debug window object.", L"Error", MB_OK);
-		return false;
-	}
+	//// Initialize the debug window object.
+	//result = m_DebugWindow->Initialize(m_Direct3D->GetDevice(), screenWidth, screenHeight, 100, 75);
+	//if (!result)
+	//{
+	//	MessageBoxW(hwnd, L"Could not initialize the debug window object.", L"Error", MB_OK);
+	//	return false;
+	//}
+
 	return true;
 }
 
@@ -367,6 +420,14 @@ void GraphicsClass::ProgramEnd()
 		m_Bitmap = 0;
 	}
 
+	// Release the texture translation shader object.
+	if (m_TranslateShader)
+	{
+		m_TranslateShader->Shutdown();
+		delete m_TranslateShader;
+		m_TranslateShader = 0;
+	}
+
 	// Release the fog shader object.
 	if (m_FogShader)
 	{
@@ -389,6 +450,23 @@ void GraphicsClass::ProgramEnd()
 		m_MultiTextureShader->Shutdown();
 		delete m_MultiTextureShader;
 		m_MultiTextureShader = 0;
+	}
+
+
+	// Release the clip plane shader object.
+	if (m_ClipPlaneShader)
+	{
+		m_ClipPlaneShader->Shutdown();
+		delete m_ClipPlaneShader;
+		m_ClipPlaneShader = 0;
+	}
+
+	// Release the plane object.
+	if (m_Plane)
+	{
+		m_Plane->Shutdown();
+		delete m_Plane;
+		m_Plane = 0;
 	}
 
 	// Release the color shader object.
@@ -499,23 +577,23 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 
 	//The first pass of our render is to a texture now.
 	// Render the entire scene to the texture first.
-	result = RenderToTexture(rotation);
+	/*result = RenderToTexture(rotation);
 	if (!result)
 	{
 		return false;
-	}
+	}*/
 
 	//The second pass of our render is to the back buffer as normal.
 	// Clear the buffers to begin the scene.
-	//m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	float fogColor;
-	// Set the color of the fog to grey.
-	fogColor = 0.5f;
+	//float fogColor;
+	//// Set the color of the fog to grey.
+	//fogColor = 0.5f;
 
 
-	// Clear the buffers to begin the scene.
-	m_Direct3D->BeginScene(fogColor, fogColor, fogColor, 1.0f);
+	//// Clear the buffers to begin the scene.
+	//m_Direct3D->BeginScene(fogColor, fogColor, fogColor, 1.0f);
 
 	// Render the scene as normal to the back buffer.
 	result = RenderScene(rotation);
@@ -529,6 +607,8 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetOrthoMatrix(orthoMatrix);
 
+
+
 	//Then after the rendering is complete we render the 2D debug window so we can see the render to texture as a 2D image at the 50x50 pixel location.
 	//The Z buffer is turned off before we do any 2D rendering.
 	// Turn off the Z buffer to begin all 2D rendering.
@@ -537,20 +617,20 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	
 	
 
-	// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_DebugWindow->Render(m_Direct3D->GetDeviceContext(), 50, 50);
-	if (!result)
-	{
-		return false;
-	}
+	//// Put the debug window vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	//result = m_DebugWindow->Render(m_Direct3D->GetDeviceContext(), 50, 50);
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
-	// Render the debug window using the texture shader.
-	result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), worldMatrix, baseViewMatrix,
-		orthoMatrix, m_RenderTexture->GetShaderResourceView());
-	if (!result)
-	{
-		return false;
-	}
+	//// Render the debug window using the texture shader.
+	//result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_DebugWindow->GetIndexCount(), worldMatrix, baseViewMatrix,
+	//	orthoMatrix, m_RenderTexture->GetShaderResourceView());
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 
 	//We then render the bitmap to the 100, 100 location on the screen.
@@ -637,16 +717,35 @@ bool GraphicsClass::RenderToTexture(float rotation)
 bool GraphicsClass::RenderScene(float rotation)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix,rotatedWorldMatrix;
-
+	
 	int modelCount, renderCount, index;
 	float positionX, positionY, positionZ, radius;
 	XMFLOAT4 color;
 	bool renderModel, result;
-	float fogStart, fogEnd;
 
-	// Set the start and end of the fog.
-	fogStart = 0.0f;
-	fogEnd = 5.0f;
+	//static float textureTranslation = 0.0f;
+	//Here the translation value is incremented by a small amount each frame. 
+	//If it goes over 1.0 then it is reset down to 0.0 again.
+	// Increment the texture translation position.
+	//textureTranslation += 0.01f;
+	//if (textureTranslation > 1.0f)
+	//{
+	//	textureTranslation -= 1.0f;
+	//}
+
+
+	//XMFLOAT4 clipPlane;
+	//float fogStart, fogEnd;
+
+	//// Set the start and end of the fog.
+	//fogStart = 0.0f;
+	//fogEnd = 5.0f;
+
+
+	//Create a clip plane first. This clip plane will truncate anything below 0.0 on the Y axis.
+	// Setup a clipping plane.
+	//clipPlane = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
@@ -660,6 +759,19 @@ bool GraphicsClass::RenderScene(float rotation)
 	//worldMatrix = XMMatrixRotationY(rotation);
 	rotatedWorldMatrix = worldMatrix;
 	rotatedWorldMatrix = XMMatrixRotationY(rotation);
+
+	//// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	//m_Plane->Render(m_Direct3D->GetDeviceContext());
+	//// Render the model with the clip plane shader.
+	//result = m_ClipPlaneShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), rotatedWorldMatrix, viewMatrix,
+	//	projectionMatrix, m_Plane->GetTextureArray()[0], clipPlane);
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+	
+	
 	//The major change to the Render function is that we now construct the viewing frustum each frame based on the updated viewing matrix. 
 	//This construction has to occur each time the view matrix changes or the frustum culling checks we do will not be correct.
 
@@ -688,6 +800,7 @@ bool GraphicsClass::RenderScene(float rotation)
 		//We check if the sphere is viewable in the viewing frustum. 
 		//If it can be seen we render it, if it cannot be seen we skip it and check the next one. 
 		//This is where we will gain all the speed by using frustum culling.
+		
 		// Check if the sphere model is in the view frustum.
 		renderModel = m_Frustum->CheckSphere(positionX, positionY, positionZ, radius);
 
@@ -699,27 +812,36 @@ bool GraphicsClass::RenderScene(float rotation)
 			// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 			m_Model->Render(m_Direct3D->GetDeviceContext());
 
-			// Render the model with the fog shader.
-			result = m_FogShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), rotatedWorldMatrix, viewMatrix, projectionMatrix,
-				m_Model->GetTextureArray()[0], fogStart, fogEnd);
+			//// Render the model with the fog shader.
+			//result = m_FogShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), rotatedWorldMatrix, viewMatrix, projectionMatrix,
+			//	m_Model->GetTextureArray()[0], fogStart, fogEnd);
 
 			//// Render the model using the multitexture shader.
 			//m_MultiTextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 			//m_Model->GetTextureArray());
 
-			// Render the model using the light shader.
-			//result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
-			//	m_Model->GetIndexCount(),
-			//	m_Model->GetTextureArray(),
-			//	m_LightShader->GenarateMatrixBuffer(rotatedWorldMatrix, viewMatrix, projectionMatrix),
-			//	m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
-			//	m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), /*color*/m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
-			//);
 
-			/*if (!result)
-			{
-				return false;
-			}*/
+			//// Render the model with the texture translation shader.
+			//result = m_TranslateShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), rotatedWorldMatrix, viewMatrix,
+			//	projectionMatrix, m_Model->GetTextureArray()[0], textureTranslation);
+			//if (!result)
+			//{
+			//	return false;
+			//}
+
+			//Render the model using the light shader.
+			result = m_LightShader->Render(m_Direct3D->GetDeviceContext(),
+				m_Model->GetIndexCount(),
+				m_Model->GetTextureArray(),
+				m_LightShader->GenarateMatrixBuffer(rotatedWorldMatrix, viewMatrix, projectionMatrix),
+				m_LightShader->GenerateCameraBuffer(m_Camera->GetPosition(), 0.0f),
+				m_LightShader->GenerateLightBuffer(m_Light->GetAmbientColor(), /*color*/m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor())
+			);
+
+			//if (!result)
+			//{
+			//	return false;
+			//}
 
 			// Reset to the original world matrix.
 			m_Direct3D->GetWorldMatrix(worldMatrix);
@@ -756,7 +878,7 @@ bool GraphicsClass::RenderScene(float rotation)
 								   {
 									   return false;
 								   }
-							   */
+									*/
 
 	result = m_Text->SetRenderCount(renderCount, m_Direct3D->GetDeviceContext());
 	if (!result)

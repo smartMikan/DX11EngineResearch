@@ -54,6 +54,10 @@
 #include "rendertextureclass.h"
 #include "debugwindowclass.h"
 
+#include "clipplaneshaderclass.h"
+
+#include "translateshaderclass.h"
+
 /////////////
 // GLOBALS //
 /////////////
@@ -97,6 +101,7 @@ private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
+	ModelClass* m_Plane;
 
 	ColorShaderClass* m_ColorShader;
 
@@ -119,8 +124,11 @@ private:
 	RenderTextureClass* m_RenderTexture;
 	DebugWindowClass* m_DebugWindow;
 
+	ClipPlaneShaderClass* m_ClipPlaneShader;
+
 	XMMATRIX baseViewMatrix;
 
+	TranslateShaderClass* m_TranslateShader;
 };
 
 #endif

@@ -14,7 +14,7 @@
 									 |
 		  ___________________________|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 		  |				|		        |                 |						    |                   |				   |				   |					    |						|        				|						|						  |									  |										|
-		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiShaderClass			FogShaderClass			LightClass			      BitmapClass   		  TextClass								RenderTextureClass					DebugWindowClass
+		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass			LightClass			      BitmapClass   		  TextClass								RenderTextureClass					DebugWindowClass
 										|																																																		 |					      |
 										|																																																	     |				   _______|_______
 									TextureArrayClass																																													    TextureClass		  |				  |

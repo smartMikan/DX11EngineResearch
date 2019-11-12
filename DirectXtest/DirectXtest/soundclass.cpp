@@ -163,7 +163,9 @@ bool SoundClass::LoadWaveFile(const WCHAR* filename, IDirectSoundBuffer8** secon
 	IDirectSoundBuffer* tempBuffer;
 	unsigned char* waveData;
 	unsigned char* bufferPtr;
+	//unsigned char* bufferPtr2;
 	unsigned long bufferSize;
+	//unsigned long bufferSize2;
 
 	//To start first open the .wav file and read in the header of the file. 
 	//The header will contain all the information about the audio file so we can use that to create a secondary buffer to accommodate the audio data. 
@@ -253,7 +255,7 @@ bool SoundClass::LoadWaveFile(const WCHAR* filename, IDirectSoundBuffer8** secon
 
 	// Set the buffer description of the secondary sound buffer that the wave file will be loaded onto.
 	bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-	bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
+	bufferDesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_STATIC | DSBCAPS_LOCDEFER | DSBCAPS_CTRLVOLUME;
 	bufferDesc.dwBufferBytes = waveFileHeader.dataSize;
 	bufferDesc.dwReserved = 0;
 	bufferDesc.lpwfxFormat = &waveFormat;
@@ -324,6 +326,7 @@ bool SoundClass::LoadWaveFile(const WCHAR* filename, IDirectSoundBuffer8** secon
 
 	// Copy the wave data into the buffer.
 	memcpy(bufferPtr, waveData, waveFileHeader.dataSize);
+	//memcpy(bufferPtr2, waveData, waveFileHeader.dataSize);
 
 	// Unlock the secondary buffer after the data has been written to it.
 	result = (*secondaryBuffer)->Unlock((void*)bufferPtr, bufferSize, NULL, 0);
@@ -378,7 +381,7 @@ bool SoundClass::PlayWaveFile()
 	}
 
 	// Play the contents of the secondary sound buffer.
-	result = m_secondaryBuffer1->Play(0, 0, 0);
+	result = m_secondaryBuffer1->Play(0, 0, DSBPLAY_LOOPING);
 	if (FAILED(result))
 	{
 		return false;
