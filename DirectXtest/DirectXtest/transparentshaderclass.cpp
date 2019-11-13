@@ -1,8 +1,8 @@
-#include "textureshaderclass.h"
+#include "transparentshaderclass.h"
 
 
 
-TextureShaderClass::TextureShaderClass()
+TransparentShaderClass::TransparentShaderClass()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
@@ -10,41 +10,43 @@ TextureShaderClass::TextureShaderClass()
 	m_matrixBuffer = 0;
 
 	m_sampleState = 0;
+
+	m_transparentBuffer = 0;
 }
 
-TextureShaderClass::TextureShaderClass(const TextureShaderClass &)
+TransparentShaderClass::TransparentShaderClass(const TransparentShaderClass &)
 {
 }
 
 
-TextureShaderClass::~TextureShaderClass()
+TransparentShaderClass::~TransparentShaderClass()
 {
 }
 
-bool TextureShaderClass::Initialize(ID3D11Device *device, HWND hwnd)
+bool TransparentShaderClass::Initialize(ID3D11Device *device, HWND hwnd)
 {
 	bool result;
 
 	//Initializethe vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./Shader/TextureVertexShader.hlsl", L"./Shader/TexturePixelShader.hlsl");
+	result = InitializeShader(device, hwnd, L"./Shader/TransparentVertexShader.hlsl", L"./Shader/TransparentPixelShader.hlsl");
 	if (!result) {
 		return false;
 	}
 	return true;
 }
 
-void TextureShaderClass::Shutdown()
+void TransparentShaderClass::Shutdown()
 {
 	ShutdownShader();
 	return;
 }
 
-bool TextureShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool TransparentShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture,float blendAmount)
 {
 	bool result;
 
 	//Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix,  projectionMatrix, texture);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix,  projectionMatrix, texture, blendAmount);
 	if (!result)
 	{
 		return false;
@@ -57,7 +59,7 @@ bool TextureShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCou
 }
 
 
-bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool TransparentShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -68,7 +70,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
 	D3D11_SAMPLER_DESC samplerDesc;
-
+	D3D11_BUFFER_DESC transparentBufferDesc;
 
 	// Initialize the pointers this function will use to null.
 	errorMessage = 0;
@@ -199,11 +201,37 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 		return false;
 	}
 
+	//Setup the constant buffer interface to TransparentBuffer in the pixel shader which holds the blendAmount value.
+
+	// Setup the description of the transparent dynamic constant buffer that is in the pixel shader.
+	transparentBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	transparentBufferDesc.ByteWidth = sizeof(TransparentBufferType);
+	transparentBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	transparentBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	transparentBufferDesc.MiscFlags = 0;
+	transparentBufferDesc.StructureByteStride = 0;
+
+	// Create the constant buffer pointer so we can access the pixel shader constant buffer from within this class.
+	result = device->CreateBuffer(&transparentBufferDesc, NULL, &m_transparentBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+
 	return true;
 }
 
-void TextureShaderClass::ShutdownShader()
+void TransparentShaderClass::ShutdownShader()
 {
+
+	// Release the transparent constant buffer.
+	if (m_transparentBuffer)
+	{
+		m_transparentBuffer->Release();
+		m_transparentBuffer = 0;
+	}
+
 	// Release the sampler state.
 	if (m_sampleState)
 	{
@@ -242,7 +270,7 @@ void TextureShaderClass::ShutdownShader()
 	return;
 }
 
-void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename)
+void TransparentShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -277,13 +305,13 @@ void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 	return;
 }
 
-bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool TransparentShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, float blendAmount)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
 	unsigned int bufferNumber;
-
+	TransparentBufferType* dataPtr2;
 
 	// Transpose the matrices to prepare them for the shader.
 	worldMatrix = XMMatrixTranspose(worldMatrix);
@@ -317,10 +345,35 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
+	//Here is where we set the blendAmount value inside the pixel shader before rendering. 
+	//We lock the transparent constant buffer, copy the blend amount value into the buffer, and then unlock it again so the shader can access the new value.
+
+	// Lock the transparent constant buffer so it can be written to.
+	result = deviceContext->Map(m_transparentBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the transparent constant buffer.
+	dataPtr2 = (TransparentBufferType*)mappedResource.pData;
+
+	// Copy the blend amount value into the transparent constant buffer.
+	dataPtr2->blendAmount = blendAmount;
+
+	// Unlock the buffer.
+	deviceContext->Unmap(m_transparentBuffer, 0);
+
+	// Set the position of the transparent constant buffer in the pixel shader.
+	bufferNumber = 0;
+
+	// Now set the transparent constant buffer in the pixel shader with the updated values.
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_transparentBuffer);
+
 	return true;
 }
 
-void TextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void TransparentShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);

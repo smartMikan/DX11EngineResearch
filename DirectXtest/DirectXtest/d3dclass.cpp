@@ -1,4 +1,4 @@
-////////////////////////////
+﻿////////////////////////////
 // Filename: d3dclass.cpp
 ////////////////////////////
 #include "d3dclass.h"
@@ -431,15 +431,16 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 
 	// Setup the raster description which will determine how and what polygons will be drawn.
 	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = /*D3D11_CULL_BACK*/D3D11_CULL_NONE;
+	rasterDesc.CullMode = D3D11_CULL_BACK /*D3D11_CULL_NONE*/;
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
 	rasterDesc.DepthClipEnable = true;
-	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.FillMode = D3D11_FILL_SOLID /*D3D11_FILL_WIREFRAME*/;
 	rasterDesc.FrontCounterClockwise = false;
 	rasterDesc.MultisampleEnable = false;
 	rasterDesc.ScissorEnable = false;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
 
 	// Create the rasterizer state from the description we just filled out.
 	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterState);
@@ -448,8 +449,12 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	
+	//SetRasterizerState(false);
+
 	// Now set the rasterizer state.
 	m_deviceContext->RSSetState(m_rasterState);
+
 
 	//The viewport also needs to be setup so that Direct3D can map clip space coordinates to the render target space.
 	//Set this to be the entire size of the window.
@@ -531,7 +536,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//The other settings are set to their default values which can be looked up in the Windows DirectX Graphics Documentation.
 	// Create an alpha enabled blend state description.
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
@@ -806,6 +811,25 @@ void D3DClass::SetBackBufferRenderTarget()
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 	return;
+}
+
+bool D3DClass::SetRasterizerState(bool isWireframeMod)
+{
+	if (isWireframeMod && m_rasterState)
+	{
+		m_deviceContext->RSSetState(m_rasterState);
+		return true;
+	}
+	else if(!isWireframeMod)
+	{
+		m_deviceContext->RSSetState(NULL);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
 }
 
 

@@ -1,50 +1,50 @@
-#include "textureshaderclass.h"
+#include "reflectshaderclass.h"
 
 
 
-TextureShaderClass::TextureShaderClass()
+ReflectShaderClass::ReflectShaderClass()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
 	m_layout = 0;
 	m_matrixBuffer = 0;
-
 	m_sampleState = 0;
+	m_reflectionBuffer = 0;
 }
 
-TextureShaderClass::TextureShaderClass(const TextureShaderClass &)
+ReflectShaderClass::ReflectShaderClass(const ReflectShaderClass &)
 {
 }
 
 
-TextureShaderClass::~TextureShaderClass()
+ReflectShaderClass::~ReflectShaderClass()
 {
 }
 
-bool TextureShaderClass::Initialize(ID3D11Device *device, HWND hwnd)
+bool ReflectShaderClass::Initialize(ID3D11Device *device, HWND hwnd)
 {
 	bool result;
 
 	//Initializethe vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./Shader/TextureVertexShader.hlsl", L"./Shader/TexturePixelShader.hlsl");
+	result = InitializeShader(device, hwnd, L"./Shader/ReflectVertexShader.hlsl", L"./Shader/ReflectPixelShader.hlsl");
 	if (!result) {
 		return false;
 	}
 	return true;
 }
 
-void TextureShaderClass::Shutdown()
+void ReflectShaderClass::Shutdown()
 {
 	ShutdownShader();
 	return;
 }
 
-bool TextureShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool ReflectShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* reflectionTexture, XMMATRIX reflectionMatrix)
 {
 	bool result;
 
 	//Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix,  projectionMatrix, texture);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, reflectionTexture, reflectionMatrix);
 	if (!result)
 	{
 		return false;
@@ -57,7 +57,7 @@ bool TextureShaderClass::Render(ID3D11DeviceContext *deviceContext, int indexCou
 }
 
 
-bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool ReflectShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -68,7 +68,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
 	D3D11_SAMPLER_DESC samplerDesc;
-
+	D3D11_BUFFER_DESC reflectionBufferDesc;
 
 	// Initialize the pointers this function will use to null.
 	errorMessage = 0;
@@ -198,12 +198,34 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 	{
 		return false;
 	}
+	
+	// Setup the description of the reflection dynamic constant buffer that is in the vertex shader.
+	reflectionBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	reflectionBufferDesc.ByteWidth = sizeof(ReflectionBufferType);
+	reflectionBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	reflectionBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	reflectionBufferDesc.MiscFlags = 0;
+	reflectionBufferDesc.StructureByteStride = 0;
+
+	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	result = device->CreateBuffer(&reflectionBufferDesc, NULL, &m_reflectionBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}
 
 	return true;
 }
 
-void TextureShaderClass::ShutdownShader()
+void ReflectShaderClass::ShutdownShader()
 {
+
+	// Release the reflection constant buffer.
+	if (m_reflectionBuffer)
+	{
+		m_reflectionBuffer->Release();
+		m_reflectionBuffer = 0;
+	}
 	// Release the sampler state.
 	if (m_sampleState)
 	{
@@ -242,7 +264,7 @@ void TextureShaderClass::ShutdownShader()
 	return;
 }
 
-void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename)
+void ReflectShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long long bufferSize, i;
@@ -277,18 +299,21 @@ void TextureShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWND
 	return;
 }
 
-bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool ReflectShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* reflectionTexture, XMMATRIX reflectionMatrix)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
 	unsigned int bufferNumber;
-
+	ReflectionBufferType* dataPtr2;
 
 	// Transpose the matrices to prepare them for the shader.
 	worldMatrix = XMMatrixTranspose(worldMatrix);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	// Transpose the relfection matrix to prepare it for the shader.
+	reflectionMatrix = XMMatrixTranspose(reflectionMatrix);
+
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -311,16 +336,46 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
-	// Finanly set the constant buffer in the vertex shader with the updated values.
+	// Now set the matrix constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+
+	//Lock the reflection bufferand copy the reflection matrix into it.After that unlock itand set it in the vertex shader.
+
+	// Lock the reflection constant buffer so it can be written to.
+	result = deviceContext->Map(m_reflectionBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Get a pointer to the data in the matrix constant buffer.
+	dataPtr2 = (ReflectionBufferType*)mappedResource.pData;
+
+	// Copy the matrix into the reflection constant buffer.
+	dataPtr2->reflectionMatrix = reflectionMatrix;
+
+	// Unlock the reflection constant buffer.
+	deviceContext->Unmap(m_reflectionBuffer, 0);
+
+	// Set the position of the reflection constant buffer in the vertex shader.
+	bufferNumber = 1;
+
+	// Now set the reflection constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_reflectionBuffer);
 
 	// Set shader texture resource in the pixel shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
+	//Set the reflection texture as the second texture inside the pixel shader.
+	// Set the reflection texture resource in the pixel shader.
+	deviceContext->PSSetShaderResources(1, 1, &reflectionTexture);
+
+
+
 	return true;
 }
 
-void TextureShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void ReflectShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);

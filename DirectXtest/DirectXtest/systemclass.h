@@ -63,6 +63,8 @@ private:
 	TimerClass* m_Timer;
 
 	PositionClass* m_Position;
+
+	bool m_IsWireframeMode = 0;
 };
 
 

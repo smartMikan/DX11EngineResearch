@@ -1,10 +1,12 @@
-#pragma once
+﻿#pragma once
 
 ///////////////////////////////////////////////////////////////////////////////
 // Filename: soundclass.h
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef _SOUNDCLASS_H_
 #define _SOUNDCLASS_H_
+
+#include <math.h>
 
 /////////////
 // LINKING //
@@ -60,6 +62,8 @@ public:
 	bool Initialize(HWND);
 	void Shutdown();
 
+	DWORD TransToDSVolume(DWORD inputVolume);
+
 private:
 	bool InitializeDirectSound(HWND);
 	void ShutdownDirectSound();
@@ -68,7 +72,7 @@ private:
 	void ShutdownWaveFile(IDirectSoundBuffer8**);
 
 	bool PlayWaveFile();
-
+	
 private:
 	IDirectSound8* m_DirectSound;
 	IDirectSoundBuffer* m_primaryBuffer;
@@ -78,3 +82,5 @@ private:
 };
 
 #endif
+
+

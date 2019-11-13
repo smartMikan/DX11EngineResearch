@@ -271,7 +271,7 @@ bool InputClass::IsEscapePressed()
 
 bool InputClass::IsLeftArrowPressed()
 {
-	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	// Do a bitwise and on the keyboard state to check if the LeftArrow key is currently being pressed.
 	if (m_keyboardState[DIK_LEFTARROW] & 0x80)
 	{
 		return true;
@@ -281,7 +281,7 @@ bool InputClass::IsLeftArrowPressed()
 
 bool InputClass::IsRightArrowPressed()
 {
-	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	// Do a bitwise and on the keyboard state to check if the RightArrow key is currently being pressed.
 	if (m_keyboardState[DIK_RIGHTARROW] & 0x80)
 	{
 		return true;

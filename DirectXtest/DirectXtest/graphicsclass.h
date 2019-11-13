@@ -57,6 +57,9 @@
 #include "clipplaneshaderclass.h"
 
 #include "translateshaderclass.h"
+#include "transparentshaderclass.h"
+
+#include "reflectshaderclass.h"
 
 /////////////
 // GLOBALS //
@@ -86,13 +89,16 @@ public:
 	bool Initialize(int, int, HWND hwnd);
 	void ProgramEnd();
 	bool Frame(int fps, int cpu, float frameTime, int mouseY, int mouseX, float rotationY);
+	void SetWireframeMode(bool isWireframeMod);
 
 private:
 	bool Render(float rotation, int mouseX, int mouseY);
-	bool Update();
+	bool Update(int fps, int cpu, float frameTime, int mouseY, int mouseX, float rotationY);
 
 	bool RenderToTexture(float rotation);
-	bool RenderScene(float rotation);
+	bool RenderScene(float rotation, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+
+	
 
 private:
 	//And the second change is the new private pointer to the D3DClass which we have called m_Direct3D.
@@ -101,6 +107,7 @@ private:
 	D3DClass* m_Direct3D;
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
+	ModelClass* m_Model2;
 	ModelClass* m_Plane;
 
 	ColorShaderClass* m_ColorShader;
@@ -129,6 +136,9 @@ private:
 	XMMATRIX baseViewMatrix;
 
 	TranslateShaderClass* m_TranslateShader;
+	TransparentShaderClass* m_TransparentShader;
+
+	ReflectShaderClass* m_ReflectionShader;
 };
 
 #endif

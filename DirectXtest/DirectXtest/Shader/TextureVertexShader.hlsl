@@ -17,7 +17,7 @@ struct PixelInputType {
 };
 
 
-PixelInputType TextureVertexShader(VertexInputType input) {
+PixelInputType main(VertexInputType input) {
 	PixelInputType output;
 
 	//Change the position vector to be 4 units for proper maxtrix calculations;

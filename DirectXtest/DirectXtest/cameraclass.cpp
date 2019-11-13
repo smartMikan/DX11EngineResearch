@@ -116,3 +116,54 @@ void CameraClass::GetViewMatrix(XMMATRIX& viewMatrix)
 	viewMatrix = m_viewMatrix;
 	return;
 }
+
+//The new RenderReflection function builds a reflection view matrix the same way as the regular Render function builds a view matrix. 
+//The only difference is that we take as input the height of the object that will act as the Y axis plane and then we use that height to invert the position.y variable for reflection. 
+//This will build the reflection view matrix that we can then use in the shader.
+//Note that this function only works for the Y axis plane.
+
+void CameraClass::RenderReflection(float height)
+{
+	XMFLOAT3 up, position, lookAt;
+	XMVECTOR upVector, positionVector, lookAtVector;
+	float radians;
+
+
+	// Setup the vector that points upwards.
+	up.x = 0.0f;
+	up.y = 1.0f;
+	up.z = 0.0f;
+
+	// Load it into a XMVECTOR structure.
+	upVector = XMLoadFloat3(&up);
+
+	// Setup the position of the camera in the world.
+	// For planar reflection invert the Y position of the camera.
+	position.x = m_positionX;
+	position.y = -m_positionY + (height * 2.0f);
+	position.z = m_positionZ;
+
+	// Load it into a XMVECTOR structure.
+	positionVector = XMLoadFloat3(&position);
+
+	// Calculate the rotation in radians.
+	radians = m_rotationY * 0.0174532925f;
+
+	// Setup where the camera is looking.
+	lookAt.x = sinf(radians) + m_positionX;
+	lookAt.y = position.y;
+	lookAt.z = cosf(radians) + m_positionZ;
+
+	// Load it into a XMVECTOR structure.
+	lookAtVector = XMLoadFloat3(&lookAt);
+
+	// Create the view matrix from the three vectors.
+	m_reflectionViewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
+
+	return;
+}
+
+XMMATRIX CameraClass::GetReflectionViewMatrix()
+{
+	return m_reflectionViewMatrix;
+}

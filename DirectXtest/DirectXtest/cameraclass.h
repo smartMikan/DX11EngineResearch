@@ -31,10 +31,16 @@ public:
 	void Render();
 	void GetViewMatrix(XMMATRIX&);
 
+	//We add two new functions for reflection. 
+	//One is to build the reflection matrix and the other is to retrieve the reflection matrix.
+	void RenderReflection(float);
+	XMMATRIX GetReflectionViewMatrix();
+
 private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_viewMatrix;
+	XMMATRIX m_reflectionViewMatrix;
 };
 
 #endif

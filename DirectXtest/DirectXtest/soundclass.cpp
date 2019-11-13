@@ -1,4 +1,4 @@
-#include "soundclass.h"
+﻿#include "soundclass.h"
 SoundClass::SoundClass()
 {
 	m_DirectSound = 0;
@@ -373,8 +373,8 @@ bool SoundClass::PlayWaveFile()
 		return false;
 	}
 
-	// Set volume of the buffer to 100%.
-	result = m_secondaryBuffer1->SetVolume(DSBVOLUME_MAX);
+	// Set volume of the buffer.
+	result = m_secondaryBuffer1->SetVolume(TransToDSVolume(10));
 	if (FAILED(result))
 	{
 		return false;
@@ -389,3 +389,23 @@ bool SoundClass::PlayWaveFile()
 
 	return true;
 }
+
+//Transform the decibels volume to DirectSound volume
+DWORD SoundClass::TransToDSVolume(DWORD inputVolume)
+{
+	double decibelsDividedTwenty;
+	DWORD dsVol;
+
+	if (inputVolume <= 0.001)
+		dsVol = DSBVOLUME_MIN;
+	else if (inputVolume > 100.0)
+		dsVol = DSBVOLUME_MAX;
+	else
+	{
+		decibelsDividedTwenty = log10((double)inputVolume) - 2.0;
+		dsVol = (DWORD)(decibelsDividedTwenty * 2000.0);
+	}
+
+	return dsVol;
+}
+

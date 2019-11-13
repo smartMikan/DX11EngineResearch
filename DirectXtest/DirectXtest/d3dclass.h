@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: d3dclass.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,7 @@ public:
 	ID3D11DepthStencilView* GetDepthStencilView();
 	void SetBackBufferRenderTarget();
 
+	bool SetRasterizerState(bool isWireframeMod);
 
 
 private:
