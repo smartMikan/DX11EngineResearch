@@ -5,6 +5,7 @@ cbuffer MatrixBuffer
     matrix projectionMatrix;
 };
 
+//We add a new constant buffer to hold the reflection matrix.
 cbuffer ReflectionBuffer
 {
     matrix reflectionMatrix;

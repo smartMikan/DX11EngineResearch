@@ -156,6 +156,12 @@
     <ClCompile Include="reflectshaderclass.cpp">
       <Filter>ソース ファイル\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="fadebitmapclass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="fadeshaderclass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProjectInfo.h">
@@ -265,6 +271,12 @@
     </ClInclude>
     <ClInclude Include="reflectshaderclass.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="fadebitmapclass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="fadeshaderclass.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -426,6 +438,8 @@
     <FxCompile Include="Shader\ReflectPixelShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\FadePixelShader.hlsl" />
+    <FxCompile Include="Shader\FadeVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\01.wav">

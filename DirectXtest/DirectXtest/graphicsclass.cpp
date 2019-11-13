@@ -45,6 +45,9 @@ GraphicsClass::GraphicsClass()
 	m_TransparentShader = 0;
 
 	m_ReflectionShader = 0;
+
+	m_FadeShader = 0;
+	m_FadeBitmap = 0;
 	baseViewMatrix = XMMatrixIdentity();
 }
 
@@ -127,7 +130,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  m_Direct3D->GetDeviceContext(),L".//3DModel//Cube.txt", L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(),  L".//3DModel//Cube.txt",L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 
 	if (!result)
 	{
@@ -142,7 +145,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the second model object.
-	result = m_Model2->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L".//3DModel//Cube.txt", L"./3DModel/Texture/dirt01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Model2->Initialize(m_Direct3D->GetDevice(), L".//3DModel//Cube.txt", L"./3DModel/Texture/dirt01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the second model object.", L"Error", MB_OK);
@@ -189,8 +192,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	// Initialize the plan object.
-	result = m_Plane->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./3DModel/floor.txt", L"./3DModel/Texture/blue01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	// Initialize the plane object.
+	result = m_Plane->Initialize(m_Direct3D->GetDevice(), L"./3DModel/floor.txt", L"./3DModel/Texture/blue01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 
 	if (!result)
 	{
@@ -303,6 +306,49 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// Create the fadebitmap object.
+	m_FadeBitmap = new FadeBitmapClass;
+	if (!m_Bitmap)
+	{
+		return false;
+	}
+
+	// Initialize the fadebitmap object.
+	result = m_FadeBitmap->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, screenWidth, screenHeight);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the fadebitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Set the fade in time to 3000 milliseconds.
+	m_fadeInTime = 3000.0f;
+
+	// Initialize the accumulated time to zero milliseconds.
+	m_accumulatedTime = 0;
+
+	// Initialize the fade percentage to zero at first so the scene is black.
+	m_fadePercentage = 0;
+
+	// Set the fading in effect to not done.
+	m_fadeDone = false;
+
+	// Create the fade shader object.
+	m_FadeShader = new FadeShaderClass;
+	if (!m_FadeShader)
+	{
+		return false;
+	}
+
+	// Initialize the fade shader object.
+	result = m_FadeShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the fade shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
 	if (!m_LightShader)
@@ -413,6 +459,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void GraphicsClass::ProgramEnd()
 {
+	// Release the fade shader object.
+	if (m_FadeShader)
+	{
+		m_FadeShader->Shutdown();
+		delete m_FadeShader;
+		m_FadeShader = 0;
+	}
+
+	// Release the fadebitmap object.
+	if (m_FadeBitmap)
+	{
+		m_FadeBitmap->Shutdown();
+		delete m_FadeBitmap;
+		m_FadeBitmap = 0;
+	}
+
 	// Release the reflection shader object.
 	if (m_ReflectionShader)
 	{
@@ -576,27 +638,60 @@ void GraphicsClass::ProgramEnd()
 bool GraphicsClass::Frame(int fps, int cpu, float frameTime, int mouseY = 0, int mouseX = 0, float rotationY = 0)
 {
 	bool result;
-	static float rotation = 0.0f;
+	//static float rotation = 0.0f;
 
-	// Update the rotation variable each frame.
-	rotation += (float)XM_PI * 0.005f;
-	if (rotation > 360.0f)
-	{
-		rotation -= 360.0f;
-	}
+	//// Update the rotation variable each frame.
+	//rotation += (float)XM_PI * 0.005f;
+	//if (rotation > 360.0f)
+	//{
+	//	rotation -= 360.0f;
+	//}
 
-	result = Update(fps, cpu, frameTime, mouseY, mouseX, rotationY);
-	if (!result)
+	//result = Update(fps, cpu, frameTime, mouseY, mouseX, rotationY);
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+	//// Render the graphics scene.
+	//result = Render(rotation, mouseX, mouseY);
+	//if (!result)
+	//{
+	//	return false;
+	//}
+	//return true;
+
+	if (!m_fadeDone)
 	{
-		return false;
+		// Update the accumulated time with the extra frame time addition.
+		m_accumulatedTime += frameTime;
+
+		// While the time goes on increase the fade in amount by the time that is passing each frame.
+		if (m_accumulatedTime < m_fadeInTime)
+		{
+			// Calculate the percentage that the screen should be faded in based on the accumulated time.
+			m_fadePercentage = m_accumulatedTime / m_fadeInTime;
+		}
+		else
+		{
+			// If the fade in time is complete then turn off the fade effect and render the scene normally.
+			m_fadeDone = true;
+
+			// Set the percentage to 100%.
+			m_fadePercentage = 1.0f;
+		}
 	}
+	// Set the position of the camera.
+	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+
 
 	// Render the graphics scene.
-	result = Render(rotation, mouseX, mouseY);
+	result = Render();
 	if (!result)
 	{
 		return false;
 	}
+
 	return true;
 }
 
@@ -731,6 +826,44 @@ bool GraphicsClass::Render(float rotation, int mouseX = 0, int mouseY = 0)
 	return true;
 }
 
+//The Render function handles the rotation of the cube and switches between rendering to texture and fading in or rendering normally if fading in is complete.
+bool GraphicsClass::Render()
+{
+	bool result;
+	static float rotation = 0.0f;
+
+
+	// Update the rotation variable each frame.
+	rotation += (float)XM_PI * 0.005f;
+	if (rotation > 360.0f)
+	{
+		rotation -= 360.0f;
+	}
+
+	if (m_fadeDone)
+	{
+		// If fading in is complete then render the scene normally using the back buffer.
+		RenderNormalScene(rotation);
+	}
+	else
+	{
+		// If fading in is not complete then render the scene to a texture and fade that texture in.
+		result = RenderToTexture(rotation);
+		if (!result)
+		{
+			return false;
+		}
+
+		result = RenderFadingScene();
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool GraphicsClass::Update(int fps, int cpu, float frameTime, int mouseY = 0, int mouseX = 0, float rotationY = 0) {
 	
 	bool result;
@@ -768,7 +901,7 @@ bool GraphicsClass::RenderToTexture(float rotation)
 {
 	bool result;
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	XMMATRIX reflectionViewMatrix;
+	//XMMATRIX reflectionViewMatrix;
 
 	// Set the render target to be the render to texture.
 	m_RenderTexture->SetRenderTarget(m_Direct3D->GetDeviceContext(), m_Direct3D->GetDepthStencilView());
@@ -778,7 +911,7 @@ bool GraphicsClass::RenderToTexture(float rotation)
 
 	//Before rendering the scene to a texture we need to create the reflection matrix using the position of the floor (-1.5) as the height input variable.
 	// Use the camera to calculate the reflection matrix.
-	m_Camera->RenderReflection(-1.5f);
+	//m_Camera->RenderReflection(-1.5f);
 
 	//Now render the scene as normal but use the reflection matrix instead of the normal view matrix. 
 	//Also there is no need to render the floor as we only need to render what will be reflected.
@@ -791,12 +924,13 @@ bool GraphicsClass::RenderToTexture(float rotation)
 	//}
 
 	// Get the camera reflection view matrix instead of the normal view matrix.
-	reflectionViewMatrix = m_Camera->GetReflectionViewMatrix();
+	//reflectionViewMatrix = m_Camera->GetReflectionViewMatrix();
 
 	// Get the world and projection matrices.
 	m_Direct3D->GetWorldMatrix(worldMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
-
+	m_Camera->Render();
+	m_Camera->GetViewMatrix(viewMatrix);
 	
 	worldMatrix = XMMatrixRotationY(rotation);
 
@@ -804,7 +938,7 @@ bool GraphicsClass::RenderToTexture(float rotation)
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
 	// Render the model using the texture shader and the reflection view matrix.
-	m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, reflectionViewMatrix,
+	m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix,
 		projectionMatrix, m_Model->GetTextureArray()[0]);
 
 
@@ -962,7 +1096,7 @@ bool GraphicsClass::RenderScene(float rotation, XMMATRIX worldMatrix, XMMATRIX v
 
 	// Get the world matrix again and translate down for the floor model to render underneath the cube.
 	m_Direct3D->GetWorldMatrix(worldMatrix);
-	worldMatrix = XMMatrixTranslation( 0.0f, -1.5f, 0.0f);
+	//worldMatrix = XMMatrixTranslation( 0.0f, -1.5f, 0.0f);
 
 	// Get the camera reflection view matrix.
 	reflectionMatrix = m_Camera->GetReflectionViewMatrix();
@@ -1017,6 +1151,88 @@ bool GraphicsClass::RenderScene(float rotation, XMMATRIX worldMatrix, XMMATRIX v
 	{
 		return false;
 	}*/
+
+	return true;
+}
+
+bool GraphicsClass::RenderFadingScene()
+{
+	XMMATRIX worldMatrix, viewMatrix, orthoMatrix;
+	bool result;
+
+
+	// Clear the buffers to begin the scene.
+	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Generate the view matrix based on the camera's position.
+	m_Camera->Render();
+
+	// Get the world, view, and ortho matrices from the camera and d3d objects.
+	m_Direct3D->GetWorldMatrix(worldMatrix);
+	m_Camera->GetViewMatrix(viewMatrix);
+	m_Direct3D->GetOrthoMatrix(orthoMatrix);
+
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_Direct3D->TurnZBufferOff();
+
+	// Put the fadebitmap vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_FadeBitmap->Render(m_Direct3D->GetDeviceContext(), 0, 0);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Render the fadebitmap using the fade shader.
+	result = m_FadeShader->Render(m_Direct3D->GetDeviceContext(), m_FadeBitmap->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+		m_RenderTexture->GetShaderResourceView(), m_fadePercentage);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_Direct3D->TurnZBufferOn();
+
+	// Present the rendered scene to the screen.
+	m_Direct3D->EndScene();
+
+	return true;
+}
+
+//If we are no longer fading in the scene then we switch to using this function to draw the scene normally and remove the cost of using render to texture.
+bool GraphicsClass::RenderNormalScene(float rotation)
+{
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	bool result;
+
+
+	// Clear the buffers to begin the scene.
+	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Generate the view matrix based on the camera's position.
+	m_Camera->Render();
+
+	// Get the world, view, and projection matrices from the camera and d3d objects.
+	m_Direct3D->GetWorldMatrix(worldMatrix);
+	m_Camera->GetViewMatrix(viewMatrix);
+	m_Direct3D->GetProjectionMatrix(projectionMatrix);
+
+	// Rotate the world matrix by the rotation value so that the triangle will spin.
+	worldMatrix = XMMatrixRotationY(rotation);
+
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_Model->Render(m_Direct3D->GetDeviceContext());
+
+	// Render the model with the texture shader.
+	result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix,
+		projectionMatrix, m_Model->GetTextureArray()[0]);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Present the rendered scene to the screen.
+	m_Direct3D->EndScene();
 
 	return true;
 }

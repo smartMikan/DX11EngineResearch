@@ -1,6 +1,6 @@
 Texture2D shaderTexture;
 SamplerState SampleType;
-
+//We add a new texture variable for the scene reflection render to texture.
 Texture2D reflectionTexture;
 
 

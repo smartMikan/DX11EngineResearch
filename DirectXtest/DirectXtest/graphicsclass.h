@@ -61,6 +61,9 @@
 
 #include "reflectshaderclass.h"
 
+#include "fadebitmapclass.h"
+#include "fadeshaderclass.h"
+
 /////////////
 // GLOBALS //
 /////////////
@@ -93,11 +96,14 @@ public:
 
 private:
 	bool Render(float rotation, int mouseX, int mouseY);
+	bool Render();
 	bool Update(int fps, int cpu, float frameTime, int mouseY, int mouseX, float rotationY);
 
 	bool RenderToTexture(float rotation);
 	bool RenderScene(float rotation, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
-
+	
+	bool RenderFadingScene();
+	bool RenderNormalScene(float);
 	
 
 private:
@@ -139,6 +145,11 @@ private:
 	TransparentShaderClass* m_TransparentShader;
 
 	ReflectShaderClass* m_ReflectionShader;
+
+	FadeShaderClass* m_FadeShader;
+	FadeBitmapClass* m_FadeBitmap;
+	float m_fadeInTime, m_accumulatedTime, m_fadePercentage;
+	bool m_fadeDone;
 };
 
 #endif
