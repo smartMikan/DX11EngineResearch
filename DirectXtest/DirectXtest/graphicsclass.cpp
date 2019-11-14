@@ -1,4 +1,4 @@
-
+﻿
 
 
 
@@ -130,7 +130,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_Direct3D->GetDevice(),  L".//3DModel//Cube.txt",L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Model->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(),  L".//3DModel//Cube.txt",L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 
 	if (!result)
 	{
@@ -145,7 +145,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the second model object.
-	result = m_Model2->Initialize(m_Direct3D->GetDevice(), L".//3DModel//Cube.txt", L"./3DModel/Texture/dirt01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Model2->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L".//3DModel//Cube.txt", L"./3DModel/Texture/dirt01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the second model object.", L"Error", MB_OK);
@@ -193,7 +193,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the plane object.
-	result = m_Plane->Initialize(m_Direct3D->GetDevice(), L"./3DModel/floor.txt", L"./3DModel/Texture/blue01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Plane->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./3DModel/floor.txt", L"./3DModel/Texture/blue01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 
 	if (!result)
 	{
@@ -554,7 +554,13 @@ void GraphicsClass::ProgramEnd()
 		delete m_FogShader;
 		m_FogShader = 0;
 	}
-
+	// Release the plane object.
+	if (m_Plane)
+	{
+		m_Plane->Shutdown();
+		delete m_Plane;
+		m_Plane = 0;
+	}
 	// Release the texture shader object.
 	if (m_TextureShader)
 	{
@@ -594,13 +600,7 @@ void GraphicsClass::ProgramEnd()
 		delete m_Text;
 		m_Text = 0;
 	}
-	// Release the plane object.
-	if (m_Plane)
-	{
-		m_Plane->Shutdown();
-		delete m_Plane;
-		m_Plane = 0;
-	}
+	
 	// Release the second model object.
 	if (m_Model2)
 	{

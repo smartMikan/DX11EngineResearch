@@ -12,17 +12,21 @@
 				 |					 |							|							|						|						|						|
 			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass				PositionClass
 									 |
-		  ___________________________|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-		  |				|		        |                 |						    |                   |				   |				   |					    |						|        				|						|						  |									  |										|
-		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass			LightClass			      BitmapClass   		  TextClass								RenderTextureClass					DebugWindowClass
-										|																																																		 |					      |
-										|																																																	     |				   _______|_______
-									TextureArrayClass																																													    TextureClass		  |				  |
-																																																											                      |				  |	
-																																																											                  FontClass		  FontShaderClass
-																																																										                         |
-																																																										                         |
-																																																										                     TextureClass
+		  ___________________________|___________________________________________________________________________________________________________________________________________________________________________________
+		  |				|		        |                 |						    |                   |				|				       |					    |						|        				|	
+		D3DClass     FrustumClass   ModelClass        ModelListClass            CameraClass        	LightClass		BitmapClass   		  TextClass				RenderTextureClass		DebugWindowClass			ShaderManagerClass---------------------------------->ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass	...
+|										|																				|				       |
+|										|																				|			    _______|_______
+                                 TextureArrayClass																	TextureClass		|			  |
+																																		|			  |	
+																																	FontClass	FontShaderClass
+																																		|
+																																		|
+																																	TextureClass
+
+																																																													 
+																																									
+																																																															 
 */
 
 
