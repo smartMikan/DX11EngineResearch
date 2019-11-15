@@ -2,9 +2,9 @@
 
 TextureArrayClass::TextureArrayClass()
 {
-	m_textures[0] = 0;
+	/*m_textures[0] = 0;
 	m_textures[1] = 0;
-	m_textures[2] = 0;
+	m_textures[2] = 0;*/
 }
 
 TextureArrayClass::TextureArrayClass(const TextureArrayClass& other)
@@ -47,11 +47,11 @@ bool TextureArrayClass::Initialize(ID3D11Device * device, const WCHAR ** fileArr
 {
 
 	HRESULT result;
-	for (size_t i = 0; i < textureCount; i++)
+	
+	m_textures.resize(textureCount);
+	for (size_t i = 1; i <= textureCount; i++)
 	{
-		auto sh = new ID3D11ShaderResourceView*();
-		m_textures[i] = *sh;
-		result = CreateDDSTextureFromFile(device, fileArray[i], NULL, &m_textures[i]);
+		result = CreateDDSTextureFromFile(device, fileArray[i], NULL, &m_textures[static_cast<size_t>(i) - 1]);
 	}
 	return true;
 }
@@ -60,8 +60,9 @@ bool TextureArrayClass::Initialize(ID3D11Device * device, const WCHAR ** fileArr
 
 void TextureArrayClass::Shutdown()
 {
+
 	// Release the texture resources.
-	if (m_textures[0])
+	/*if (m_textures[0])
 	{
 		m_textures[0]->Release();
 		m_textures[0] = 0;
@@ -77,12 +78,12 @@ void TextureArrayClass::Shutdown()
 	{
 		m_textures[2]->Release();
 		m_textures[2] = 0;
-	}
+	}*/
 	return;
 }
 
 //GetTextureArray returns a pointer to the texture array so calling objects can have access to the textures in the texture array.
-ID3D11ShaderResourceView** TextureArrayClass::GetTextureArray()
+vector<ID3D11ShaderResourceView*> TextureArrayClass::GetTextureVector()
 {
 	return m_textures;
 }

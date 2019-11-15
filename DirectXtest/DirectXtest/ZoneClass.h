@@ -19,6 +19,7 @@
 #include "positionclass.h"
 #include "TerrainClass.h"
 #include "modelclass.h"
+#include "skydomeclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ZoneClass
@@ -34,6 +35,8 @@ public:
 	void Shutdown();
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, float, int);
 
+
+
 private:
 	void HandleMovementInput(InputClass*, float);
 	bool Render(D3DClass*, ShaderManagerClass*);
@@ -43,6 +46,8 @@ private:
 	CameraClass* m_Camera;
 	PositionClass* m_Position;
 	TerrainClass* m_Terrain;
+	SkyDomeClass* m_SkyDome;
+	ModelClass* m_Model;
 	bool m_displayUI;
 };
 

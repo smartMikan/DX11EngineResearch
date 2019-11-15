@@ -185,6 +185,19 @@ bool ApplicationClass::Frame()
 		return false;
 	}
 
+	// Check if the user pressed F2 and wants to enable the wireframe mode.
+	if (m_Input->IsF2Toggled() == true)
+	{
+		m_Direct3D->EnableWireframe();
+	}
+	
+	// Check if the user pressed F3 and wants to exit the wireframe mode.
+	if (m_Input->IsF3Toggled() == true)
+	{
+		m_Direct3D->DisableWireframe();
+	}
+
+
 	// Do the zone frame processing.
 	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_Timer->GetTime(), m_Fps->GetFps());
 	if (!result)

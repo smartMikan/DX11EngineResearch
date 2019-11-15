@@ -79,7 +79,7 @@ public:
 
 	int GetIndexCount();
 	//ID3D11ShaderResourceView* GetTexture();
-	ID3D11ShaderResourceView** GetTextureArray();
+	vector<ID3D11ShaderResourceView*> GetTextureVector();
 
 	void CalculateModelVectors();
 	void CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, VectorType& tangent, VectorType& binormal);

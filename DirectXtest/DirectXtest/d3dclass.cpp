@@ -17,11 +17,12 @@ D3DClass::D3DClass()
 	m_depthStencilState = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
-
+	m_rasterStateNoCulling = 0;
+	m_rasterStateWireframe = 0;
 	m_depthDisabledStencilState = 0;
-
 	m_alphaEnableBlendingState = 0;
 	m_alphaDisableBlendingState = 0;
+	m_alphaEnableBlendingState2 = 0;
 }
 
 
@@ -67,10 +68,10 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	D3D11_RASTERIZER_DESC rasterDesc;
 	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
-
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
-
 	D3D11_BLEND_DESC blendStateDescription;
+	
+	
 	// Store the vsync setting.
 	m_vsync_enabled = vsync;
 
@@ -455,6 +456,36 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Now set the rasterizer state.
 	m_deviceContext->RSSetState(m_rasterState);
 
+	// Setup a raster description which turns off back face culling.
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+
+	// Create the no culling rasterizer state.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateNoCulling);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Setup a raster description which enables wire frame rendering.
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterDesc.FrontCounterClockwise = false;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	// Create the wire frame rasterizer state.
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateWireframe);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+
 
 	//The viewport also needs to be setup so that Direct3D can map clip space coordinates to the render target space.
 	//Set this to be the entire size of the window.
@@ -556,10 +587,30 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	//The rest of the settings can be left as they are.
 	// Modify the description to create an alpha disabled blend state description.
 	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+	blendStateDescription.AlphaToCoverageEnable = false;
 	//We then create an alpha disabled blending state using the modified blend state description. 
 	//We now have two blending states we can switch between to turn on and off alpha blending.
 	// Create the blend state using the description.
 	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Create a blend state description for the alpha-to-coverage blending mode.
+	blendStateDescription.AlphaToCoverageEnable = true;
+	blendStateDescription.IndependentBlendEnable = false;
+	blendStateDescription.RenderTarget[0].BlendEnable = true;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState2);
 	if (FAILED(result))
 	{
 		return false;
@@ -592,6 +643,24 @@ void D3DClass::Shutdown()
 	{
 		m_alphaDisableBlendingState->Release();
 		m_alphaDisableBlendingState = 0;
+	}
+
+	if (m_alphaEnableBlendingState2)
+	{
+		m_alphaEnableBlendingState2->Release();
+		m_alphaEnableBlendingState2 = 0;
+	}
+
+	if (m_rasterStateWireframe)
+	{
+		m_rasterStateWireframe->Release();
+		m_rasterStateWireframe = 0;
+	}
+
+	if (m_rasterStateNoCulling)
+	{
+		m_rasterStateNoCulling->Release();
+		m_rasterStateNoCulling = 0;
 	}
 
 	if (m_rasterState)
@@ -761,6 +830,10 @@ void D3DClass::TurnZBufferOff()
 	return;
 }
 
+
+
+
+
 //The first new function TurnOnAlphaBlending allows us to turn on alpha blending by using the OMSetBlendState function with our m_alphaEnableBlendingState blending state.
 void D3DClass::TurnOnAlphaBlending()
 {
@@ -813,23 +886,58 @@ void D3DClass::SetBackBufferRenderTarget()
 	return;
 }
 
-bool D3DClass::SetRasterizerState(bool isWireframeMod)
+
+void D3DClass::TurnOnCulling()
 {
-	if (isWireframeMod && m_rasterState)
-	{
-		m_deviceContext->RSSetState(m_rasterState);
-		return true;
-	}
-	else if(!isWireframeMod)
-	{
-		m_deviceContext->RSSetState(NULL);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-	
+	// Set the culling rasterizer state.
+	m_deviceContext->RSSetState(m_rasterState);
+
+	return;
+}
+
+
+void D3DClass::TurnOffCulling()
+{
+	// Set the no back face culling rasterizer state.
+	m_deviceContext->RSSetState(m_rasterStateNoCulling);
+
+	return;
+}
+
+
+void D3DClass::EnableAlphaToCoverageBlending()
+{
+	float blendFactor[4];
+
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn on the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaEnableBlendingState2, blendFactor, 0xffffffff);
+
+	return;
+}
+
+
+void D3DClass::EnableWireframe()
+{
+	// Set the wire frame rasterizer state.
+	m_deviceContext->RSSetState(m_rasterStateWireframe);
+
+	return;
+}
+
+
+void D3DClass::DisableWireframe()
+{
+	// Set the solid fill rasterizer state.
+	m_deviceContext->RSSetState(m_rasterState);
+
+	return;
 }
 
 

@@ -100,9 +100,9 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 //	return m_Texture->GetTexture();
 //}
 
-ID3D11ShaderResourceView** ModelClass::GetTextureArray()
+vector<ID3D11ShaderResourceView*> ModelClass::GetTextureVector()
 {
-	return m_TextureArray->GetTextureArray();
+	return m_TextureArray->GetTextureVector();
 }
 
 
@@ -621,10 +621,12 @@ bool ModelClass::LoadTextures(ID3D11Device* device, const WCHAR* filename1, cons
 	textureArray[1] = filename2;
 	textureArray[2] = filename3;
 
+	WCHAR strFile[64];
+	wsprintfW(strFile, textureArray[0]);
 
 
 	// Initialize the texture array object.
-	result = m_TextureArray->Initialize(device, textureArray,3);
+	result = m_TextureArray->Initialize(device, strFile,3);
 	if (!result)
 	{
 		return false;

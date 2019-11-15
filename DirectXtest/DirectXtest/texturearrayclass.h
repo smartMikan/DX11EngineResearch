@@ -10,6 +10,7 @@
 #include "ddstextureClass.h"
 #include "textureclass.h"
 #include <d3dcompiler.h>
+#include <vector>
 
 #include "./Loader/DDSTextureLoader.h"
 #include "./Loader/WICTextureLoader.h"
@@ -25,11 +26,11 @@ public:
 	bool Initialize(ID3D11Device* device, const WCHAR** fileArray , int textureCount);
 	void Shutdown();
 
-	ID3D11ShaderResourceView** GetTextureArray();
+	vector<ID3D11ShaderResourceView*> GetTextureVector();
 
 private:
 	//This is the two element texture array private variable.
-	ID3D11ShaderResourceView** m_textures;
+	std::vector<ID3D11ShaderResourceView*> m_textures;
 };
 
 #endif
