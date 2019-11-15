@@ -616,10 +616,15 @@ bool ModelClass::LoadTextures(ID3D11Device* device, const WCHAR* filename1, cons
 		return false;
 	}
 
+	const WCHAR** textureArray = new const WCHAR*[3];
+	textureArray[0] = filename1;
+	textureArray[1] = filename2;
+	textureArray[2] = filename3;
+
 
 
 	// Initialize the texture array object.
-	result = m_TextureArray->Initialize(device, filename1, filename2, filename3);
+	result = m_TextureArray->Initialize(device, textureArray,3);
 	if (!result)
 	{
 		return false;

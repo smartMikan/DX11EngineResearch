@@ -20,14 +20,16 @@
 #include <tchar.h>
 #include <string>
 //
-#include "inputclass.h"
-#include "graphicsclass.h"
-#include "soundclass.h"
+//#include "inputclass.h"
+//#include "graphicsclass.h"
 
-#include "fpsclass.h"
-#include "cpuclass.h"
-#include "timerclass.h"
-#include "positionclass.h"
+#include "applicationclass.h"
+//
+//#include "soundclass.h"
+//#include "fpsclass.h"
+//#include "cpuclass.h"
+//#include "timerclass.h"
+//#include "positionclass.h"
 ///////////////////////////
 // Class name: SystemClass
 ///////////////////////////
@@ -54,16 +56,16 @@ private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 
-	InputClass* m_Input;
-	GraphicsClass* m_Graphics;
-	SoundClass* m_Sound;
+	ApplicationClass* m_Application;
+	//InputClass* m_Input;
+	//GraphicsClass* m_Graphics;
+	//SoundClass* m_Sound;
 
-	FpsClass* m_Fps;
-	CpuClass* m_Cpu;
-	TimerClass* m_Timer;
+	//FpsClass* m_Fps;
+	//CpuClass* m_Cpu;
+	//TimerClass* m_Timer;
 
-	PositionClass* m_Position;
-
+	//PositionClass* m_Position;
 	bool m_IsWireframeMode = 0;
 };
 

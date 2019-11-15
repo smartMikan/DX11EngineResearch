@@ -18,16 +18,34 @@ public:
 	~PositionClass();
 
 	void SetFrameTime(float time);
+
+
+	void SetPosition(float, float, float);
+	void SetRotation(float, float, float);
+
+	void GetPosition(float&x, float&y, float&z);
+	void GetRotation(float&x, float&y, float&z);
 	void GetRotation(float&y);
 
+	void MoveForward(bool keydown);
+	void MoveBackward(bool keydown);
+	void MoveUpward(bool keydown);
+	void MoveDownward(bool keydown);
 	void TurnLeft(bool keydown);
 	void TurnRight(bool keydown);
+	void LookUpward(bool keydown);
+	void LookDownward(bool keydown);
 
 private:
-	float m_frameTime;
-	float m_rotationY;
-	float m_leftTurnSpeed,m_rightTurnSpeed;
+	float m_positionX, m_positionY, m_positionZ;
+	float m_rotationX, m_rotationY, m_rotationZ;
 
+	float m_frameTime;
+
+	float m_forwardSpeed, m_backwardSpeed;
+	float m_upwardSpeed, m_downwardSpeed;
+	float m_leftTurnSpeed, m_rightTurnSpeed;
+	float m_lookUpSpeed, m_lookDownSpeed;
 };
 
 #endif

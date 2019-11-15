@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApplicationClass.cpp" />
     <ClCompile Include="bitmapclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="ClipPlaneShaderClass.cpp" />
@@ -174,7 +175,6 @@
     <ClCompile Include="fontshaderclass.cpp" />
     <ClCompile Include="fpsclass.cpp" />
     <ClCompile Include="frustumclass.cpp" />
-    <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
@@ -187,17 +187,25 @@
     <ClCompile Include="positionclass.cpp" />
     <ClCompile Include="reflectshaderclass.cpp" />
     <ClCompile Include="rendertextureclass.cpp" />
+    <ClCompile Include="ShaderManagerClass.cpp" />
+    <ClCompile Include="SkyDomeClass.cpp" />
+    <ClCompile Include="SkyDomeShaderClass.cpp" />
     <ClCompile Include="soundclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
+    <ClCompile Include="TerrainClass.cpp" />
     <ClCompile Include="textclass.cpp" />
     <ClCompile Include="texturearrayclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="TextureManagerClass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="timerclass.cpp" />
     <ClCompile Include="translateshaderclass.cpp" />
     <ClCompile Include="transparentshaderclass.cpp" />
+    <ClCompile Include="UserInterfaceClass.cpp" />
+    <ClCompile Include="ZoneClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApplicationClass.h" />
     <ClInclude Include="bitmapclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="ClipPlaneShaderClass.h" />
@@ -213,7 +221,6 @@
     <ClInclude Include="fontshaderclass.h" />
     <ClInclude Include="fpsclass.h" />
     <ClInclude Include="frustumclass.h" />
-    <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
     <ClInclude Include="lightshaderclass.h" />
@@ -227,15 +234,22 @@
     <ClInclude Include="reflectshaderclass.h" />
     <ClInclude Include="rendertextureclass.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ShaderManagerClass.h" />
+    <ClInclude Include="SkyDomeClass.h" />
+    <ClInclude Include="SkyDomeShaderClass.h" />
     <ClInclude Include="soundclass.h" />
     <ClInclude Include="systemclass.h" />
+    <ClInclude Include="TerrainClass.h" />
     <ClInclude Include="textclass.h" />
     <ClInclude Include="texturearrayclass.h" />
     <ClInclude Include="textureclass.h" />
+    <ClInclude Include="TextureManagerClass.h" />
     <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="timerclass.h" />
     <ClInclude Include="translateshaderclass.h" />
     <ClInclude Include="transparentshaderclass.h" />
+    <ClInclude Include="UserInterfaceClass.h" />
+    <ClInclude Include="ZoneClass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scene.fbx" />
@@ -462,6 +476,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shader\SkyDomePixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\SkyDomeVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\SpecMapPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

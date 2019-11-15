@@ -21,7 +21,6 @@ bool TextureArrayClass::Initialize(ID3D11Device* device, const WCHAR* filename1,
 {
 	HRESULT result;
 
-
 	// Load the first texture in.
 	result = CreateDDSTextureFromFile(device, filename1, NULL, &m_textures[0]);
 	if (FAILED(result))
@@ -40,6 +39,19 @@ bool TextureArrayClass::Initialize(ID3D11Device* device, const WCHAR* filename1,
 	if (FAILED(result))
 	{
 		return false;
+	}
+	return true;
+}
+
+bool TextureArrayClass::Initialize(ID3D11Device * device, const WCHAR ** fileArray,int textureCount)
+{
+
+	HRESULT result;
+	for (size_t i = 0; i < textureCount; i++)
+	{
+		auto sh = new ID3D11ShaderResourceView*();
+		m_textures[i] = *sh;
+		result = CreateDDSTextureFromFile(device, fileArray[i], NULL, &m_textures[i]);
 	}
 	return true;
 }

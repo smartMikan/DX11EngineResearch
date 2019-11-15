@@ -17,10 +17,16 @@ FontClass::~FontClass()
 {
 }
 
-bool FontClass::Initialize(ID3D11Device* device, const WCHAR * fontFilename, const WCHAR * textureFilename)
+bool FontClass::Initialize(ID3D11Device* device, const WCHAR * fontFilename, const WCHAR * textureFilename, float fontHeight, int spaceSize)
 {
 	bool result;
 
+
+	// Store the height of the font.
+	m_fontHeight = fontHeight;
+
+	// Store the size of spaces in pixel size.
+	m_spaceSize = spaceSize;
 
 	// Load in the text file containing the font data.
 	result = LoadFontData(fontFilename);
@@ -227,3 +233,33 @@ void FontClass::BuildVertexArray(void* vertices, const char * sentence, float dr
 	return;
 }
 
+int FontClass::GetSentencePixelLength(char* sentence)
+{
+	int pixelLength, numLetters, i, letter;
+
+
+	pixelLength = 0;
+	numLetters = (int)strlen(sentence);
+
+	for (i = 0; i<numLetters; i++)
+	{
+		letter = ((int)sentence[i]) - 32;
+
+		// If the letter is a space then count it as three pixels.
+		if (letter == 0)
+		{
+			pixelLength += m_spaceSize;
+		}
+		else
+		{
+			pixelLength += (m_Font[letter].size + 1);
+		}
+	}
+
+	return pixelLength;
+}
+
+int FontClass::GetFontHeight()
+{
+	return (int)m_fontHeight;
+}

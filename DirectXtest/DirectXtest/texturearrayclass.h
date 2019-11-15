@@ -22,13 +22,14 @@ public:
 	~TextureArrayClass();
 
 	bool Initialize(ID3D11Device* device, const WCHAR* filename1, const WCHAR* filename2, const WCHAR* filename3);
+	bool Initialize(ID3D11Device* device, const WCHAR** fileArray , int textureCount);
 	void Shutdown();
 
 	ID3D11ShaderResourceView** GetTextureArray();
 
 private:
 	//This is the two element texture array private variable.
-	ID3D11ShaderResourceView* m_textures[3];
+	ID3D11ShaderResourceView** m_textures;
 };
 
 #endif

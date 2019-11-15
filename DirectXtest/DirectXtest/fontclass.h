@@ -49,7 +49,7 @@ public:
 	FontClass(const FontClass&);
 	~FontClass();
 
-	bool Initialize(ID3D11Device* device, const WCHAR * fontFilename, const WCHAR * textureFilename);
+	bool Initialize(ID3D11Device* device, const WCHAR * fontFilename, const WCHAR * textureFilename,float,int);
 	void Shutdown();
 
 	ID3D11ShaderResourceView* GetTexture();
@@ -58,6 +58,8 @@ public:
 	//This function will be called by the new TextClass to build vertex arrays of all the sentences it needs to render.
 
 	void BuildVertexArray(void*, const char * sentence, float, float);
+	int GetSentencePixelLength(char*);
+	int GetFontHeight();
 
 private:
 	bool LoadFontData(const WCHAR * filename);
@@ -68,6 +70,8 @@ private:
 private:
 	FontType* m_Font;
 	DDSTextureClass* m_DDSTexture;
+	float m_fontHeight;
+	int m_spaceSize;
 };
 
 #endif
