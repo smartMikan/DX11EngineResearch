@@ -1,4 +1,4 @@
-/////////////
+﻿/////////////
 // GLOBALS //
 /////////////
 Texture2D shaderTexture;
@@ -7,7 +7,7 @@ SamplerState SampleType;
 //We have two new global variables inside the LightBuffer that hold the diffuse color and the direction of the light.
 //These two variables will be set from values in the new LightClass object.
 
-cbuffer LightBuffer
+cbuffer LightBuffer : register(b0)
 {
 	float4 ambientColor;
 	float4 diffuseColor;

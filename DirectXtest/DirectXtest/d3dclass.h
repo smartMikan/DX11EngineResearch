@@ -11,8 +11,7 @@
 // LINKING //
 /////////////
 #pragma comment(lib, "d3d11.lib")  //The first library contains all the Direct3D functionality for setting upand drawing 3D graphics in DirectX 11. 
-#pragma comment(lib, "dxgi.lib")  //The second library contains tools to interface with the hardware on the computer 
-								  //to obtain information about the refresh rate of the monitor, the video card being used, and so forth.
+#pragma comment(lib, "dxgi.lib")  //The second library contains tools to interface with the hardware on the computer to obtain information about the refresh rate of the monitor, the video card being used, and so forth.
 #pragma comment(lib, "d3dcompiler.lib")  //The third library contains functionality for compiling shaders which we will cover in the next project.
 
 //The next thing we do is include the headers for those libraries that we are linking to this object module as well as headers for DirectX type definitions and math functionality.
@@ -22,6 +21,8 @@
 //////////////
 #include <d3d11.h>
 #include <directxmath.h>
+#include <directxcolors.h>
+#include <assert.h>
 using namespace DirectX;
 
 //The class definition for the D3DClass is kept as simple as possible here.
@@ -73,7 +74,6 @@ public:
 	ID3D11DepthStencilView* GetDepthStencilView();
 	void SetBackBufferRenderTarget();
 
-	bool SetRasterizerState(bool isWireframeMod);
 
 
 private:

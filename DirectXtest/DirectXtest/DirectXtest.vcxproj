@@ -191,6 +191,9 @@
     <ClCompile Include="SkyDomeClass.cpp" />
     <ClCompile Include="SkyDomeShaderClass.cpp" />
     <ClCompile Include="soundclass.cpp" />
+    <ClCompile Include="System\VertexBuffer.cpp" />
+    <ClCompile Include="Utility\ErrorLoger.cpp" />
+    <ClCompile Include="Utility\StringConverter.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="TerrainClass.cpp" />
     <ClCompile Include="textclass.cpp" />
@@ -238,6 +241,14 @@
     <ClInclude Include="SkyDomeClass.h" />
     <ClInclude Include="SkyDomeShaderClass.h" />
     <ClInclude Include="soundclass.h" />
+    <ClInclude Include="System\ConstantBuffer.h" />
+    <ClInclude Include="System\IndexBuffer.h" />
+    <ClInclude Include="System\VertexBuffer.h" />
+    <ClInclude Include="Utility\ErrorLoger.h" />
+    <ClInclude Include="Utility\Geometry.h" />
+    <ClInclude Include="Utility\Light.h" />
+    <ClInclude Include="Utility\Material.h" />
+    <ClInclude Include="Utility\StringConverter.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="TerrainClass.h" />
     <ClInclude Include="textclass.h" />
@@ -249,6 +260,7 @@
     <ClInclude Include="translateshaderclass.h" />
     <ClInclude Include="transparentshaderclass.h" />
     <ClInclude Include="UserInterfaceClass.h" />
+    <ClInclude Include="Utility\VertexTypes.h" />
     <ClInclude Include="ZoneClass.h" />
   </ItemGroup>
   <ItemGroup>

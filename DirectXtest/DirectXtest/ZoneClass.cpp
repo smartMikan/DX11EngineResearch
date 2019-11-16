@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Filename: zoneclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "zoneclass.h"
@@ -8,6 +8,7 @@ ZoneClass::ZoneClass()
 	m_UserInterface = 0;
 	m_Camera = 0;
 	m_Position = 0;
+	m_Light = 0;
 	m_Terrain = 0;
 	m_SkyDome = 0;
 	m_Model = 0;
@@ -116,7 +117,17 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-
+	// Create the light object.
+	m_Light = new LightClass;
+	if (!m_Light)
+	{
+		return false;
+	}
+	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetDirection(-1.0f, -1.0f, 1.0f);
+	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetSpecularPower(32.0f);
 
 
 	return true;
@@ -138,6 +149,13 @@ void ZoneClass::Shutdown()
 		m_SkyDome->Shutdown();
 		delete m_SkyDome;
 		m_SkyDome = 0;
+	}
+
+	// Release the light object.
+	if (m_Light)
+	{
+		delete m_Light;
+		m_Light = 0;
 	}
 
 	// Release the position object.
@@ -298,9 +316,10 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager)
 		return false;
 	}
 
+	Direct3D->GetWorldMatrix(worldMatrix);
 	m_Model->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderTextureShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix,m_Model->GetTextureVector()[0]);
+	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), worldMatrix, viewMatrix,
+		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
 
 
 	// Render the user interface.

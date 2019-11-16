@@ -434,7 +434,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	m_hinstance = GetModuleHandle(NULL);
 
 	// Give the application a name.
-	m_applicationName = "DX11Test";
+	m_applicationName = "DX11_ENGINE_RESEARCH";
 
 	// Setup the windows class with default settings.
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -487,28 +487,39 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 		posY = (GetSystemMetrics(SM_CYSCREEN) - screenHeight) / 2;
 	}
 
+
+	m_applicationName_wide = StringConverter::StringToWide(m_applicationName);
+
+	RECT wr; // window rectangle
+	wr.left = posX;
+	wr.top = posY;
+	wr.right = wr.left + screenWidth;
+	wr.bottom = wr.top + screenHeight;
+	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
+
 	// Create the window with the screen settings and get the handle to it.
-	/*m_hwnd = CreateWindowEx(
+	m_hwnd = CreateWindowEx(
 		WS_EX_APPWINDOW, 
-		m_applicationName, 
-		m_applicationName,
-		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
-		posX, posY, 
-		screenWidth, screenHeight, 
+		m_applicationName.c_str(),
+		m_applicationName.c_str(),
+		WS_OVERLAPPEDWINDOW,/*WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,*/
+		wr.left, wr.top, 
+		wr.right - wr.left, wr.bottom - wr.top,
 		NULL, 
 		NULL, 
 		m_hinstance, 
-		NULL);*/
-	 m_hwnd = CreateWindow(
-		m_applicationName.c_str(),
-		m_applicationName.c_str(),
-		WS_OVERLAPPEDWINDOW,
-		posX, posY,						//LeftUpperLocation Of Screen ,アプリウィンドの左上位置
-		screenWidth, screenHeight,
-		NULL,
-		NULL,
-		m_hinstance,
 		NULL);
+	 
+	//m_hwnd = CreateWindow(
+	//	m_applicationName.c_str(),
+	//	m_applicationName.c_str(),
+	//	WS_OVERLAPPEDWINDOW,
+	//	posX, posY,						//LeftUpperLocation Of Screen ,アプリウィンドの左上位置
+	//	screenWidth, screenHeight,
+	//	NULL,
+	//	NULL,
+	//	m_hinstance,
+	//	NULL);
 
 
 	// Bring the window up on the screen and set it as main focus.

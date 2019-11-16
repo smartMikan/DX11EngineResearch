@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: skydomeshaderclass.h
@@ -14,6 +14,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <fstream>
+#include "System/ConstantBuffer.h"
 using namespace DirectX;
 using namespace std;
 
@@ -58,8 +59,10 @@ private:
 	ID3D11VertexShader * m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
-	ID3D11Buffer* m_matrixBuffer; 
-	ID3D11Buffer* m_colorBuffer;
+	//ID3D11Buffer* m_matrixBuffer; 
+	//ID3D11Buffer* m_colorBuffer;
+	ConstantBuffer<MatrixBufferType>* m_matrixBuffer;
+	ConstantBuffer<ColorBufferType>* m_colorBuffer;
 };
 
 #endif

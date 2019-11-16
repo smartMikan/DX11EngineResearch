@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Filename: shadermanagerclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "shadermanagerclass.h"
@@ -172,6 +172,11 @@ bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext* deviceContext, i
 {
 
 	return false;
+}
+
+bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext *deviceContext, int indexCount, ID3D11ShaderResourceView ** textureArray, XMMATRIX world, XMMATRIX view, XMMATRIX projection, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor)
+{
+	return m_LightShader->Render(deviceContext, indexCount, textureArray, world, view, projection, cameraPosition, ambientColor, diffuseColor, lightDirection,specularPower,specularColor);
 }
 
 

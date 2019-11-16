@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /////////////////////////////////////////////////////////////////////////////////
 // Filename: zoneclass.h
@@ -20,6 +20,7 @@
 #include "TerrainClass.h"
 #include "modelclass.h"
 #include "skydomeclass.h"
+#include "lightclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ZoneClass
@@ -45,6 +46,7 @@ private:
 	UserInterfaceClass * m_UserInterface;
 	CameraClass* m_Camera;
 	PositionClass* m_Position;
+	LightClass* m_Light;
 	TerrainClass* m_Terrain;
 	SkyDomeClass* m_SkyDome;
 	ModelClass* m_Model;

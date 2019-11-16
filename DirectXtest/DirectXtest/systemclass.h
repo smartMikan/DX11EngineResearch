@@ -22,7 +22,7 @@
 //
 //#include "inputclass.h"
 //#include "graphicsclass.h"
-
+#include "Utility/StringConverter.h"
 #include "applicationclass.h"
 //
 //#include "soundclass.h"
@@ -53,6 +53,7 @@ private:
 
 private:
 	std::string m_applicationName;
+	std::wstring m_applicationName_wide;
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 

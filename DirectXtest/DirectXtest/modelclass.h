@@ -11,10 +11,13 @@
 //////////////
 #include <d3d11.h>
 #include <directxmath.h>
+#include <fstream>
+
 #include "textureclass.h"
 #include "ddstextureclass.h"
-#include <fstream>
 #include "texturearrayclass.h"
+#include "System/VertexBuffer.h"
+#include "System/IndexBuffer.h"
 
 using namespace std;
 using namespace DirectX;
@@ -79,7 +82,7 @@ public:
 
 	int GetIndexCount();
 	//ID3D11ShaderResourceView* GetTexture();
-	vector<ID3D11ShaderResourceView*> GetTextureVector();
+	ID3D11ShaderResourceView** GetTextureVector();
 
 	void CalculateModelVectors();
 	void CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, VectorType& tangent, VectorType& binormal);
@@ -100,7 +103,9 @@ private:
 	void ReleaseModel();
 
 private:
-	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+
+	IndexBuffer* m_indexBuffer;
+	VertexBuffer<VertexType> *m_vertexBuffer;
 	int m_vertexCount, m_indexCount;
 	/*TextureClass* m_Texture;*/
 	ModelType* m_model;

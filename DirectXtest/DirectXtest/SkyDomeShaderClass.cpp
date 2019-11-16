@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Filename: skydomeshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "skydomeshaderclass.h"
@@ -75,8 +75,7 @@ bool SkyDomeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 	ID3D10Blob* pixelShaderBuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[1];
 	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_BUFFER_DESC colorBufferDesc;
+
 
 
 	// Initialize the pointers this function will use to null.
@@ -161,34 +160,48 @@ bool SkyDomeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = 0;
 
-	// Setup the description of the dynamic constant buffer that is in the vertex shader.
-	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixBufferDesc.MiscFlags = 0;
-	matrixBufferDesc.StructureByteStride = 0;
+	m_matrixBuffer = new ConstantBuffer<MatrixBufferType>();
 
-	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
-	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
+	result = m_matrixBuffer->Initialize(device);
 	if (FAILED(result))
 	{
 		return false;
 	}
-	// Setup the description of the dynamic pixel constant buffer that is in the pixel shader.
-	colorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	colorBufferDesc.ByteWidth = sizeof(ColorBufferType);
-	colorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	colorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	colorBufferDesc.MiscFlags = 0;
-	colorBufferDesc.StructureByteStride = 0;
 
-	// Create the pixel constant buffer pointer so we can access the pixel shader constant buffer from within this class.
-	result = device->CreateBuffer(&colorBufferDesc, NULL, &m_colorBuffer);
+	m_colorBuffer = new ConstantBuffer<ColorBufferType>();
+	result = m_colorBuffer->Initialize(device);
 	if (FAILED(result))
 	{
 		return false;
 	}
+	//// Setup the description of the dynamic constant buffer that is in the vertex shader.
+	//matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	//matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//matrixBufferDesc.MiscFlags = 0;
+	//matrixBufferDesc.StructureByteStride = 0;
+
+	//// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+	//result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
+	//if (FAILED(result))
+	//{
+	//	return false;
+	//}
+	//// Setup the description of the dynamic pixel constant buffer that is in the pixel shader.
+	//colorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//colorBufferDesc.ByteWidth = sizeof(ColorBufferType);
+	//colorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//colorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//colorBufferDesc.MiscFlags = 0;
+	//colorBufferDesc.StructureByteStride = 0;
+
+	//// Create the pixel constant buffer pointer so we can access the pixel shader constant buffer from within this class.
+	//result = device->CreateBuffer(&colorBufferDesc, NULL, &m_colorBuffer);
+	//if (FAILED(result))
+	//{
+	//	return false;
+	//}
 
 	return true;
 }
@@ -275,62 +288,43 @@ bool SkyDomeShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
 {
 	HRESULT result;
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
 	unsigned int bufferNumber;
-	ColorBufferType* dataPtr2;
-
 
 	// Transpose the matrices to prepare them for the shader.
 	worldMatrix = XMMatrixTranspose(worldMatrix);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
-	// Lock the matrix constant buffer so it can be written to.
-	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	m_matrixBuffer->data.world = worldMatrix;
+	m_matrixBuffer->data.view = viewMatrix;
+	m_matrixBuffer->data.projection = projectionMatrix;
+
+	result = m_matrixBuffer->ApplyChanges(deviceContext);
 	if (FAILED(result))
 	{
 		return false;
 	}
-
-	// Get a pointer to the data in the matrix constant buffer.
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-	// Copy the matrices into the matrix constant buffer.
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
-
-	// Unlock the matrix constant buffer.
-	deviceContext->Unmap(m_matrixBuffer, 0);
 
 	// Set the position of the constant buffer in the vertex shader.
 	bufferNumber = 0;
 
 	// Now set the matrix constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-	// Lock the color constant buffer so it can be written to.
-	result = deviceContext->Map(m_colorBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, m_matrixBuffer->GetAddress());
+
+	m_colorBuffer->data.apexColor = apexColor;
+	m_colorBuffer->data.centerColor = centerColor;
+
+	result = m_colorBuffer->ApplyChanges(deviceContext);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
-	// Get a pointer to the data in the color constant buffer.
-	dataPtr2 = (ColorBufferType*)mappedResource.pData;
-
-	// Copy the color data into the color constant buffer.
-	dataPtr2->apexColor = apexColor;
-	dataPtr2->centerColor = centerColor;
-
-	// Unlock the color constant buffer.
-	deviceContext->Unmap(m_colorBuffer, 0);
-
 	// Set the position of the color constant buffer in the pixel shader.
 	bufferNumber = 0;
 
 	// Now set the color constant buffer in the pixel shader with the updated color values.
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_colorBuffer);
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, m_colorBuffer->GetAddress());
 
 	return true;
 }

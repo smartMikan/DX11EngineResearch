@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 ///////////////////////////////////////////////////////////////////////////////
 // Filename: skydomeclass.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,6 +12,8 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
+#include "System/VertexBuffer.h"
+#include "System/IndexBuffer.h"
 using namespace DirectX;
 using namespace std;
 
@@ -36,7 +38,7 @@ private:
 
 public:
 	SkyDomeClass();
-	SkyDomeClass(const SkyDomeClass&);
+	SkyDomeClass(const SkyDomeClass&){}
 	~SkyDomeClass();
 
 	bool Initialize(ID3D11Device*);
@@ -58,7 +60,9 @@ private:
 private:
 	ModelType * m_model;
 	int m_vertexCount, m_indexCount;
-	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+
+	IndexBuffer* m_indexBuffer;
+	VertexBuffer<VertexType> *m_vertexBuffer;
 	XMFLOAT4 m_apexColor, m_centerColor;
 };
 

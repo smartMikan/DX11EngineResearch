@@ -49,6 +49,12 @@
     <Filter Include="ヘッダー ファイル\Texture">
       <UniqueIdentifier>{a0932121-a785-4c43-8c7b-ab24c08c1f8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{d7845e41-bd75-4bc9-b4a2-c634ac75f0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model">
+      <UniqueIdentifier>{8554c6f0-42b1-41e4-8eba-fcc59513253c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -183,12 +189,18 @@
     <ClCompile Include="TerrainClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Utility\StringConverter.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\ErrorLoger.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VertexBuffer.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProjectInfo.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="modelclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="cameraclass.h">
@@ -205,12 +217,6 @@
     </ClInclude>
     <ClInclude Include="Loader\DDSTextureLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="textclass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="soundclass.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="frustumclass.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -293,12 +299,6 @@
     <ClInclude Include="fadebitmapclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="fadeshaderclass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyDomeClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SkyDomeShaderClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -317,8 +317,50 @@
     <ClInclude Include="ApplicationClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\StringConverter.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\ErrorLoger.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Material.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Light.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Geometry.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\VertexTypes.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VertexBuffer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\IndexBuffer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConstantBuffer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="modelclass.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyDomeClass.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
     <ClInclude Include="TerrainClass.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="textclass.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="fadeshaderclass.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="soundclass.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -480,12 +522,16 @@
     <FxCompile Include="Shader\ReflectPixelShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\FadePixelShader.hlsl" />
-    <FxCompile Include="Shader\FadeVertexShader.hlsl" />
     <FxCompile Include="Shader\SkyDomeVertexShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SkyDomePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FadeVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\FadePixelShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
   </ItemGroup>

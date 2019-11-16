@@ -1,7 +1,7 @@
-/////////////
+﻿/////////////
 // GLOBALS //
 /////////////
-cbuffer MatrixBuffer
+cbuffer MatrixBuffer : register(b0)
 {
 	matrix worldMatrix;
 	matrix viewMatrix;
@@ -13,7 +13,7 @@ cbuffer MatrixBuffer
 //by using the angle between the direction of the normal and the direction of the light.
 
 
-cbuffer CameraBuffer
+cbuffer CameraBuffer : register(b1)
 {
 	float3 cameraPosition;
 	float padding;
