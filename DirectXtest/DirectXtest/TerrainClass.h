@@ -22,18 +22,42 @@ private:
 	struct VertexType
 	{
 		XMFLOAT3 position;
-		XMFLOAT4 color;
+		XMFLOAT2 texture;
+		XMFLOAT3 normal;
+		XMFLOAT3 tangent;
+		XMFLOAT3 binormal;
+		XMFLOAT3 color;
 	};
 
 	struct HeightMapType
 	{
 		float x, y, z;
+		float nx, ny, nz;
+		float r, g, b;
 	};
 
 	struct ModelType
 	{
 		float x, y, z;
+		float tu, tv;
+		float nx, ny, nz;
+		float tx, ty, tz;
+		float bx, by, bz;
+		float r, g, b;
 	};
+
+	struct VectorType
+	{
+		float x, y, z;
+	};
+
+	struct TempVertexType
+	{
+		float x, y, z;
+		float tu, tv;
+		float nx, ny, nz;
+	};
+
 public:
 	TerrainClass();
 	TerrainClass(const TerrainClass& other);
@@ -50,8 +74,12 @@ private:
 	bool LoadBitmapHeightMap();
 	void ShutdownHeightMap();
 	void SetTerrainCoordinates();
+	bool CalculateNormals();
 	bool BuildTerrainModel();
 	void ShutdownTerrainModel();
+
+	void CalculateTerrainVectors();
+	void CalculateTangentBinormal(TempVertexType, TempVertexType, TempVertexType, VectorType&, VectorType&);
 
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();

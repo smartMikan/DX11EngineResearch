@@ -1,10 +1,12 @@
-Texture2D shaderTextures[2];
+﻿Texture2D shaderTexture : register(t0);
+Texture2D normalTexture : register(t1);
 SamplerState SampleType;
 
 cbuffer LightBuffer
 {
     float4 diffuseColor;
     float3 lightDirection;
+    float padding;
 };
 
 
@@ -38,10 +40,10 @@ float4 main(PixelInputType input) : SV_TARGET
 
 
     // Sample the texture pixel at this location.
-    textureColor = shaderTextures[0].Sample(SampleType, input.tex);
+    textureColor = shaderTexture.Sample(SampleType, input.tex);
 	
     // Sample the pixel in the bump map.
-    bumpMap = shaderTextures[1].Sample(SampleType, input.tex);
+    bumpMap = normalTexture.Sample(SampleType, input.tex);
 
     // Expand the range of the normal value from (0, +1) to (-1, +1).
     bumpMap = (bumpMap * 2.0f) - 1.0f;
