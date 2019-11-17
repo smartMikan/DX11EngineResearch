@@ -50,7 +50,7 @@ private:
 	TerrainClass* m_Terrain;
 	SkyDomeClass* m_SkyDome;
 	ModelClass* m_Model;
-	bool m_displayUI;
+	bool m_displayUI, m_wireFrame;
 };
 
 #endif

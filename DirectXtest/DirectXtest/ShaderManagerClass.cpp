@@ -11,6 +11,8 @@ ShaderManagerClass::ShaderManagerClass()
 	m_LightShader = 0;
 	m_FontShader = 0;
 	m_SkyDomeShader = 0;
+
+	m_vertexShader = 0;
 }
 
 
@@ -103,6 +105,23 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
+bool ShaderManagerClass::InitializeMyShader(ID3D11Device *device, HWND hwnd, std::wstring vertexShaderCsoPath, D3D11_INPUT_ELEMENT_DESC* inputlayout, std::wstring pixelShaderCsoPath)
+{
+	if (m_vertexShader)
+	{
+		m_vertexShader->Shutdown();
+		delete m_vertexShader;
+		m_vertexShader = 0;
+	}
+
+	UINT elementsCount = _ARRAYSIZE(inputlayout);
+
+	m_vertexShader = new VertexShader();
+	m_vertexShader->Initialize(device,vertexShaderCsoPath, inputlayout, elementsCount);
+	
+	return true;
+}
+
 
 void ShaderManagerClass::Shutdown()
 {
@@ -146,6 +165,14 @@ void ShaderManagerClass::Shutdown()
 		m_ColorShader->Shutdown();
 		delete m_ColorShader;
 		m_ColorShader = 0;
+	}
+	
+	// Release the vertex shader object.
+	if (m_vertexShader)
+	{
+		m_vertexShader->Shutdown();
+		delete m_vertexShader;
+		m_vertexShader = 0;
 	}
 
 	return;

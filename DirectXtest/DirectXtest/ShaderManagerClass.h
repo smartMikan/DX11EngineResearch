@@ -16,6 +16,8 @@
 #include "lightshaderclass.h"
 #include "fontshaderclass.h"
 #include "skydomeshaderclass.h"
+#include "Shaders.h"
+#include "System/ConstantBuffer.h"
 
 class ShaderManagerClass
 {
@@ -25,6 +27,7 @@ public:
 	~ShaderManagerClass();
 
 	bool Initialize(ID3D11Device*, HWND);
+	bool InitializeMyShader(ID3D11Device*, HWND, std::wstring vertexShaderCsoPath, D3D11_INPUT_ELEMENT_DESC* inputlayout, std::wstring pixelShaderCsoPath);
 	void Shutdown();
 
 	bool RenderColorShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
@@ -43,6 +46,9 @@ private:
 	LightShaderClass* m_LightShader;
 	FontShaderClass* m_FontShader;
 	SkyDomeShaderClass* m_SkyDomeShader;
+
+
+	VertexShader* m_vertexShader;
 
 };
 

@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Filename: applicationclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "applicationclass.h"
@@ -183,18 +183,6 @@ bool ApplicationClass::Frame()
 	if (m_Input->IsEscapePressed() == true)
 	{
 		return false;
-	}
-
-	// Check if the user pressed F2 and wants to enable the wireframe mode.
-	if (m_Input->IsF2Toggled() == true)
-	{
-		m_Direct3D->EnableWireframe();
-	}
-	
-	// Check if the user pressed F3 and wants to exit the wireframe mode.
-	if (m_Input->IsF3Toggled() == true)
-	{
-		m_Direct3D->DisableWireframe();
 	}
 
 

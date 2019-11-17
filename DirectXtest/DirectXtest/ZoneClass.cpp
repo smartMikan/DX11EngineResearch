@@ -66,7 +66,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(128.0f, 5.0f, -10.0f);
+	m_Position->SetPosition(128.0f, 10.0f, -10.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
 
 	// Create the sky dome object.
@@ -94,7 +94,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the terrain object.
-	result = m_Terrain->Initialize(Direct3D->GetDevice());
+	result = m_Terrain->Initialize(Direct3D->GetDevice(), ".//Terrain/Setup.txt");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the terrain object.", L"Error", MB_OK);
@@ -129,7 +129,8 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
-
+	// Set wire frame rendering initially to enabled.
+	m_wireFrame = true;
 	return true;
 }
 
@@ -256,6 +257,11 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 		m_displayUI = !m_displayUI;
 	}
 
+	// Determine if the terrain should be rendered in wireframe or not.
+	if (Input->IsF2Toggled())
+	{
+		m_wireFrame = !m_wireFrame;
+	}
 	
 
 	return;
@@ -306,6 +312,11 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager)
 	Direct3D->TurnZBufferOn();
 	Direct3D->TurnOnCulling();
 
+	// Turn on wire frame rendering of the terrain if needed.
+	if (m_wireFrame)
+	{
+		Direct3D->EnableWireframe();
+	}
 
 	// Render the terrain grid using the color shader.
 	m_Terrain->Render(Direct3D->GetDeviceContext());
@@ -321,6 +332,12 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager)
 	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), worldMatrix, viewMatrix,
 		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
 
+	// Turn off the wire frame rendering once the terrain rendering is complete so we don't render anything else such as the UI in wire frame.
+	// Turn off wire frame rendering of the terrain if it was on.
+	if (m_wireFrame)
+	{
+		Direct3D->DisableWireframe();
+	}
 
 	// Render the user interface.
 	if (m_displayUI)

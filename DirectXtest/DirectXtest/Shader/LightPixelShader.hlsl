@@ -1,6 +1,3 @@
-﻿/////////////
-// GLOBALS //
-/////////////
 Texture2D shaderTexture;
 SamplerState SampleType;
 
@@ -32,7 +29,7 @@ struct PixelInputType
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 LightPixelShader(PixelInputType input) : SV_TARGET
+float4 main(PixelInputType input) : SV_TARGET
 {
 	float4 textureColor;
 	float3 lightDir;

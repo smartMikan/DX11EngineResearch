@@ -198,6 +198,12 @@
     <ClCompile Include="System\VertexBuffer.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
+    <ClCompile Include="Utility\VertexTypes.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProjectInfo.h">
@@ -361,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="soundclass.h">
       <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
