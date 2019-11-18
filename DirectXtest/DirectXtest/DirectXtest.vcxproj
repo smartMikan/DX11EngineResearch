@@ -181,6 +181,7 @@
     <ClCompile Include="Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Loader\WICTextureLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MiniMapClass.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="modellistclass.cpp" />
     <ClCompile Include="multitextureshaderclass.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="Loader\DDSTextureLoader.h" />
     <ClInclude Include="Loader\WICTextureLoader.h" />
+    <ClInclude Include="MiniMapClass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="modellistclass.h" />
     <ClInclude Include="multitextureshaderclass.h" />

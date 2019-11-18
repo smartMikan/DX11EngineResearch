@@ -11,6 +11,7 @@ UserInterfaceClass::UserInterfaceClass()
 	m_VideoStrings = 0;
 	m_PositionStrings = 0;
 	m_RenderCountStrings = 0;
+	m_MiniMap = 0;
 }
 
 
@@ -185,6 +186,19 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 		return false;
 	}
 
+	// Create the mini-map object.
+	m_MiniMap = new MiniMapClass;
+	if (!m_MiniMap)
+	{
+		return false;
+	}
+
+	// Initialize the mini-map object.
+	result = m_MiniMap->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 1025, 1025);
+	if (!m_MiniMap)
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -192,6 +206,15 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 
 void UserInterfaceClass::Shutdown()
 {
+
+	// Release the mini-map object.
+	if (m_MiniMap)
+	{
+		m_MiniMap->Shutdown();
+		delete m_MiniMap;
+		m_MiniMap = 0;
+	}
+
 	// Release the render count strings.
 	if (m_RenderCountStrings)
 	{
@@ -268,6 +291,10 @@ bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps, floa
 		return false;
 	}
 
+	// Update the mini-map position indicator.
+	m_MiniMap->PositionUpdate(posX, posZ);
+
+
 	return true;
 }
 
@@ -276,6 +303,7 @@ bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	XMMATRIX orthoMatrix)
 {
 	int i;
+	bool result;
 
 
 	// Turn off the Z buffer and enable alpha blending to begin 2D rendering.
@@ -303,6 +331,14 @@ bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 
 	// Turn off alpha blending now that the text has been rendered.
 	Direct3D->TurnOffAlphaBlending();
+
+
+	// Render the mini-map.
+	result = m_MiniMap->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
 
 	// Turn the Z buffer back on now that the 2D rendering has completed.
 	Direct3D->TurnZBufferOn();

@@ -10,7 +10,7 @@
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "textclass.h"
-
+#include "minimapclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: UserInterfaceClass
@@ -43,6 +43,7 @@ private:
 	int m_previousFps;
 	int m_previousPosition[6];
 	TextClass* m_RenderCountStrings;
+	MiniMapClass* m_MiniMap;
 };
 
 #endif
