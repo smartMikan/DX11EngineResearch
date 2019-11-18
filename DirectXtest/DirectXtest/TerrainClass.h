@@ -75,6 +75,7 @@ private:
 	void ShutdownHeightMap();
 	void SetTerrainCoordinates();
 	bool CalculateNormals();
+	bool LoadColorMap();
 	bool BuildTerrainModel();
 	void ShutdownTerrainModel();
 
@@ -93,7 +94,7 @@ private:
 
 	int m_terrainHeight, m_terrainWidth;
 	float m_heightScale;
-	char* m_terrainFilename;
+	char *m_terrainFilename, *m_colorMapFilename;
 	HeightMapType* m_heightMap;
 	ModelType* m_terrainModel;
 };

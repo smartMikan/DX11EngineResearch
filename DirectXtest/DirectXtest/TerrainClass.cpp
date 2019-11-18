@@ -8,6 +8,7 @@ TerrainClass::TerrainClass()
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
 	m_terrainFilename = 0;
+	m_colorMapFilename = 0;
 	m_heightMap = 0;
 	m_terrainModel = 0;
 }
@@ -49,6 +50,14 @@ bool TerrainClass::Initialize(ID3D11Device* device, const char* setupFilename)
 	{
 		return false;
 	}
+
+	// Load in the color map for the terrain.
+	result = LoadColorMap();
+	if (!result)
+	{
+		return false;
+	}
+
 
 	// Now build the 3D model of the terrain.
 	result = BuildTerrainModel();
@@ -117,6 +126,12 @@ bool TerrainClass::LoadSetupFile(const char* filename)
 		return false;
 	}
 
+	m_colorMapFilename = new char[stringLength];
+	if (!m_colorMapFilename)
+	{
+		return false;
+	}
+
 	// Open the setup file.  If it could not open the file then exit.
 	fin.open(filename);
 	if (fin.fail())
@@ -163,6 +178,16 @@ bool TerrainClass::LoadSetupFile(const char* filename)
 
 	// Read in the terrain height scaling.
 	fin >> m_heightScale;
+
+	// Read up to the color map file name.
+	fin.get(input);
+	while (input != ':')
+	{
+		fin.get(input);
+	}
+
+	// Read in the color map file name.
+	fin >> m_colorMapFilename;
 
 	// Close the setup file.
 	fin.close();
@@ -446,6 +471,103 @@ bool TerrainClass::CalculateNormals()
 	// Release the temporary normals.
 	delete[] normals;
 	normals = 0;
+
+	return true;
+}
+
+bool TerrainClass::LoadColorMap()
+{
+	int error, imageSize, i, j, k, index;
+	FILE* filePtr;
+	unsigned long long count;
+	BITMAPFILEHEADER bitmapFileHeader;
+	BITMAPINFOHEADER bitmapInfoHeader;
+	unsigned char* bitmapImage;
+
+
+	// Open the color map file in binary.
+	error = fopen_s(&filePtr, m_colorMapFilename, "rb");
+	if (error != 0)
+	{
+		return false;
+	}
+
+	// Read in the file header.
+	count = fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+	if (count != 1)
+	{
+		return false;
+	}
+
+	// Read in the bitmap info header.
+	count = fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
+	if (count != 1)
+	{
+		return false;
+	}
+
+	// Make sure the color map dimensions are the same as the terrain dimensions for easy 1 to 1 mapping.
+	if ((bitmapInfoHeader.biWidth != m_terrainWidth) || (bitmapInfoHeader.biHeight != m_terrainHeight))
+	{
+		return false;
+	}
+
+	// Calculate the size of the bitmap image data.  Since this is non-divide by 2 dimensions (eg. 257x257) need to add extra byte to each line.
+	imageSize = m_terrainHeight * ((m_terrainWidth * 3) + 1);
+
+	// Allocate memory for the bitmap image data.
+	bitmapImage = new unsigned char[imageSize];
+	if (!bitmapImage)
+	{
+		return false;
+	}
+
+	// Move to the beginning of the bitmap data.
+	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+
+	// Read in the bitmap image data.
+	count = fread(bitmapImage, 1, imageSize, filePtr);
+	if (count != imageSize)
+	{
+		return false;
+	}
+
+	// Close the file.
+	error = fclose(filePtr);
+	if (error != 0)
+	{
+		return false;
+	}
+
+	// Initialize the position in the image data buffer.
+	k = 0;
+
+	// Read the image data into the color map portion of the height map structure.
+	for (j = 0; j<m_terrainHeight; j++)
+	{
+		for (i = 0; i<m_terrainWidth; i++)
+		{
+			// Bitmaps are upside down so load bottom to top into the array.
+			index = (m_terrainWidth * (m_terrainHeight - 1 - j)) + i;
+
+			m_heightMap[index].b = (float)bitmapImage[k] / 255.0f;
+			m_heightMap[index].g = (float)bitmapImage[k + 1] / 255.0f;
+			m_heightMap[index].r = (float)bitmapImage[k + 2] / 255.0f;
+
+			k += 3;
+		}
+
+		// Compensate for extra byte at end of each line in non-divide by 2 bitmaps (eg. 257x257).
+		k++;
+	}
+
+	// Release the bitmap image data.
+	delete[] bitmapImage;
+	bitmapImage = 0;
+
+	// Release the color map filename now that is has been read in.
+	delete[] m_colorMapFilename;
+	m_colorMapFilename = 0;
 
 	return true;
 }

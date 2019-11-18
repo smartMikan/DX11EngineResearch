@@ -1,6 +1,6 @@
-﻿Texture2D shaderTexture : register(t0);
+Texture2D shaderTexture : register(t0);
 Texture2D normalTexture : register(t1);
-SamplerState SampleType;
+SamplerState SampleType : register(s0);
 
 cbuffer LightBuffer
 {

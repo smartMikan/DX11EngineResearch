@@ -15,6 +15,7 @@
 #include "textureshaderclass.h"
 #include "lightshaderclass.h"
 #include "fontshaderclass.h"
+#include "terrainshaderclass.h"
 #include "skydomeshaderclass.h"
 #include "Shaders.h"
 #include "System/ConstantBuffer.h"
@@ -37,8 +38,7 @@ public:
 
 	bool RenderFontShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT4);
 	bool RenderSkyDomeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT4, XMFLOAT4);
-	bool RenderTerrainShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, ID3D11ShaderResourceView*,
-		XMFLOAT3, XMFLOAT4);
+	bool RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView * normalMap, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor);
 
 private:
 	ColorShaderClass * m_ColorShader;
@@ -46,7 +46,7 @@ private:
 	LightShaderClass* m_LightShader;
 	FontShaderClass* m_FontShader;
 	SkyDomeShaderClass* m_SkyDomeShader;
-
+	TerrainShaderClass* m_TerrainShader;
 
 	VertexShader* m_vertexShader;
 
