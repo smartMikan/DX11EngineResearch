@@ -12,6 +12,7 @@ ShaderManagerClass::ShaderManagerClass()
 	m_FontShader = 0;
 	m_SkyDomeShader = 0;
 	m_TerrainShader = 0;
+	m_ParticleShader = 0;
 	m_vertexShader = 0;
 }
 
@@ -116,6 +117,22 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	{
 		return false;
 	}
+	
+
+	// Create the sky dome shader object.
+	m_ParticleShader = new ParticleShaderClass;
+	if (!m_SkyDomeShader)
+	{
+		return false;
+	}
+
+
+	// Initialize the particle shader object.
+	result = m_ParticleShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		return false;
+	}
 
 
 	return true;
@@ -143,6 +160,14 @@ void ShaderManagerClass::Shutdown()
 {
 	
 
+	// Release the sky dome shader object.
+	if (m_ParticleShader)
+	{
+		m_ParticleShader->Shutdown();
+		delete m_ParticleShader;
+		m_ParticleShader = 0;
+	}
+	
 	// Release the sky dome shader object.
 	if (m_SkyDomeShader)
 	{
@@ -246,6 +271,10 @@ bool ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext,
 	return m_TerrainShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture, normalMap, lightDirection, diffuseColor);
 }
 
+bool ShaderManagerClass::RenderParticleShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+{
+	return m_ParticleShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
+}
 
 bool ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 	XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)

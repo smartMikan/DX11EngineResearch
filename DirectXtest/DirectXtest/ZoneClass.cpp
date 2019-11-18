@@ -13,6 +13,7 @@ ZoneClass::ZoneClass()
 	m_SkyDome = 0;
 	m_Model = 0;
 	m_Frustum = 0;
+	m_ParticleSystem = 0;
 }
 
 
@@ -141,6 +142,23 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
+
+	// Create the particle system object.
+	m_ParticleSystem = new ParticleSystemClass;
+	if (!m_ParticleSystem)
+	{
+		return false;
+	}
+
+	// Initialize the particle system object.
+	result = m_ParticleSystem->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./Resources/star.tga");
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the particle object.", L"Error", MB_OK);
+		return false;
+	}
+
+
 	// Set wire frame rendering initially to disabled.
 	m_wireFrame = false;
 
@@ -155,6 +173,15 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 void ZoneClass::Shutdown()
 {
+
+	// Release the particle system object.
+	if (m_ParticleSystem)
+	{
+		m_ParticleSystem->Shutdown();
+		delete m_ParticleSystem;
+		m_ParticleSystem = 0;
+	}
+
 	// Release the terrain object.
 	if (m_Terrain)
 	{
@@ -231,6 +258,9 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 	// Do the terrain frame processing.
 	m_Terrain->Frame();
+
+	// Run the frame processing for the particle system.
+	m_ParticleSystem->Frame(frameTime, Direct3D->GetDeviceContext());
 
 	// If the height is locked to the terrain then position the camera on top of it.
 	if (m_heightLocked)
@@ -421,6 +451,26 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	m_Model->Render(Direct3D->GetDeviceContext());
 	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), worldMatrix, viewMatrix,
 		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
+
+
+	Direct3D->TurnOnParticleBlending();
+	// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_ParticleSystem->Render(Direct3D->GetDeviceContext());
+	
+	XMMATRIX particlePosition;
+	particlePosition = worldMatrix;
+	particlePosition = XMMatrixTranslation(128.0f, 3.0f, 15.0f);
+	// Render the model using the texture shader.
+	result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
+		m_ParticleSystem->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+	
+	// Turn off alpha blending.
+	Direct3D->TurnOffParticleBlending();
+
 
 	// Turn off the wire frame rendering once the terrain rendering is complete so we don't render anything else such as the UI in wire frame.
 	// Turn off wire frame rendering of the terrain if it was on.

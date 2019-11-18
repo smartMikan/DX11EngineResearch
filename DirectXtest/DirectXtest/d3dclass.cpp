@@ -23,6 +23,7 @@ D3DClass::D3DClass()
 	m_alphaEnableBlendingState = nullptr;
 	m_alphaDisableBlendingState = nullptr;
 	m_alphaEnableBlendingState2 = nullptr;
+	m_alphaEnableBlendingStateParticle = nullptr;
 }
 
 
@@ -616,6 +617,23 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+
+	// Create an alpha enabled blend state description.
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingStateParticle);
+	if (FAILED(result))
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -650,6 +668,13 @@ void D3DClass::Shutdown()
 		m_alphaEnableBlendingState2->Release();
 		m_alphaEnableBlendingState2 = 0;
 	}
+
+	if (m_alphaEnableBlendingStateParticle)
+	{
+		m_alphaEnableBlendingStateParticle->Release();
+		m_alphaEnableBlendingStateParticle = 0;
+	}
+
 
 	if (m_rasterStateWireframe)
 	{
@@ -865,6 +890,40 @@ void D3DClass::TurnOffAlphaBlending()
 	blendFactor[3] = 0.0f;
 
 	// Turn off the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
+
+	return;
+}
+
+void D3DClass::TurnOnParticleBlending()
+{
+	float blendFactor[4];
+
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn on the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaEnableBlendingStateParticle, blendFactor, 0xffffffff);
+
+	return;
+}
+
+void D3DClass::TurnOffParticleBlending()
+{
+	float blendFactor[4];
+
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn on the alpha blending.
 	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 
 	return;

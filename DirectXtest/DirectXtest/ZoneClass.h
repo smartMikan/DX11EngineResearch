@@ -23,6 +23,7 @@
 #include "frustumclass.h"
 #include "skydomeclass.h"
 #include "lightclass.h"
+#include "particlesystemclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ZoneClass
@@ -53,6 +54,7 @@ private:
 	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;
 	ModelClass* m_Model;
+	ParticleSystemClass* m_ParticleSystem;
 	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;
 };
 

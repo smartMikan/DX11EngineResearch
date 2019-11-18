@@ -42,9 +42,9 @@ Terrain:
 				 |					 |							|							|						|						|						|								
 			InputClass			ZoneClass			         SoundClass					FPSClass				CPUClass				TimerClass				D3DClass  ShaderManagerClass---------------------------------->ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass	...
 									 |
-		  ___________________________|_______________________________________________________
-		  |				|		        |                  |						         |
-	 CameraClass    PositionClass	  TerrainClass		UserInterfaceClass	          LightClass
+		  ___________________________|__________________________________________________________________________
+		  |				|		        |                  |						         |					|
+	 CameraClass    PositionClass	  TerrainClass		UserInterfaceClass	          LightClass			ParticleSystemClass
 |															|				       
 |													 _______|_______
                                  					 |			   |
