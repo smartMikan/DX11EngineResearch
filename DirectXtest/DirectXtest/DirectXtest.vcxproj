@@ -192,7 +192,9 @@
     <ClCompile Include="SkyDomeClass.cpp" />
     <ClCompile Include="SkyDomeShaderClass.cpp" />
     <ClCompile Include="soundclass.cpp" />
+    <ClCompile Include="System\IndexBuffer.cpp" />
     <ClCompile Include="System\VertexBuffer.cpp" />
+    <ClCompile Include="TerrainCellClass.cpp" />
     <ClCompile Include="TerrainShaderClass.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringConverter.cpp" />
@@ -248,6 +250,7 @@
     <ClInclude Include="System\ConstantBuffer.h" />
     <ClInclude Include="System\IndexBuffer.h" />
     <ClInclude Include="System\VertexBuffer.h" />
+    <ClInclude Include="TerrainCellClass.h" />
     <ClInclude Include="TerrainShaderClass.h" />
     <ClInclude Include="Utility\ErrorLoger.h" />
     <ClInclude Include="Utility\Geometry.h" />

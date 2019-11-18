@@ -8,8 +8,10 @@
 #include <directxmath.h>
 #include <fstream>
 #include <stdio.h>
-#include "System/VertexBuffer.h"
-#include "System/IndexBuffer.h"
+//#include "System/VertexBuffer.h"
+//#include "System/IndexBuffer.h"
+#include "terraincellclass.h"
+#include "frustumclass.h"
 using namespace DirectX;
 using namespace std;
 
@@ -65,13 +67,27 @@ public:
 
 	bool Initialize(ID3D11Device* device, const char* setupFilename);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*);
+	void Frame();
+	//bool Render(ID3D11DeviceContext*);
 
-	int GetIndexCount();
+	//int GetIndexCount();
+	bool RenderCell(ID3D11DeviceContext* deviceContext, int cellId, FrustumClass* Frustum);
+	void RenderCellLines(ID3D11DeviceContext* deviceContext, int cellId);
+
+	int GetCellIndexCount(int cellId);
+	int GetCellLinesIndexCount(int cellId);
+	int GetCellCount();
+
+	int GetRenderCount();
+	int GetCellsDrawn();
+	int GetCellsCulled();
+
+	bool GetHeightAtPosition(float inputX, float inputZ, float& height);
 
 private:
 	bool LoadSetupFile(const char* filename);
 	bool LoadBitmapHeightMap();
+	bool LoadRawHeightMap();
 	void ShutdownHeightMap();
 	void SetTerrainCoordinates();
 	bool CalculateNormals();
@@ -80,22 +96,31 @@ private:
 	void ShutdownTerrainModel();
 
 	void CalculateTerrainVectors();
-	void CalculateTangentBinormal(TempVertexType, TempVertexType, TempVertexType, VectorType&, VectorType&);
+	void CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, VectorType& tangent, VectorType& binormal);
 
-	bool InitializeBuffers(ID3D11Device*);
-	void ShutdownBuffers();
-	void RenderBuffers(ID3D11DeviceContext*);
+	bool LoadTerrainCells(ID3D11Device* device);
+	void ShutdownTerrainCells();
+	bool CheckHeightOfTriangle(float x, float z, float& height, float v0[3], float v1[3], float v2[3]);
+	//bool InitializeBuffers(ID3D11Device*);
+	//void ShutdownBuffers();
+	//void RenderBuffers(ID3D11DeviceContext*);
 
 private:
 	//ID3D11Buffer /** m_vertexBuffer,*/ *m_indexBuffer;
-	IndexBuffer* m_indexBuffer;
-	VertexBuffer<VertexType> *m_vertexBuffer;
-	int m_vertexCount, m_indexCount;
+	//IndexBuffer* m_indexBuffer;
+	//VertexBuffer<VertexType> *m_vertexBuffer;
+	int m_vertexCount;
+		//, m_indexCount;
 
 	int m_terrainHeight, m_terrainWidth;
 	float m_heightScale;
 	char *m_terrainFilename, *m_colorMapFilename;
+
 	HeightMapType* m_heightMap;
 	ModelType* m_terrainModel;
+	
+	TerrainCellClass* m_TerrainCells;
+
+	int m_cellCount, m_renderCount, m_cellsDrawn, m_cellsCulled;
 };
 

@@ -11,7 +11,7 @@ private:
 	VertexBuffer(const VertexBuffer<T>& rhs);
 
 private:
-	ID3D11Buffer* m_buffer;
+	ID3D11Buffer* m_buffer = nullptr;
 	std::unique_ptr<UINT> m_stride;
 	UINT m_bufferSize = 0;
 public:
@@ -44,9 +44,14 @@ public:
 
 	HRESULT Initialize(ID3D11Device* device, T * data, UINT m_vertexCount) 
 	{
+		if (m_buffer != nullptr) {
+			Release();
+		}
 		this->m_bufferSize = m_vertexCount;
-		this->m_stride = std::make_unique<UINT>(sizeof(T));
 
+		if (this->m_stride.get() == nullptr) {
+			this->m_stride = std::make_unique<UINT>(sizeof(T));
+		}
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 
@@ -60,6 +65,8 @@ public:
 		D3D11_SUBRESOURCE_DATA vertexBufferData;
 		ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
 		vertexBufferData.pSysMem = data;
+		vertexBufferData.SysMemPitch = 0;
+		vertexBufferData.SysMemSlicePitch = 0;
 
 		HRESULT hr = device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &m_buffer);
 		return hr;

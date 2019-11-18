@@ -11,7 +11,7 @@ private:
 	IndexBuffer(const IndexBuffer& rhs);
 
 private:
-	ID3D11Buffer* m_buffer;
+	ID3D11Buffer* m_buffer = nullptr;
 	UINT m_bufferSize = 0;
 public:
 	IndexBuffer() {}
@@ -35,6 +35,9 @@ public:
 
 	HRESULT Initialize(ID3D11Device* device, DWORD * data, UINT m_indicesCount)
 	{
+		if (m_buffer != nullptr) {
+			Release();
+		}
 		this->m_bufferSize = m_indicesCount;
 		
 		D3D11_BUFFER_DESC indexBufferDesc;

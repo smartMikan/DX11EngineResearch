@@ -62,6 +62,7 @@ public:
 	bool IsF2Toggled();
 
 	bool IsF3Toggled();
+	bool IsF4Toggled();
 
 	/*void KeyDown(unsigned int);
 	void KeyUp(unsigned int);
@@ -86,6 +87,7 @@ private:
 	bool m_F1_released;
 	bool m_F2_released;
 	bool m_F3_released;
+	bool m_F4_released;
 	//
 	//bool m_keys[256];	//Down:True //Up:False
 };

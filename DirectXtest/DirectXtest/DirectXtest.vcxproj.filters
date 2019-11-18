@@ -55,12 +55,12 @@
     <Filter Include="ヘッダー ファイル\Model">
       <UniqueIdentifier>{8554c6f0-42b1-41e4-8eba-fcc59513253c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Model">
+      <UniqueIdentifier>{ba10da1f-5127-4d7f-a5c3-3ec5e0d50f5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="modelclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="cameraclass.cpp">
@@ -74,9 +74,6 @@
     </ClCompile>
     <ClCompile Include="Loader\DDSTextureLoader.cpp">
       <Filter>ソース ファイル\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="textclass.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="soundclass.cpp">
       <Filter>ソース ファイル</Filter>
@@ -165,9 +162,6 @@
     <ClCompile Include="fadeshaderclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SkyDomeClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SkyDomeShaderClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -184,9 +178,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ApplicationClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TerrainClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Utility\StringConverter.cpp">
@@ -206,6 +197,24 @@
     </ClCompile>
     <ClCompile Include="TerrainShaderClass.cpp">
       <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="modelclass.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDomeClass.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainClass.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainCellClass.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="textclass.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="System\IndexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="TerrainShaderClass.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainCellClass.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

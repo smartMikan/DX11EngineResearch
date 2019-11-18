@@ -36,6 +36,9 @@ public:
 
 	HRESULT Initialize(ID3D11Device* device)
 	{
+		if (m_buffer != nullptr) {
+			Release();
+		}
 		//this->deviceContext = deviceContext;
 
 		D3D11_BUFFER_DESC constantBufferDesc;

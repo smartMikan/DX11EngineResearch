@@ -20,6 +20,7 @@
 #include "positionclass.h"
 #include "TerrainClass.h"
 #include "modelclass.h"
+#include "frustumclass.h"
 #include "skydomeclass.h"
 #include "lightclass.h"
 
@@ -49,9 +50,10 @@ private:
 	PositionClass* m_Position;
 	LightClass* m_Light;
 	TerrainClass* m_Terrain;
+	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;
 	ModelClass* m_Model;
-	bool m_displayUI, m_wireFrame;
+	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;
 };
 
 #endif
