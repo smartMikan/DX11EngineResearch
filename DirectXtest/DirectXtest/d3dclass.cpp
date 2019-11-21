@@ -362,6 +362,23 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Initialize the description of the stencil state.
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 
+	// Set up the description of the LessEqual stencil state.
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	depthStencilDesc.StencilEnable = false;
+
+	// Create the LessEqual depth stencil state.
+	result = m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilStateLessEqual);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	
+	// Clear the depth stencil state before setting the parameters.
+	ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
+
 	// Set up the description of the stencil state.
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -712,6 +729,12 @@ void D3DClass::Shutdown()
 		m_depthStencilState = 0;
 	}
 
+	if (m_depthStencilStateLessEqual)
+	{
+		m_depthStencilStateLessEqual->Release();
+		m_depthStencilStateLessEqual = 0;
+	}
+
 	if (m_depthStencilBuffer)
 	{
 		m_depthStencilBuffer->Release();
@@ -855,6 +878,11 @@ void D3DClass::TurnZBufferOff()
 	return;
 }
 
+void D3DClass::TurnDepthStencilStateLessEqual()
+{
+	m_deviceContext->OMSetDepthStencilState(m_depthStencilStateLessEqual, 1);
+	return;
+}
 
 
 

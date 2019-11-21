@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: userinterfaceclass.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ public:
 	bool Initialize(D3DClass* Direct3D, int screenHeight, int screenWidth);
 	void Shutdown();
 
-	bool Frame(ID3D11DeviceContext* deviceContext, int fps, float posX, float posY, float posZ,
+	bool Frame(ID3D11DeviceContext* deviceContext, int fps,int cpu, float posX, float posY, float posZ,
 		float rotX, float rotY, float rotZ);
 	bool Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 		XMMATRIX orthoMatrix);
@@ -34,12 +34,13 @@ public:
 
 private:
 	bool UpdateFpsString(ID3D11DeviceContext* deviceContext, int fps);
+	bool UpdateCpuString(ID3D11DeviceContext* deviceContext, int cpu);
 	bool UpdatePositionStrings(ID3D11DeviceContext* deviceContext, float posX, float posY, float posZ,
 		float rotX, float rotY, float rotZ);
 
 private:
 	FontClass * m_Font1;
-	TextClass *m_FpsString, *m_VideoStrings, *m_PositionStrings;
+	TextClass *m_FpsString,*m_CpuString , *m_VideoStrings, *m_PositionStrings;
 	int m_previousFps;
 	int m_previousPosition[6];
 	TextClass* m_RenderCountStrings;

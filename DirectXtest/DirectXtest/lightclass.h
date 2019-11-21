@@ -41,6 +41,12 @@ public:
 	XMFLOAT4 GetSpecularColor();
 	float GetSpecularPower();
 
+	void SetFrameTime(float time);
+
+	void TurnRight(bool keydown);
+
+	void TurnLeft(bool keydown);
+
 
 private:
 	XMFLOAT4 m_diffuseColor;
@@ -49,6 +55,10 @@ private:
 	
 	XMFLOAT4 m_specularColor;
 	float m_specularPower;
+
+	float m_frameTime;
+	float m_rotationZ;
+	float m_leftTurnSpeed, m_rightTurnSpeed;
 };
 
 #endif

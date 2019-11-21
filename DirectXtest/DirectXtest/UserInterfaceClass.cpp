@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////////////////
 // Filename: userinterfaceclass.cpp
 ///////////////////////////////////////////////////////////////////////////////
 #include "userinterfaceclass.h"
@@ -8,6 +8,7 @@ UserInterfaceClass::UserInterfaceClass()
 {
 	m_Font1 = 0;
 	m_FpsString = 0;
+	m_CpuString = 0;
 	m_VideoStrings = 0;
 	m_PositionStrings = 0;
 	m_RenderCountStrings = 0;
@@ -64,6 +65,22 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 	{
 		return false;
 	}
+
+	// Create the text object for the cpu string.
+	m_CpuString = new TextClass;
+	if (!m_CpuString)
+	{
+		return false;
+	}
+
+	// Initialize the fps text string.
+	result = m_CpuString->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 16, false, m_Font1,
+		"Cpu: 0", 10, 70, 0.0f, 1.0f, 0.0f);
+	if (!result)
+	{
+		return false;
+	}
+
 
 	// Initial the previous frame fps.
 	m_previousFps = -1;
@@ -194,7 +211,7 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 	}
 
 	// Initialize the mini-map object.
-	result = m_MiniMap->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 1025, 1025);
+	result = m_MiniMap->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), screenWidth, screenHeight, 513, 513);
 	if (!m_MiniMap)
 	{
 		return false;
@@ -250,6 +267,13 @@ void UserInterfaceClass::Shutdown()
 		m_VideoStrings = 0;
 	}
 
+	// Release the cpu text string.
+	if (m_CpuString)
+	{
+		m_CpuString->Shutdown();
+		delete m_CpuString;
+		m_CpuString = 0;
+	}
 
 	// Release the fps text string.
 	if (m_FpsString)
@@ -271,7 +295,7 @@ void UserInterfaceClass::Shutdown()
 }
 
 
-bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps, float posX, float posY, float posZ,
+bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps,int cpu, float posX, float posY, float posZ,
 	float rotX, float rotY, float rotZ)
 {
 	bool result;
@@ -279,6 +303,13 @@ bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps, floa
 
 	// Update the fps string.
 	result = UpdateFpsString(deviceContext, fps);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Update the fps string.
+	result = UpdateCpuString(deviceContext, cpu);
 	if (!result)
 	{
 		return false;
@@ -312,6 +343,9 @@ bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 
 	// Render the fps string.
 	m_FpsString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
+
+	// Render the cpu string.
+	m_CpuString->Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
 
 	// Render the video card strings.
 	m_VideoStrings[0].Render(Direct3D->GetDeviceContext(), ShaderManager, worldMatrix, viewMatrix, orthoMatrix, m_Font1->GetTexture());
@@ -461,6 +495,56 @@ bool UserInterfaceClass::UpdateFpsString(ID3D11DeviceContext* deviceContext, int
 	}
 
 	return true;
+}
+
+bool UserInterfaceClass::UpdateCpuString(ID3D11DeviceContext * deviceContext, int cpu)
+{
+	char tempString[16];
+	char cpuString[16];
+	float red, green, blue;
+	bool result;
+	
+	
+	// Convert the cpu integer to string format.
+	_itoa_s(cpu, tempString, 10);
+	
+	// Setup the cpu string.
+	strcpy_s(cpuString, "Cpu: ");
+	strcat_s(cpuString, tempString);
+	strcat_s(cpuString, "%");
+	
+	// If cpu is 60 or above set the cpu color to red.
+	if (cpu >= 60)
+	{
+		red = 1.0f;
+		green = 0.0f;
+		blue = 0.0f;
+	}
+
+	// If cpu is below 60 set the cpu color to yellow.
+	if (cpu < 60)
+	{
+		red = 1.0f;
+		green = 1.0f;
+		blue = 0.0f;
+	}
+
+	// If cpu is below 30 set the cpu color to green.
+	if (cpu < 30)
+	{
+		red = 0.0f;
+		green = 1.0f;
+		blue = 0.0f;
+	}
+
+	// Update the sentence vertex buffer with the new string information.
+	result = m_CpuString->UpdateSentence(deviceContext, m_Font1, cpuString, 10, 70, red, green, blue);
+	if (!result)
+	{
+		return false;
+	}
+	
+		return true;
 }
 
 

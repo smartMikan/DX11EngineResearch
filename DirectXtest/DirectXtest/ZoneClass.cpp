@@ -11,6 +11,7 @@ ZoneClass::ZoneClass()
 	m_Light = 0;
 	m_Terrain = 0;
 	m_SkyDome = 0;
+	m_SkyCube = 0;
 	m_Model = 0;
 	m_Frustum = 0;
 	m_ParticleSystem = 0;
@@ -97,7 +98,20 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
+	// Create the sky dome object.
+	m_SkyCube = new SkyCubeClass;
+	if (!m_SkyCube)
+	{
+		return false;
+	}
 
+	// Initialize the sky dome object.
+	result = m_SkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext() ,L"./3DModel/Texture/daylight.jpg");
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the sky cube object.", L"Error", MB_OK);
+		return false;
+	}
 
 	// Create the terrain object.
 	m_Terrain = new TerrainClass;
@@ -162,11 +176,14 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	// Set wire frame rendering initially to disabled.
 	m_wireFrame = false;
 
-	// Set the rendering of cell lines initially to enabled.
-	m_cellLines = true;
+	// Set the rendering of cell lines initially to disabled.
+	m_cellLines = false;
 
 	// Set the user locked to the terrain height for movement.
 	m_heightLocked = true;
+
+	//Set the cubemap sky to to disabled.
+	m_cubemapsky = false;
 
 	return true;
 }
@@ -188,6 +205,14 @@ void ZoneClass::Shutdown()
 		m_Terrain->Shutdown();
 		delete m_Terrain;
 		m_Terrain = 0;
+	}
+
+	// Release the sky dome object.
+	if (m_SkyCube)
+	{
+		m_SkyCube->Shutdown();
+		delete m_SkyCube;
+		m_SkyCube = 0;
 	}
 
 	// Release the sky dome object.
@@ -236,7 +261,7 @@ void ZoneClass::Shutdown()
 
 	return;
 }
-bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps)
+bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu)
 {
 	bool result, foundHeight;
 	float posX, posY, posZ, rotX, rotY, rotZ, height;
@@ -250,7 +275,7 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 	m_Position->GetRotation(rotX, rotY, rotZ);
 
 	// Do the frame processing for the user interface.
-	result = m_UserInterface->Frame(Direct3D->GetDeviceContext(), fps, posX, posY, posZ, rotX, rotY, rotZ);
+	result = m_UserInterface->Frame(Direct3D->GetDeviceContext(), fps, cpu, posX, posY, posZ, rotX, rotY, rotZ);
 	if (!result)
 	{
 		return false;
@@ -291,12 +316,13 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	float posX, posY, posZ, rotX, rotY, rotZ;
 	// Set the frame time for calculating the updated position.
 	m_Position->SetFrameTime(frameTime);
-	
+	m_Light->SetFrameTime(frameTime);
+
 	// Handle the input.
-	keyDown = Input->IsLeftPressed();
+	keyDown = Input->IsLeftPressed() || Input->GetHorizontal() < 0;
 	m_Position->TurnLeft(keyDown);
 
-	keyDown = Input->IsRightPressed();
+	keyDown = Input->IsRightPressed() || Input->GetHorizontal() > 0;
 	m_Position->TurnRight(keyDown);
 
 	keyDown = Input->IsUpPressed();
@@ -311,10 +337,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	keyDown = Input->IsZPressed();
 	m_Position->MoveDownward(keyDown);
 
-	keyDown = Input->IsPgUpPressed();
+	keyDown = Input->IsPgUpPressed() || Input->GetVertical() < 0;
 	m_Position->LookUpward(keyDown);
 
-	keyDown = Input->IsPgDownPressed();
+	keyDown = Input->IsPgDownPressed() || Input->GetVertical() > 0;
 	m_Position->LookDownward(keyDown);
 
 	// Get the view point position/rotation.
@@ -324,6 +350,14 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	// Set the position of the camera.
 	m_Camera->SetPosition(posX, posY, posZ);
 	m_Camera->SetRotation(rotX, rotY, rotZ);
+
+	// Set the rotation of the light.
+	keyDown = Input->IsQPressed();
+	m_Light->TurnLeft(keyDown);
+
+	keyDown = Input->IsWPressed();
+	m_Light->TurnRight(keyDown);
+
 	// Determine if the user interface should be displayed or not.
 	if (Input->IsF1Toggled())
 	{
@@ -348,6 +382,16 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 		m_heightLocked = !m_heightLocked;
 	}
 
+	if (Input->IsF5Toggled())
+	{
+		m_ParticleSystem->SetParticleProperty(500, 10, 500, -3, 1, 0.2, 1000);
+	}
+
+	if (Input->IsF6Toggled())
+	{
+		m_cubemapsky = !m_cubemapsky;
+	}
+
 	return;
 }
 
@@ -370,27 +414,40 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	
 	// Get the position of the camera.
 	cameraPosition = m_Camera->GetPosition();
-
 	// Construct the frustum.
 	m_Frustum->ConstructFrustum(projectionMatrix, viewMatrix);
 
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Turn off back face culling and turn off the Z buffer.
+	// Turn off back face culling.
 	Direct3D->TurnOffCulling();
-	Direct3D->TurnZBufferOff();
 
 	// Translate the sky dome to be centered around the camera position.
 	worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	// Render the sky dome using the sky dome shader.
-	m_SkyDome->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), worldMatrix, viewMatrix,
-		projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
-	if (!result)
+	if (m_cubemapsky) {
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_SkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_SkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+	}
+	else
 	{
-		return false;
+		Direct3D->TurnZBufferOff();
+		// Render the sky dome using the sky dome shader.
+		m_SkyDome->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 	// Reset the world matrix.
@@ -448,8 +505,12 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//}
 
 	Direct3D->GetWorldMatrix(worldMatrix);
+	XMMATRIX modelPosition;
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
+
 	m_Model->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), worldMatrix, viewMatrix,
+	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
 		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
 
 
@@ -459,7 +520,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	
 	XMMATRIX particlePosition;
 	particlePosition = worldMatrix;
-	particlePosition = XMMatrixTranslation(128.0f, 3.0f, 15.0f);
+	particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
 	// Render the model using the texture shader.
 	result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
 		m_ParticleSystem->GetTexture());

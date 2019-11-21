@@ -10,6 +10,8 @@ InputClass::InputClass()
 	m_directInput = 0;
 	m_keyboard = 0;
 	m_mouse = 0;
+	m_horizontal = 0;
+	m_vertical = 0;
 }
 
 
@@ -110,6 +112,29 @@ bool InputClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int
 		return false;
 	}
 
+
+	m_horizontal = new Axis();
+	if (!m_horizontal) {
+		return false;
+	}
+	m_horizontal->snap = true;
+	m_horizontal->dead = 0.1f;
+	m_horizontal->value = 0.0f;
+	m_horizontal->maxValue = 10.0f;
+	m_horizontal->gravity = 3.0f;
+	m_horizontal->sensitivity = 0.01f;
+
+	m_vertical = new Axis();
+	if (!m_vertical) {
+		return false;
+	}
+	m_vertical->snap = true;
+	m_vertical->dead = 0.1f;
+	m_vertical->value = 0.0f;
+	m_vertical->maxValue = 10.0f;
+	m_vertical->gravity = 0.01f;
+	m_vertical->sensitivity = 0.01f;
+
 	return true;
 	//int i;
 
@@ -124,6 +149,17 @@ bool InputClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int
 }
 void InputClass::Shutdown()
 {
+	//Release the Horizontal And Vertical Axis
+	if (m_vertical) 
+	{
+		delete[] m_vertical;
+		m_vertical = 0;
+	}
+	if (m_horizontal) 
+	{
+		delete[] m_horizontal;
+		m_horizontal = 0;
+	}
 	// Release the mouse.
 	if (m_mouse)
 	{
@@ -146,6 +182,8 @@ void InputClass::Shutdown()
 		m_directInput->Release();
 		m_directInput = 0;
 	}
+
+	
 
 	return;
 }
@@ -174,7 +212,8 @@ bool InputClass::Frame()
 
 	// Process the changes in the mouse and keyboard.
 	ProcessInput();
-
+	
+	ProcessAxis();
 	return true;
 }
 
@@ -247,6 +286,7 @@ void InputClass::ProcessInput()
 	// Update the location of the mouse cursor based on the change of the mouse location during the frame.
 	m_mouseX += m_mouseState.lX;
 	m_mouseY += m_mouseState.lY;
+
 
 	// Ensure the mouse location doesn't exceed the screen width or height.
 	if (m_mouseX < 0) { m_mouseX = 0; }
@@ -347,6 +387,27 @@ bool InputClass::IsZPressed()
 	return false;
 }
 
+bool InputClass::IsQPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_Q] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsWPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_W] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
 
 bool InputClass::IsPgUpPressed()
 {
@@ -447,6 +508,192 @@ bool InputClass::IsF4Toggled()
 	}
 
 	return false;
+}
+
+bool InputClass::IsF5Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F5] & 0x80)
+	{
+		if (m_F5_released)
+		{
+			m_F5_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F5_released = true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsF6Toggled()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_F6] & 0x80)
+	{
+		if (m_F6_released)
+		{
+			m_F6_released = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_F6_released = true;
+	}
+
+	return false;
+}
+
+
+bool InputClass::ProcessAxis()
+{
+	float value;
+	//Horizontal
+	value = m_horizontal->value;
+	//CheckPlus
+	if (m_mouseState.lX > m_horizontal->dead * 50.0f) {
+		if (value >= 0) {
+			value += m_mouseState.lX * m_horizontal->sensitivity;
+		}
+		else
+		{
+			//CheckSnap
+			if (m_horizontal->snap == true) {
+				value = 0;
+			}
+			else
+			{
+				value += m_mouseState.lX * m_horizontal->sensitivity;
+			}
+		}
+	}
+	//CheckMinus
+	else if (m_mouseState.lX < -m_horizontal->dead * 50.0f) {
+		if (value <= 0) {
+			value += m_mouseState.lX * m_horizontal->sensitivity;
+		}
+		else
+		{
+			//CheckSnap
+			if (m_horizontal->snap) {
+				value = 0;
+			}
+			else
+			{
+				value += m_mouseState.lX * m_horizontal->sensitivity;
+			}
+		}
+	}
+	//CheckZero
+	else 
+	{
+		value = 0;
+		/*if (value > 0) {
+			value -= m_horizontal->gravity * m_horizontal->sensitivity;
+			if (value < 0) {
+				value = 0;
+			}
+		}
+		if (value < 0) {
+			value += m_horizontal->gravity * m_horizontal->sensitivity;
+			if (value > 0) {
+				value = 0;
+			}
+		}*/
+	}
+
+	//ClampMaxValue
+	if (value > m_horizontal->maxValue) {
+		value = m_horizontal->maxValue;
+	}
+	if (value < -m_horizontal->maxValue) {
+		value = -m_horizontal->maxValue;
+	}
+
+	//Apply value
+	m_horizontal->value = value;
+	
+
+	//Vertical
+	value = m_vertical->value;
+	//CheckPlus
+	if (m_mouseState.lY > m_vertical->dead * 50.0f)
+	{
+		if (value >= 0) {
+			value += m_mouseState.lY * m_vertical->sensitivity;
+		}
+		else
+		{
+			//CheckSnap
+			if (m_vertical->snap) {
+				value = 0;
+			}
+			else
+			{
+				value += m_mouseState.lY * m_vertical->sensitivity;
+			}
+		}
+	}
+	//CheckMinus
+	else if (m_mouseState.lY < -m_vertical->dead * 50.0f)
+	{
+		if (value <= 0) {
+			value += m_mouseState.lY * m_vertical->sensitivity;
+		}
+		else
+		{
+			//CheckSnap
+			if (m_vertical->snap == true) {
+				value = 0;
+			}
+			else
+			{
+				value += m_mouseState.lY * m_vertical->sensitivity;
+			}
+		}
+	}
+	//CheckZero
+	else
+	{
+		value = 0;
+		/*if (value > 0) {
+			value -= m_vertical->gravity * m_vertical->sensitivity;
+			if (value < 0) {
+				value = 0;
+			}
+		}
+		if (value < 0) {
+			value += m_vertical->gravity * m_vertical->sensitivity;
+			if (value > 0) {
+				value = 0;
+			}
+		}*/
+	}
+
+	//ClampMaxValue
+	if (value > m_vertical->maxValue) {
+		value = m_vertical->maxValue;
+	}
+	if (value < -m_vertical->maxValue) {
+		value = -m_vertical->maxValue;
+	}
+	
+	//Apply value
+	m_vertical->value = value;
+
+	return true;
+
+}
+float InputClass::GetHorizontal() {
+	return m_horizontal->value;
+}
+
+float InputClass::GetVertical() {
+	return m_vertical->value;
 }
 
 //void InputClass::KeyDown(unsigned int input)

@@ -81,7 +81,6 @@ void PositionClass::GetRotation(float& x, float& y, float& z)
 }
 
 //GetRotation returns the Y-axis rotation of the viewer. 
-//This is the only helper function we need for this tutorial but could be expanded to get more information about the location of the viewer.
 void PositionClass::GetRotation(float & y)
 {
 	y = m_rotationY;
@@ -173,14 +172,14 @@ void PositionClass::MoveUpward(bool keydown)
 	{
 		m_upwardSpeed += m_frameTime * 0.015f;
 
-		if (m_upwardSpeed > (m_frameTime * 0.015f))
+		if (m_upwardSpeed > (m_frameTime * 0.15f))
 		{
-			m_upwardSpeed = m_frameTime * 0.015f;
+			m_upwardSpeed = m_frameTime * 0.15f;
 		}
 	}
 	else
 	{
-		m_upwardSpeed -= m_frameTime * 0.015f;
+		m_upwardSpeed -= m_frameTime * 0.15f;
 
 		if (m_upwardSpeed < 0.0f)
 		{
@@ -201,14 +200,14 @@ void PositionClass::MoveDownward(bool keydown)
 	{
 		m_downwardSpeed += m_frameTime * 0.015f;
 
-		if (m_downwardSpeed > (m_frameTime * 0.015f))
+		if (m_downwardSpeed > (m_frameTime * 0.15f))
 		{
-			m_downwardSpeed = m_frameTime * 0.015f;
+			m_downwardSpeed = m_frameTime * 0.15f;
 		}
 	}
 	else
 	{
-		m_downwardSpeed -= m_frameTime * 0.015f;
+		m_downwardSpeed -= m_frameTime * 0.15f;
 
 		if (m_downwardSpeed < 0.0f)
 		{
@@ -290,9 +289,9 @@ void PositionClass::LookUpward(bool keydown)
 	{
 		m_lookUpSpeed += m_frameTime * 0.01f;
 
-		if (m_lookUpSpeed > (m_frameTime * 0.015f))
+		if (m_lookUpSpeed > (m_frameTime * 0.15f))
 		{
-			m_lookUpSpeed = m_frameTime * 0.015f;
+			m_lookUpSpeed = m_frameTime * 0.15f;
 		}
 	}
 	else
@@ -324,9 +323,9 @@ void PositionClass::LookDownward(bool keydown)
 	{
 		m_lookDownSpeed += m_frameTime * 0.01f;
 
-		if (m_lookDownSpeed > (m_frameTime * 0.015f))
+		if (m_lookDownSpeed > (m_frameTime * 0.15f))
 		{
-			m_lookDownSpeed = m_frameTime * 0.015f;
+			m_lookDownSpeed = m_frameTime * 0.15f;
 		}
 	}
 	else

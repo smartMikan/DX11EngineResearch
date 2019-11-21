@@ -56,17 +56,17 @@ public:
 		return hr;
 	}
 
-	bool ApplyChanges(ID3D11DeviceContext* deviceContext)
+	HRESULT ApplyChanges(ID3D11DeviceContext* deviceContext)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		HRESULT hr = deviceContext->Map(m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		if (FAILED(hr)) {
 			ErrorLoger::Log(hr, "Failed to map constant buffer");
-			return false;
+			return hr;
 		}
 		CopyMemory(mappedResource.pData, &data, sizeof(T));
 		deviceContext->Unmap(m_buffer, 0);
-		return true;
+		return hr;
 	}
 
 

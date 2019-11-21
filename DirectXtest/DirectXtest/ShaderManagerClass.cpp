@@ -11,6 +11,7 @@ ShaderManagerClass::ShaderManagerClass()
 	m_LightShader = 0;
 	m_FontShader = 0;
 	m_SkyDomeShader = 0;
+	m_SkyCubeShader = 0;
 	m_TerrainShader = 0;
 	m_ParticleShader = 0;
 	m_vertexShader = 0;
@@ -118,10 +119,23 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 	
+	// Create the sky dome shader object.
+	m_SkyCubeShader = new SkyCubeShaderClass;
+	if (!m_SkyCubeShader)
+	{
+		return false;
+	}
+
+	// Initialize the sky dome shader object.
+	result = m_SkyCubeShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		return false;
+	}
 
 	// Create the sky dome shader object.
 	m_ParticleShader = new ParticleShaderClass;
-	if (!m_SkyDomeShader)
+	if (!m_ParticleShader)
 	{
 		return false;
 	}
@@ -147,7 +161,7 @@ bool ShaderManagerClass::InitializeMyShader(ID3D11Device *device, HWND hwnd, std
 		m_vertexShader = 0;
 	}
 
-	UINT elementsCount = _ARRAYSIZE(inputlayout);
+	UINT elementsCount =1;
 
 	m_vertexShader = new VertexShader();
 	m_vertexShader->Initialize(device,vertexShaderCsoPath, inputlayout, elementsCount);
@@ -168,6 +182,14 @@ void ShaderManagerClass::Shutdown()
 		m_ParticleShader = 0;
 	}
 	
+	// Release the sky dome shader object.
+	if (m_SkyCubeShader)
+	{
+		m_SkyCubeShader->Shutdown();
+		delete m_SkyCubeShader;
+		m_SkyCubeShader = 0;
+	}
+
 	// Release the sky dome shader object.
 	if (m_SkyDomeShader)
 	{
@@ -242,13 +264,13 @@ bool ShaderManagerClass::RenderTextureShader(ID3D11DeviceContext* deviceContext,
 }
 
 
-bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
-	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
-	XMFLOAT4 diffuseColor)
-{
-
-	return false;
-}
+//bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+//	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, XMFLOAT3 lightDirection,
+//	XMFLOAT4 diffuseColor)
+//{
+//
+//	return false;
+//}
 
 bool ShaderManagerClass::RenderLightShader(ID3D11DeviceContext *deviceContext, int indexCount, ID3D11ShaderResourceView ** textureArray, XMMATRIX world, XMMATRIX view, XMMATRIX projection, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor)
 {
@@ -280,6 +302,12 @@ bool ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext,
 	XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
 {
 	return m_SkyDomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
+}
+
+bool ShaderManagerClass::RenderSkyCubeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+	XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+{
+	return m_SkyCubeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
 }
 
 

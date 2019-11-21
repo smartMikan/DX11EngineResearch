@@ -9,7 +9,7 @@
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -24,7 +24,9 @@ const float SCREEN_NEAR = 0.1f;
 #include "texturemanagerclass.h"
 #include "timerclass.h"
 #include "fpsclass.h"
+#include "cpuclass.h"
 #include "zoneclass.h"
+#include "soundclass.h"
 
 
 
@@ -49,7 +51,10 @@ private:
 	TextureManagerClass* m_TextureManager;
 	TimerClass* m_Timer;
 	FpsClass* m_Fps;
+	CpuClass* m_Cpu;
 	ZoneClass* m_Zone;
+
+	SoundClass* m_Sound;
 
 };
 
