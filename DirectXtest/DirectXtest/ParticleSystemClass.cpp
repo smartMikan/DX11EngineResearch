@@ -8,6 +8,7 @@ ParticleSystemClass::ParticleSystemClass()
 	m_vertices = 0;
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
+	m_DefaultState = 0;
 }
 
 ParticleSystemClass::ParticleSystemClass(const ParticleSystemClass& other)
@@ -144,9 +145,9 @@ bool ParticleSystemClass::InitializeParticleSystem()
 	int i;
 
 	// Set the random deviation of where the particles can be located when emitted.
-	m_particleDeviationX = 0.5f;
+	m_particleDeviationX = 5.0f;
 	m_particleDeviationY = 0.1f;
-	m_particleDeviationZ = 2.0f;
+	m_particleDeviationZ = 5.0f;
 
 	// Set the speed and speed variation of particles.
 	m_particleVelocity = 1.0f;
@@ -159,7 +160,7 @@ bool ParticleSystemClass::InitializeParticleSystem()
 	m_particlesPerSecond = 250.0f;
 
 	// Set the maximum number of particles allowed in the particle system.
-	m_maxParticles = 5000;
+	m_maxParticles = 20000;
 
 	// Create the particle list.
 	m_particleList = new ParticleType[m_maxParticles];
@@ -180,7 +181,68 @@ bool ParticleSystemClass::InitializeParticleSystem()
 	// Clear the initial accumulated time for the particle per second emission rate.
 	m_accumulatedTime = 0.0f;
 
+
+
+	m_DefaultState = new ParticleState();
+	if (!m_DefaultState)
+	{
+		return false;
+	}
+	m_DefaultState->particleDeviationX = m_particleDeviationX;
+	m_DefaultState->particleDeviationY = m_particleDeviationY;
+	m_DefaultState->particleDeviationZ = m_particleDeviationZ;
+	m_DefaultState->particleVelocity = m_particleVelocity;
+	m_DefaultState->particleVelocityVariation = m_particleVelocityVariation;
+	m_DefaultState->particleSize = m_particleSize;
+	m_DefaultState->particlesPerSecond = m_particlesPerSecond;
+
 	return true;
+}
+
+bool ParticleSystemClass::SetParticleProperty(float particleDeviationX, float particleDeviationY, float particleDeviationZ, float particleVelocity, float particleVelocityVariation, float particleSize, float particlesPerSecond)
+{
+
+	// Set the random deviation of where the particles can be located when emitted.
+	m_particleDeviationX = particleDeviationX;
+	m_particleDeviationY = particleDeviationY;
+	m_particleDeviationZ = particleDeviationZ;
+
+	// Set the speed and speed variation of particles.
+	m_particleVelocity = particleVelocity;
+	m_particleVelocityVariation = particleVelocityVariation;
+
+	// Set the physical size of the particles.
+	m_particleSize = particleSize;
+
+	// Set the number of particles to emit per second.
+	m_particlesPerSecond = particlesPerSecond;
+	
+	return true;
+}
+
+bool ParticleSystemClass::SetParticleProperty(ParticleState* state)
+{
+	// Set the random deviation of where the particles can be located when emitted.
+	m_particleDeviationX = state->particleDeviationX;
+	m_particleDeviationY = state->particleDeviationY;
+	m_particleDeviationZ = state->particleDeviationZ;
+
+	// Set the speed and speed variation of particles.
+	m_particleVelocity = state->particleVelocity;
+	m_particleVelocityVariation = state->particleVelocityVariation;
+
+	// Set the physical size of the particles.
+	m_particleSize = state->particleSize;
+
+	// Set the number of particles to emit per second.
+	m_particlesPerSecond = state->particlesPerSecond;
+
+	return true;
+}
+
+bool ParticleSystemClass::SetParticleProperty()
+{
+	return SetParticleProperty(m_DefaultState);
 }
 
 
@@ -193,6 +255,11 @@ void ParticleSystemClass::ShutdownParticleSystem()
 		m_particleList = 0;
 	}
 
+	if (m_DefaultState) 
+	{
+		delete[] m_DefaultState;
+		m_DefaultState = 0;
+	}
 	return;
 }
 
@@ -406,7 +473,7 @@ void ParticleSystemClass::KillParticles()
 	// Kill all the particles that have gone below a certain height range.
 	for (i = 0; i < m_maxParticles; i++)
 	{
-		if ((m_particleList[i].active == true) && (m_particleList[i].positionY < -3.0f))
+		if ((m_particleList[i].active == true) && (m_particleList[i].positionY < -3.0f || m_particleList[i].positionY > 30.0f))
 		{
 			m_particleList[i].active = false;
 			m_currentParticleCount--;

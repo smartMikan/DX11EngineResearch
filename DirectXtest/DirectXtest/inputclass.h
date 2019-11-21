@@ -31,11 +31,22 @@
 
 #include <dinput.h>
 
+
 //////////////////////////
 // Class name: InputClass
 //////////////////////////
 class InputClass
 {
+public:
+	struct Axis
+	{
+		float value;
+		bool snap;
+		float maxValue;
+		float gravity, dead, sensitivity;
+	};
+
+
 public:
 	InputClass();
 	InputClass(const InputClass&);
@@ -55,6 +66,8 @@ public:
 	bool IsDownPressed();
 	bool IsAPressed();
 	bool IsZPressed();
+	bool IsQPressed();
+	bool IsWPressed();
 	bool IsPgUpPressed();
 	bool IsPgDownPressed();
 
@@ -63,6 +76,13 @@ public:
 
 	bool IsF3Toggled();
 	bool IsF4Toggled();
+	
+	bool IsF5Toggled();
+	bool IsF6Toggled();
+
+	
+	float GetHorizontal();
+	float GetVertical();
 
 	/*void KeyDown(unsigned int);
 	void KeyUp(unsigned int);
@@ -74,6 +94,7 @@ private:
 	bool ReadMouse();
 	void ProcessInput();
 
+	bool ProcessAxis();
 private:
 	IDirectInput8* m_directInput;
 	IDirectInputDevice8* m_keyboard;
@@ -83,11 +104,15 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	
+	Axis* m_horizontal,* m_vertical;
 
 	bool m_F1_released;
 	bool m_F2_released;
 	bool m_F3_released;
 	bool m_F4_released;
+	bool m_F5_released;
+	bool m_F6_released;
 	//
 	//bool m_keys[256];	//Down:True //Up:False
 };

@@ -22,6 +22,7 @@
 #include "modelclass.h"
 #include "frustumclass.h"
 #include "skydomeclass.h"
+#include "skycubeclass.h"
 #include "lightclass.h"
 #include "particlesystemclass.h"
 
@@ -37,7 +38,7 @@ public:
 
 	bool Initialize(D3DClass*, HWND, int, int, float);
 	void Shutdown();
-	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float, int);
+	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
 
 
@@ -53,9 +54,10 @@ private:
 	TerrainClass* m_Terrain;
 	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;
+	SkyCubeClass* m_SkyCube;
 	ModelClass* m_Model;
 	ParticleSystemClass* m_ParticleSystem;
-	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;
+	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked, m_cubemapsky;
 };
 
 #endif

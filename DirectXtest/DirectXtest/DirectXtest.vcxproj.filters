@@ -162,9 +162,6 @@
     <ClCompile Include="fadeshaderclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SkyDomeShaderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderManagerClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -224,6 +221,15 @@
     </ClCompile>
     <ClCompile Include="ParticleShaderClass.cpp">
       <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyCubeClass.cpp">
+      <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDomeShaderClass.cpp">
+      <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyCubeShaderClass.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,9 +332,6 @@
     <ClInclude Include="fadebitmapclass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="SkyDomeShaderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderManagerClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -407,16 +410,19 @@
     <ClInclude Include="ParticleShaderClass.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="SkyDomeShaderClass.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyCubeClass.h">
+      <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyCubeShaderClass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.dgsl">
       <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="Shader\colorps.cso">
-      <Filter>リソース ファイル\Shader</Filter>
-    </None>
-    <None Include="Shader\colorvs.cso">
-      <Filter>リソース ファイル\Shader</Filter>
     </None>
     <None Include="Scene.fbx">
       <Filter>リソース ファイル</Filter>
@@ -589,6 +595,12 @@
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
     <FxCompile Include="Shader\ParticlePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SkyCubeVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SkyCubePixelShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </FxCompile>
   </ItemGroup>

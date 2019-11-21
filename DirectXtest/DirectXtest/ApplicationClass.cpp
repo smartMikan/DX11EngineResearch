@@ -9,9 +9,11 @@ ApplicationClass::ApplicationClass()
 	m_Direct3D = 0;
 	m_Timer = 0;
 	m_Fps = 0;
+	m_Cpu = 0;
 	m_ShaderManager = 0;
 	m_TextureManager = 0;
 	m_Zone = 0;
+	m_Sound = 0;
 }
 
 ApplicationClass::ApplicationClass(const ApplicationClass& other)
@@ -41,6 +43,8 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 		MessageBoxW(hwnd, L"Could not initialize the input object.", L"Error", MB_OK);
 		return false;
 	}
+
+	
 
 	// Create the Direct3D object.
 	m_Direct3D = new D3DClass;
@@ -124,6 +128,17 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	// Initialize the fps object.
 	m_Fps->Initialize();
 
+
+	// Create the cpu object.
+	m_Cpu = new CpuClass;
+	if (!m_Cpu)
+	{
+		return false;
+	}
+
+	// Initialize the fps object.
+	m_Cpu->Initialize();
+
 	// Create the zone object.
 	m_Zone = new ZoneClass;
 	if (!m_Zone)
@@ -136,6 +151,21 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the zone object.", L"Error", MB_OK);
+		return false;
+	}
+
+
+	//Create the sound object
+	m_Sound = new SoundClass();
+	if (!m_Sound) {
+		return false;
+	}
+
+	//Initialize the Sound object
+	result = m_Sound->Initialize(hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize Sound Object.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -157,6 +187,13 @@ void ApplicationClass::Shutdown()
 	{
 		delete m_Fps;
 		m_Fps = 0;
+	}
+
+	// Release the cpu object.
+	if (m_Cpu)
+	{
+		delete m_Cpu;
+		m_Cpu = 0;
 	}
 
 	// Release the timer object.
@@ -190,6 +227,14 @@ void ApplicationClass::Shutdown()
 		m_Direct3D = 0;
 	}
 
+	//Release the Sound Class
+	if (m_Sound) {
+		m_Sound->Shutdown();
+		delete m_Sound;
+		m_Sound = 0;
+	}
+
+
 	// Release the input object.
 	if (m_Input)
 	{
@@ -208,6 +253,7 @@ bool ApplicationClass::Frame()
 
 	// Update the system stats.
 	m_Fps->Frame();
+	m_Cpu->Frame();
 	m_Timer->Frame();
 
 	// Do the input frame processing.
@@ -225,7 +271,7 @@ bool ApplicationClass::Frame()
 
 
 	// Do the zone frame processing.
-	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_TextureManager, m_Timer->GetTime(), m_Fps->GetFps());
+	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_TextureManager, m_Timer->GetTime(), m_Fps->GetFps(),m_Cpu->GetCpuPercentage());
 	if (!result)
 	{
 		return false;

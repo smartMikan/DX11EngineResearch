@@ -6,6 +6,14 @@ using namespace DirectX;
 
 class ParticleSystemClass
 {
+public:
+	struct ParticleState
+	{
+		float particleDeviationX, particleDeviationY, particleDeviationZ;
+		float particleVelocity, particleVelocityVariation;
+		float particleSize, particlesPerSecond;
+	};
+
 private:
 	struct ParticleType
 	{
@@ -33,6 +41,10 @@ public:
 
 	ID3D11ShaderResourceView* GetTexture();
 	int GetIndexCount();
+
+	bool SetParticleProperty(float particleDeviationX, float particleDeviationY, float particleDeviationZ, float particleVelocity, float particleVelocityVariation, float particleSize, float m_particlesPerSecond);
+	bool SetParticleProperty(ParticleState* state);
+	bool SetParticleProperty();
 
 private:
 	bool LoadTexture(ID3D11Device*, ID3D11DeviceContext*, const WCHAR*);
@@ -68,5 +80,7 @@ private:
 	VertexType* m_vertices;
 	ID3D11Buffer* m_vertexBuffer, * m_indexBuffer;
 
+
+	ParticleState* m_DefaultState;
 };
 
