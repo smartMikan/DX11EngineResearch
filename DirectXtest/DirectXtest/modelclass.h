@@ -12,16 +12,16 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
-
+#include "Mesh.h"
 #include "textureclass.h"
 #include "ddstextureclass.h"
 #include "texturearrayclass.h"
 #include "System/VertexBuffer.h"
 #include "System/IndexBuffer.h"
+#include<wrl/client.h>
 
 using namespace std;
 using namespace DirectX;
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,14 +38,14 @@ private:
 	//	XMFLOAT4 color;
 	//};
 
-	struct VertexType
+	/*struct VertexType
 	{
 		XMFLOAT3 position;
 		XMFLOAT2 texture;
 		XMFLOAT3 normal;
 		XMFLOAT3 tangent;
 		XMFLOAT3 binormal;
-	};
+	};*/
 
 	struct ModelType
 	{
@@ -77,14 +77,25 @@ public:
 	//The functions here handle initializing and shutdown of the model's vertex and index buffers. The Render function puts the model geometry on the video card to prepare it for drawing by the color shader.
 
 	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, const WCHAR * modelFilename, const WCHAR * textureFilename1, const WCHAR* textureFilename2, const WCHAR * textureFilename3);
+	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR* textureFilename1, const WCHAR* textureFilename2, const WCHAR* textureFilename3);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
+	void RenderMesh(int meshNumber);
+
 	int GetIndexCount();
+	int GetMeshIndexSize(int meshNumber);
+	int GetMeshSize();
 	//ID3D11ShaderResourceView* GetTexture();
 	ID3D11ShaderResourceView** GetTextureVector();
 
+
+
+	XMMATRIX GetWorldMatrix();
+	bool SetWorldMatrix(XMMATRIX world);
+
 	void CalculateModelVectors();
+	void CalculateMeshVectors(std::vector<VertexType>& vertices);
 	void CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, VectorType& tangent, VectorType& binormal);
 	void CalculateNormal(VectorType tangent, VectorType binormal, VectorType& normal);
 
@@ -100,7 +111,11 @@ private:
 	void ReleaseTextures();
 
 	bool LoadModel(const WCHAR * filename);
+	bool LoadModel(const std::string& filePath);
 	void ReleaseModel();
+
+	void ProcessNode(aiNode* node, const aiScene* scene);
+	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
 
 private:
 
@@ -110,6 +125,12 @@ private:
 	/*TextureClass* m_Texture;*/
 	ModelType* m_model;
 	TextureArrayClass* m_TextureArray;
+	std::vector<Mesh> m_meshs;
+
+
+	XMMATRIX worldPosition = XMMatrixIdentity();
+	ID3D11Device* m_device; 
+	ID3D11DeviceContext* m_deviceContext;
 };
 
 #endif

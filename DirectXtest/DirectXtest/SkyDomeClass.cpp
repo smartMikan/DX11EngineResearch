@@ -5,8 +5,6 @@
 SkyDomeClass::SkyDomeClass()
 {
 	m_model = 0;
-	m_vertexBuffer = 0;
-	m_indexBuffer = 0;
 }
 
 
@@ -177,27 +175,17 @@ bool SkyDomeClass::InitializeBuffers(ID3D11Device* device)
 	}
 
 
-	// Now create the vertex buffer.
-	m_vertexBuffer = new VertexBuffer<VertexType>();
-	if (!m_vertexBuffer)
-	{
-		return false;
-	}
 
-	result = m_vertexBuffer->Initialize(device, vertices, m_vertexCount);
+
+	result = m_vertexBuffer.Initialize(device, vertices, m_vertexCount);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
-	// Now create the index buffer.
-	m_indexBuffer = new IndexBuffer();
-	if (!m_indexBuffer)
-	{
-		return false;
-	}
 
-	result = m_indexBuffer->Initialize(device, indices, m_indexCount);
+
+	result = m_indexBuffer.Initialize(device, indices, m_indexCount);
 	if (FAILED(result))
 	{
 		return false;
@@ -216,19 +204,6 @@ bool SkyDomeClass::InitializeBuffers(ID3D11Device* device)
 
 void SkyDomeClass::ReleaseBuffers()
 {
-	// Release the index buffer.
-	if (m_indexBuffer)
-	{
-		m_indexBuffer->Release();
-		m_indexBuffer = 0;
-	}
-
-	// Release the vertex buffer.
-	if (m_vertexBuffer)
-	{
-		m_vertexBuffer->Release();
-		m_vertexBuffer = 0;
-	}
 
 	return;
 }
@@ -242,10 +217,10 @@ void SkyDomeClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	offset = 0;
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer->GetAddress(), m_vertexBuffer->StridePtr(), &offset);
+	deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddress(), m_vertexBuffer.StridePtr(), &offset);
 
 	// Set the index buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetIndexBuffer(m_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

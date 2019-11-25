@@ -61,8 +61,8 @@ private:
 	ModelType * m_model;
 	int m_vertexCount, m_indexCount;
 
-	IndexBuffer* m_indexBuffer;
-	VertexBuffer<VertexType> *m_vertexBuffer;
+	IndexBuffer m_indexBuffer;
+	VertexBuffer<VertexType> m_vertexBuffer;
 	XMFLOAT4 m_apexColor, m_centerColor;
 };
 

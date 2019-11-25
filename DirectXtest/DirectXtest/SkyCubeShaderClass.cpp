@@ -197,13 +197,6 @@ bool SkyCubeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 void SkyCubeShaderClass::ShutdownShader()
 {
 
-	// Release the matrix constant buffer.
-	if (m_matrixBuffer)
-	{
-		m_matrixBuffer->Release();
-		m_matrixBuffer = 0;
-	}
-
 	// Release the layout.
 	if (m_sampleState)
 	{

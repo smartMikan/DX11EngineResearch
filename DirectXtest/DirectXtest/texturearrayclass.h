@@ -27,6 +27,7 @@ public:
 	void Shutdown();
 
 	ID3D11ShaderResourceView** GetTextureVector();
+	void SetTexture(ID3D11ShaderResourceView* texture,int texureCount);
 
 private:
 	//This is the two element texture array private variable.

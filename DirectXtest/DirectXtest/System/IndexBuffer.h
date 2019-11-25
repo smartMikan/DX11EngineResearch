@@ -2,6 +2,7 @@
 
 #include <d3d11.h>
 #include <iostream>
+#include<wrl/client.h>
 #include <memory>
 
 
@@ -11,20 +12,19 @@ private:
 	IndexBuffer(const IndexBuffer& rhs);
 
 private:
-	ID3D11Buffer* m_buffer = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
 	UINT m_bufferSize = 0;
 public:
 	IndexBuffer() {}
-	~IndexBuffer() {}
 
 	ID3D11Buffer* Get()const
 	{
-		return m_buffer;
+		return m_buffer.Get();
 	}
 
 	ID3D11Buffer* const* GetAddress()const
 	{
-		return &m_buffer;
+		return m_buffer.GetAddressOf();
 	}
 
 	UINT BufferSize() const
@@ -35,8 +35,8 @@ public:
 
 	HRESULT Initialize(ID3D11Device* device, DWORD * data, UINT m_indicesCount)
 	{
-		if (m_buffer != nullptr) {
-			Release();
+		if (m_buffer.Get() != nullptr) {
+			m_buffer.Reset();
 		}
 		this->m_bufferSize = m_indicesCount;
 		
@@ -54,18 +54,8 @@ public:
 		ZeroMemory(&indexBufferData, sizeof(indexBufferData));
 		indexBufferData.pSysMem = data;
 
-		HRESULT hr = device->CreateBuffer(&indexBufferDesc, &indexBufferData, &m_buffer);
+		HRESULT hr = device->CreateBuffer(&indexBufferDesc, &indexBufferData, m_buffer.GetAddressOf());
 		return hr;
-	}
-
-	void Release()
-	{
-		if (m_buffer) 
-		{
-			m_buffer->Release();
-		}
-		m_buffer = nullptr;
-		return;
 	}
 
 };

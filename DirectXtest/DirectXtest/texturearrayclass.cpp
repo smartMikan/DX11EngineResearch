@@ -87,3 +87,8 @@ ID3D11ShaderResourceView** TextureArrayClass::GetTextureVector()
 {
 	return m_textures;
 }
+
+void TextureArrayClass::SetTexture(ID3D11ShaderResourceView* texture, int textureCount)
+{
+	m_textures[textureCount] = texture;
+}

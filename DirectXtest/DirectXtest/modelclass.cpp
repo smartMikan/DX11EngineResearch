@@ -12,6 +12,8 @@ ModelClass::ModelClass()
 	//m_Texture = 0;
 	m_TextureArray = 0;
 	m_model = 0;
+	m_device = 0;
+	m_deviceContext = 0;
 }
 
 
@@ -65,6 +67,30 @@ bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 
 	return true;
 }
+bool ModelClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR* textureFilename1, const WCHAR* textureFilename2, const WCHAR* textureFilename3)
+{
+	this->m_device = device;
+	this->m_deviceContext = deviceContext;
+
+	try
+	{
+		if (!this->LoadModel(filePath))
+			return false;
+	}
+	catch (const std::exception& exception)
+	{
+		return false;
+	}
+
+	try
+	{
+		LoadTextures(device, textureFilename1, textureFilename2, textureFilename3);
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+}
 //The Shutdown function will call the shutdown functions for the vertex and index buffers.
 
 void ModelClass::Shutdown()
@@ -95,6 +121,11 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
+void ModelClass::RenderMesh(int meshNumber) {
+
+	m_meshs[meshNumber].Draw();
+}
+
 //ID3D11ShaderResourceView* ModelClass::GetTexture()
 //{
 //	return m_Texture->GetTexture();
@@ -103,6 +134,17 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 ID3D11ShaderResourceView** ModelClass::GetTextureVector()
 {
 	return m_TextureArray->GetTextureVector();
+}
+
+XMMATRIX ModelClass::GetWorldMatrix()
+{
+	return worldPosition;
+}
+
+bool ModelClass::SetWorldMatrix(XMMATRIX world)
+{
+	worldPosition = world;
+	return true;
 }
 
 
@@ -198,6 +240,96 @@ void ModelClass::CalculateModelVectors()
 	return;
 }
 
+void ModelClass::CalculateMeshVectors(std::vector<VertexType>& vertices)
+{
+	int faceCount, i;
+	UINT index;
+	TempVertexType vertex1, vertex2, vertex3;
+	VectorType tangent, binormal, normal;
+
+
+	// Calculate the number of faces in the model.
+	faceCount = vertices.size() / 3;
+
+	// Initialize the index to the model data.
+	index = 0;
+
+	// Go through all the faces and calculate the the tangent, binormal, and normal vectors.
+	for (i = 0; i < faceCount; i++)
+	{
+		// Get the three vertices for this face from the model.
+		vertex1.x = vertices[index].position.x;
+		vertex1.y = vertices[index].position.y;
+		vertex1.z = vertices[index].position.z;
+		vertex1.tu = vertices[index].texture.x;
+		vertex1.tv = vertices[index].texture.y;
+		vertex1.nx = vertices[index].normal.x;
+		vertex1.ny = vertices[index].normal.y;
+		vertex1.nz = vertices[index].normal.z;
+		index++;
+
+		vertex2.x = vertices[index].position.x;
+		vertex2.y = vertices[index].position.y;
+		vertex2.z = vertices[index].position.z;
+		vertex2.tu = vertices[index].texture.x;
+		vertex2.tv = vertices[index].texture.y;
+		vertex2.nx = vertices[index].normal.x;
+		vertex2.ny = vertices[index].normal.y;
+		vertex2.nz = vertices[index].normal.z;
+		index++;
+
+		vertex3.x = vertices[index].position.x;
+		vertex3.y = vertices[index].position.y;
+		vertex3.z = vertices[index].position.z;
+		vertex3.tu = vertices[index].texture.x;
+		vertex3.tv = vertices[index].texture.y;
+		vertex3.nx = vertices[index].normal.x;
+		vertex3.ny = vertices[index].normal.y;
+		vertex3.nz = vertices[index].normal.z;
+		index++;
+
+		// Calculate the tangent and binormal of that face.
+		CalculateTangentBinormal(vertex1, vertex2, vertex3, tangent, binormal);
+
+		// Calculate the new normal using the tangent and binormal.
+		CalculateNormal(tangent, binormal, normal);
+
+		// Store the normal, tangent, and binormal for this face back in the model structure.
+		vertices[index - 1].normal.x = normal.x;
+		vertices[index - 1].normal.y = normal.y;
+		vertices[index - 1].normal.z = normal.z;
+		vertices[index - 1].tangent.x = tangent.x;
+		vertices[index - 1].tangent.y = tangent.y;
+		vertices[index - 1].tangent.z = tangent.z;
+		vertices[index - 1].binormal.x = binormal.x;
+		vertices[index - 1].binormal.y = binormal.y;
+		vertices[index - 1].binormal.z = binormal.z;
+
+		vertices[index - 2].normal.x = normal.x;
+		vertices[index - 2].normal.y = normal.y;
+		vertices[index - 2].normal.z = normal.z;
+		vertices[index - 2].tangent.x = tangent.x;
+		vertices[index - 2].tangent.y = tangent.y;
+		vertices[index - 2].tangent.z = tangent.z;
+		vertices[index - 2].binormal.x = binormal.x;
+		vertices[index - 2].binormal.y = binormal.y;
+		vertices[index - 2].binormal.z = binormal.z;
+
+		vertices[index - 3].normal.x = normal.x;
+		vertices[index - 3].normal.y = normal.y;
+		vertices[index - 3].normal.z = normal.z;
+		vertices[index - 3].tangent.x = tangent.x;
+		vertices[index - 3].tangent.y = tangent.y;
+		vertices[index - 3].tangent.z = tangent.z;
+		vertices[index - 3].binormal.x = binormal.x;
+		vertices[index - 3].binormal.y = binormal.y;
+		vertices[index - 3].binormal.z = binormal.z;
+	}
+
+	return;
+}
+
+
 //The CalculateTangentBinormal function takes in three vertices and then calculates and returns the tangent and binormal of those three vertices.
 void ModelClass::CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3,
 	VectorType& tangent, VectorType& binormal)
@@ -281,6 +413,14 @@ void ModelClass::CalculateNormal(VectorType tangent, VectorType binormal, Vector
 int ModelClass::GetIndexCount()
 {
 	return m_indexCount;
+}
+int ModelClass::GetMeshIndexSize(int meshNumber)
+{
+	return m_meshs[meshNumber].GetIndexSize();
+}
+int ModelClass::GetMeshSize()
+{
+	return m_meshs.size();
 }
 //The InitializeBuffers function is where we handle creating the vertex and index buffers.Usually you would read in a model and create the buffers from that data file.For this project we will just set the points in the vertex and index buffer manually since it is only a single triangle.
 
@@ -570,20 +710,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 void ModelClass::ShutdownBuffers()
 {
-	// Release the index buffer.
-	if (m_indexBuffer)
-	{
-		m_indexBuffer->Release();
-		m_indexBuffer = 0;
-	}
-
-	// Release the vertex buffer.
-	if (m_vertexBuffer)
-	{
-		m_vertexBuffer->Release();
-		m_vertexBuffer = 0;
-	}
-
 	return;
 }
 //RenderBuffers is called from the Render function.The purpose of this function is to set the vertex buffer and index buffer as active on the input assembler in the GPU.Once the GPU has an active vertex buffer it can then use the shader to render that buffer.This function also defines how those buffers should be drawn such as triangles, lines, fans, and so forth.In this project we set the vertex buffer and index buffer as active on the input assembler and tell the GPU that the buffers should be drawn as triangles using the IASetPrimitiveTopology DirectX function.
@@ -747,6 +873,20 @@ bool ModelClass::LoadModel(const WCHAR * filename)
 	return true;
 }
 
+bool ModelClass::LoadModel(const std::string& filePath)
+{
+	Assimp::Importer importer;
+
+	const aiScene* pScene = importer.ReadFile(filePath,
+											  aiProcess_Triangulate |
+											  aiProcess_ConvertToLeftHanded);
+	if(pScene == nullptr)
+		return false;
+
+	this->ProcessNode(pScene->mRootNode, pScene);
+	return true;
+}
+
 void ModelClass::ReleaseModel()
 {
 	if (m_model)
@@ -756,4 +896,57 @@ void ModelClass::ReleaseModel()
 	}
 
 	return;
+}
+
+void ModelClass::ProcessNode(aiNode* node, const aiScene* scene)
+{
+	for (UINT i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		m_meshs.push_back(this->ProcessMesh(mesh, scene));
+	}
+
+	for (UINT i = 0; i < node->mNumChildren; i++) 
+	{
+		this->ProcessNode(node->mChildren[i], scene);
+	}
+}
+
+Mesh ModelClass::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
+
+	std::vector<VertexType> vertices;
+	std::vector<DWORD> indices;
+
+	//Get vertices
+	for (UINT i = 0; i < mesh->mNumVertices; i++)
+	{
+		VertexType vertex;
+		vertex.position.x = mesh->mVertices[i].x;
+		vertex.position.y = mesh->mVertices[i].y;
+		vertex.position.z = mesh->mVertices[i].z;
+
+		if (mesh->mTextureCoords[0]) {
+			vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
+			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
+		}
+		vertex.normal.x = mesh->mNormals[i].x;
+		vertex.normal.y = mesh->mNormals[i].y;
+		vertex.normal.z = mesh->mNormals[i].z;
+		
+		vertices.push_back(vertex);
+	}
+
+	CalculateMeshVectors(vertices);
+
+	//Get indices
+	for (UINT i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace face = mesh->mFaces[i];
+
+		for (UINT j = 0; j < face.mNumIndices; j++) 
+		{
+			indices.push_back(face.mIndices[j]);
+		}
+	}
+	return Mesh(this->m_device, this->m_deviceContext, vertices, indices);
 }

@@ -209,19 +209,6 @@ bool SkyDomeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 
 void SkyDomeShaderClass::ShutdownShader()
 {
-	// Release the pixel constant buffer.
-	if (m_colorBuffer)
-	{
-		m_colorBuffer->Release();
-		m_colorBuffer = 0;
-	}
-
-	// Release the matrix constant buffer.
-	if (m_matrixBuffer)
-	{
-		m_matrixBuffer->Release();
-		m_matrixBuffer = 0;
-	}
 
 	// Release the layout.
 	if (m_layout)

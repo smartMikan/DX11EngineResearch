@@ -243,25 +243,12 @@ bool TerrainShaderClass::InitializeShader(ID3D11Device * device, HWND hwnd, cons
 
 void TerrainShaderClass::ShutdownShader()
 {
-	// Release the light constant buffer.
-	if (m_lightBuffer)
-	{
-		m_lightBuffer->Release();
-		m_lightBuffer = 0;
-	}
 
 	// Release the sampler state.
 	if (m_sampleState)
 	{
 		m_sampleState->Release();
 		m_sampleState = 0;
-	}
-
-	// Release the matrix constant buffer.
-	if (m_matrixBuffer)
-	{
-		m_matrixBuffer->Release();
-		m_matrixBuffer = 0;
 	}
 
 	// Release the layout.

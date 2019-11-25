@@ -56,6 +56,8 @@ private:
 	SkyDomeClass* m_SkyDome;
 	SkyCubeClass* m_SkyCube;
 	ModelClass* m_Model;
+	ModelClass* m_MeshModel;
+
 	ParticleSystemClass* m_ParticleSystem;
 	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked, m_cubemapsky;
 };
