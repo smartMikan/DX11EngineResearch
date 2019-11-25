@@ -13,7 +13,7 @@ private:
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer;
-	UINT m_bufferSize = 0;
+	UINT m_indexCount = 0;
 public:
 	IndexBuffer() {}
 
@@ -27,9 +27,9 @@ public:
 		return m_buffer.GetAddressOf();
 	}
 
-	UINT BufferSize() const
+	UINT IndexCount() const
 	{
-		return this->m_bufferSize;
+		return this->m_indexCount;
 	}
 
 
@@ -38,7 +38,7 @@ public:
 		if (m_buffer.Get() != nullptr) {
 			m_buffer.Reset();
 		}
-		this->m_bufferSize = m_indicesCount;
+		this->m_indexCount = m_indicesCount;
 		
 		D3D11_BUFFER_DESC indexBufferDesc;
 		ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));

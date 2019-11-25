@@ -91,8 +91,8 @@ public:
 
 
 
-	XMMATRIX GetWorldMatrix();
-	bool SetWorldMatrix(XMMATRIX world);
+	/*XMMATRIX GetWorldMatrix();
+	bool SetWorldMatrix(XMMATRIX world);*/
 
 	void CalculateModelVectors();
 	void CalculateMeshVectors(std::vector<VertexType>& vertices);
@@ -128,7 +128,7 @@ private:
 	std::vector<Mesh> m_meshs;
 
 
-	XMMATRIX worldPosition = XMMatrixIdentity();
+	/*XMMATRIX worldPosition = XMMatrixIdentity();*/
 	ID3D11Device* m_device; 
 	ID3D11DeviceContext* m_deviceContext;
 };

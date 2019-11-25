@@ -18,6 +18,7 @@
 #include "userinterfaceclass.h"
 #include "cameraclass.h"
 #include "positionclass.h"
+#include "GameObjectClass.h"
 #include "TerrainClass.h"
 #include "modelclass.h"
 #include "frustumclass.h"
@@ -25,6 +26,7 @@
 #include "skycubeclass.h"
 #include "lightclass.h"
 #include "particlesystemclass.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ZoneClass
@@ -56,7 +58,7 @@ private:
 	SkyDomeClass* m_SkyDome;
 	SkyCubeClass* m_SkyCube;
 	ModelClass* m_Model;
-	ModelClass* m_MeshModel;
+	GameObjectClass* m_MeshModel;
 
 	ParticleSystemClass* m_ParticleSystem;
 	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked, m_cubemapsky;

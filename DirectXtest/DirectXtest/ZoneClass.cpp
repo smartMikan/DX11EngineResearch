@@ -145,7 +145,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	m_MeshModel = new ModelClass;
+	m_MeshModel = new GameObjectClass;
 	if (!m_MeshModel)
 	{
 		return false;
@@ -249,6 +249,20 @@ void ZoneClass::Shutdown()
 	{
 		delete m_Light;
 		m_Light = 0;
+	}
+
+	// Release the Meshmodel object.
+	if (m_MeshModel) {
+		m_MeshModel->Shutdown();
+		delete m_MeshModel;
+		m_MeshModel = 0;
+	}
+
+	// Release the model object.
+	if (m_Model) {
+		m_Model->Shutdown();
+		delete m_Model;
+		m_Model = 0;
 	}
 
 	// Release the position object.
@@ -522,20 +536,18 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	XMMATRIX modelPosition;
 	modelPosition = worldMatrix;
 	modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
-	m_Model->SetWorldMatrix(modelPosition);
 
 	m_Model->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), m_Model->GetWorldMatrix(), viewMatrix,
+	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
 		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
 
 	modelPosition = worldMatrix;
 	modelPosition = XMMatrixTranslation(170.0f, 1.5f, 128.0f);
-	m_MeshModel->SetWorldMatrix(modelPosition);
-	for (int i = 0; i < m_MeshModel->GetMeshSize(); i++)
+	for (int i = 0; i < m_MeshModel->m_Model->GetMeshSize(); i++)
 	{
 		m_MeshModel->RenderMesh(i);
 
-		result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_MeshModel->GetMeshIndexSize(i), m_MeshModel->GetTextureVector(), m_MeshModel->GetWorldMatrix(), viewMatrix,
+		result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_MeshModel->m_Model->GetMeshIndexSize(i), m_MeshModel->m_Model->GetTextureVector(), modelPosition, viewMatrix,
 			projectionMatrix, m_Camera->GetPosition(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
 
 	}

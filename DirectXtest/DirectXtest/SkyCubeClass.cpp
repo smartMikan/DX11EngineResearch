@@ -165,9 +165,7 @@ bool SkyCubeClass::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
 	unsigned long* indices;
-	int i, modelIndex, index;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	int i;
 	HRESULT result;
 	
 
@@ -193,35 +191,35 @@ bool SkyCubeClass::InitializeBuffers(ID3D11Device* device)
 	}
 
 
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(VertexType) * m_vertexCount;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	vbd.MiscFlags = 0;
-	vbd.StructureByteStride = 0;
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA InitData;
 	InitData.pSysMem = vertices;
 
-	result = device->CreateBuffer(&vbd, &InitData, &m_VertexBuffer);
+	result = device->CreateBuffer(&vertexBufferDesc, &InitData, &m_VertexBuffer);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 
-	D3D11_BUFFER_DESC ibd;
-	ibd.Usage = D3D11_USAGE_IMMUTABLE;
-	ibd.ByteWidth = sizeof(unsigned long) * m_indexCount;
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.CPUAccessFlags = 0;
-	ibd.StructureByteStride = 0;
-	ibd.MiscFlags = 0;
+	D3D11_BUFFER_DESC indexBufferDesc;
+	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+	indexBufferDesc.MiscFlags = 0;
 
 	InitData.pSysMem = indices;
 
-	result = device->CreateBuffer(&ibd, &InitData, &m_IndexBuffer);
+	result = device->CreateBuffer(&indexBufferDesc, &InitData, &m_IndexBuffer);
 	if (FAILED(result))
 	{
 		return false;

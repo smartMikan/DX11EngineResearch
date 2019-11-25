@@ -182,6 +182,7 @@
     <ClCompile Include="bitmapclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="ClipPlaneShaderClass.cpp" />
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="cpuclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="fontshaderclass.cpp" />
     <ClCompile Include="fpsclass.cpp" />
     <ClCompile Include="frustumclass.cpp" />
+    <ClCompile Include="GameObjectClass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
@@ -221,6 +223,7 @@
     <ClCompile Include="System\VertexBuffer.cpp" />
     <ClCompile Include="TerrainCellClass.cpp" />
     <ClCompile Include="TerrainShaderClass.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringConverter.cpp" />
     <ClCompile Include="systemclass.cpp" />
@@ -242,6 +245,7 @@
     <ClInclude Include="bitmapclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="ClipPlaneShaderClass.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="cpuclass.h" />
     <ClInclude Include="d3dclass.h" />
@@ -254,6 +258,7 @@
     <ClInclude Include="fontshaderclass.h" />
     <ClInclude Include="fpsclass.h" />
     <ClInclude Include="frustumclass.h" />
+    <ClInclude Include="GameObjectClass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
     <ClInclude Include="lightshaderclass.h" />
@@ -284,6 +289,7 @@
     <ClInclude Include="System\VertexBuffer.h" />
     <ClInclude Include="TerrainCellClass.h" />
     <ClInclude Include="TerrainShaderClass.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Utility\ErrorLoger.h" />
     <ClInclude Include="Utility\Geometry.h" />
     <ClInclude Include="Utility\Light.h" />

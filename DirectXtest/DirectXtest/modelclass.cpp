@@ -135,17 +135,17 @@ ID3D11ShaderResourceView** ModelClass::GetTextureVector()
 {
 	return m_TextureArray->GetTextureVector();
 }
-
-XMMATRIX ModelClass::GetWorldMatrix()
-{
-	return worldPosition;
-}
-
-bool ModelClass::SetWorldMatrix(XMMATRIX world)
-{
-	worldPosition = world;
-	return true;
-}
+//
+//XMMATRIX ModelClass::GetWorldMatrix()
+//{
+//	return worldPosition;
+//}
+//
+//bool ModelClass::SetWorldMatrix(XMMATRIX world)
+//{
+//	worldPosition = world;
+//	return true;
+//}
 
 
 //CalculateModelVectors generates the tangent and binormal for the model as well as a recalculated normal vector. 
@@ -948,5 +948,9 @@ Mesh ModelClass::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
 			indices.push_back(face.mIndices[j]);
 		}
 	}
-	return Mesh(this->m_device, this->m_deviceContext, vertices, indices);
+
+	std::vector<Texture> textures;
+	textures.push_back(Texture(this->m_device, Colors::UnloadedTextureColor, aiTextureType::aiTextureType_DIFFUSE));
+
+	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures);
 }
