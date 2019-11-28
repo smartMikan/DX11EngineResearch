@@ -1,6 +1,6 @@
 #pragma once
 #include "positionclass.h"
-#include "modelclass.h"
+#include "Model.h"
 
 
 class GameObjectClass
@@ -10,17 +10,19 @@ public:
 	GameObjectClass(const GameObjectClass& other);
 	~GameObjectClass();
 
-	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR* textureFilename1, const WCHAR* textureFilename2, const WCHAR* textureFilename3);
+	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 	void Shutdown();
-	void RenderMesh(int meshNumber);
+
+	void Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 
 	XMMATRIX GetWorldMatrix();
 	bool SetWorldMatrix(XMMATRIX world);
 
 	PositionClass* m_Position;
-	ModelClass* m_Model;
+	
 
 private:
 	XMMATRIX worldPosition = XMMatrixIdentity();
+	Model m_Model;
 };
 

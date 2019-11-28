@@ -11,6 +11,42 @@ Texture::Texture(ID3D11Device* device, const Color* colorData, UINT width, UINT 
 	this->InitializeColorTexture(device, colorData, width, height, type);
 }
 
+Texture::Texture(ID3D11Device* device, const std::string& filePath, aiTextureType type)
+{
+	this->type = type;
+	if (StringHelper::GetFileExtension(filePath) == ".dds") 
+	{
+		HRESULT result = DirectX::CreateDDSTextureFromFile(device, StringHelper::StringToWide(filePath).c_str(), 
+													   texture.GetAddressOf(), this->textureView.GetAddressOf()
+													   );
+		if (FAILED(result)) {
+			this->Initialize1x1ColorTexture(device, MyColors::UnloadedTextureColor, type);
+		}
+		return;
+	}
+	else
+	{
+		HRESULT result = DirectX::CreateWICTextureFromFile(device, StringHelper::StringToWide(filePath).c_str(),
+														   texture.GetAddressOf(), this->textureView.GetAddressOf()
+														   );
+		if (FAILED(result)) {
+			this->Initialize1x1ColorTexture(device, MyColors::UnloadedTextureColor, type);
+		}
+		return;
+	}
+}
+
+Texture::Texture(ID3D11Device* device, uint8_t* pData, size_t size, aiTextureType type)
+{
+	this->type = type;
+	HRESULT result = DirectX::CreateWICTextureFromMemory(device, pData, size, this->texture.GetAddressOf(), this->textureView.GetAddressOf());
+	if (FAILED(result)) {
+		std::wstring errorMsg = L"Filed to create texture from memory ";
+		ErrorLoger::Log(result, errorMsg);
+	}
+
+}
+
 aiTextureType Texture::GetType()
 {
 	return this->type;

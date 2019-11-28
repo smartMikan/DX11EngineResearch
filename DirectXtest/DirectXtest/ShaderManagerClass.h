@@ -22,6 +22,7 @@
 
 #include "Shaders.h"
 #include "System/ConstantBuffer.h"
+#include "System/ConstanBufferTypes.h"
 
 class ShaderManagerClass
 {
@@ -31,7 +32,7 @@ public:
 	~ShaderManagerClass();
 
 	bool Initialize(ID3D11Device*, HWND);
-	bool InitializeMyShader(ID3D11Device*, HWND, std::wstring vertexShaderCsoPath, D3D11_INPUT_ELEMENT_DESC* inputlayout, std::wstring pixelShaderCsoPath);
+	bool InitializeMyShader(ID3D11Device*, std::wstring vertexShaderCsoPath, std::wstring pixelShaderCsoPath);
 	void Shutdown();
 
 	bool RenderColorShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
@@ -47,6 +48,8 @@ public:
 	bool RenderParticleShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
 
 
+	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+
 private:
 	ColorShaderClass * m_ColorShader;
 	TextureShaderClass* m_TextureShader;
@@ -57,7 +60,9 @@ private:
 	TerrainShaderClass* m_TerrainShader;
 	ParticleShaderClass* m_ParticleShader;
 
-	VertexShader* m_vertexShader;
+	VertexShader m_vertexShader;
+	PixelShader m_pixelShader;
+	ConstantBuffer<CB_VS_vertexshader> m_constantBuffer;
 
 };
 

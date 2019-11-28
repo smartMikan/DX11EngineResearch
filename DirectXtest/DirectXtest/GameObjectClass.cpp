@@ -3,7 +3,6 @@
 GameObjectClass::GameObjectClass()
 {
 	m_Position = 0;
-	m_Model = 0;
 }
 
 GameObjectClass::GameObjectClass(const GameObjectClass& other)
@@ -14,14 +13,11 @@ GameObjectClass::~GameObjectClass()
 {
 }
 
-bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR* textureFilename1, const WCHAR* textureFilename2, const WCHAR* textureFilename3)
+bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
-	m_Model = new ModelClass();
-	if (!m_Model) {
-		return false;
-	}
-	result = m_Model->Initialize(filePath, device, deviceContext, textureFilename1, textureFilename2, textureFilename3);
+	
+	result = m_Model.Initialize(filePath, device, deviceContext);
 	if (result == false) {
 		return false;
 	}
@@ -41,13 +37,6 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 
 void GameObjectClass::Shutdown()
 {
-	// Release the model object.
-	if (m_Model) {
-		m_Model->Shutdown();
-		delete m_Model;
-		m_Model = 0;
-	}
-
 	// Release the position object.
 	if (m_Position)
 	{
@@ -56,10 +45,12 @@ void GameObjectClass::Shutdown()
 	}
 }
 
-void GameObjectClass::RenderMesh(int meshNumber)
+void GameObjectClass::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
 {
-	m_Model->RenderMesh(meshNumber);
+	m_Model.Draw(shaderManager, worldMatrix, viewMatrix, projectionMatrix);
 }
+
+
 
 XMMATRIX GameObjectClass::GetWorldMatrix()
 {

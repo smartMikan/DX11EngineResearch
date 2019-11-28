@@ -137,7 +137,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L".//3DModel//Cube.txt", L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_Model->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./3DModel/Cube.txt", L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
 
 	if (!result)
 	{
@@ -151,7 +151,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	// Initialize the model object.
-	result = m_MeshModel->Initialize(".//3DModel//Harpy/Harpy.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./3DModel/Texture/stone01.dds", L"./3DModel/Texture/bump01.dds", L"./3DModel/Texture/light01.dds");
+	result = m_MeshModel->Initialize("./3DModel/Harpy/Harpy5.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
@@ -542,15 +542,8 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
 
 	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(170.0f, 1.5f, 128.0f);
-	for (int i = 0; i < m_MeshModel->m_Model->GetMeshSize(); i++)
-	{
-		m_MeshModel->RenderMesh(i);
-
-		result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_MeshModel->m_Model->GetMeshIndexSize(i), m_MeshModel->m_Model->GetTextureVector(), modelPosition, viewMatrix,
-			projectionMatrix, m_Camera->GetPosition(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
-
-	}
+	modelPosition = XMMatrixTranslation(170.0f, 0.0f, 128.0f);
+	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix);
 	
 
 	Direct3D->TurnOnParticleBlending();

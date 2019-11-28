@@ -67,30 +67,7 @@ bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 
 	return true;
 }
-bool ModelClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, const WCHAR* textureFilename1, const WCHAR* textureFilename2, const WCHAR* textureFilename3)
-{
-	this->m_device = device;
-	this->m_deviceContext = deviceContext;
 
-	try
-	{
-		if (!this->LoadModel(filePath))
-			return false;
-	}
-	catch (const std::exception& exception)
-	{
-		return false;
-	}
-
-	try
-	{
-		LoadTextures(device, textureFilename1, textureFilename2, textureFilename3);
-	}
-	catch (const std::exception&)
-	{
-		return false;
-	}
-}
 //The Shutdown function will call the shutdown functions for the vertex and index buffers.
 
 void ModelClass::Shutdown()
@@ -121,10 +98,10 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-void ModelClass::RenderMesh(int meshNumber) {
-
-	m_meshs[meshNumber].Draw();
-}
+//void ModelClass::RenderMesh(int meshNumber) {
+//
+//	m_meshs[meshNumber].Draw();
+//}
 
 //ID3D11ShaderResourceView* ModelClass::GetTexture()
 //{
@@ -135,17 +112,7 @@ ID3D11ShaderResourceView** ModelClass::GetTextureVector()
 {
 	return m_TextureArray->GetTextureVector();
 }
-//
-//XMMATRIX ModelClass::GetWorldMatrix()
-//{
-//	return worldPosition;
-//}
-//
-//bool ModelClass::SetWorldMatrix(XMMATRIX world)
-//{
-//	worldPosition = world;
-//	return true;
-//}
+
 
 
 //CalculateModelVectors generates the tangent and binormal for the model as well as a recalculated normal vector. 
@@ -240,94 +207,94 @@ void ModelClass::CalculateModelVectors()
 	return;
 }
 
-void ModelClass::CalculateMeshVectors(std::vector<VertexType>& vertices)
-{
-	int faceCount, i;
-	UINT index;
-	TempVertexType vertex1, vertex2, vertex3;
-	VectorType tangent, binormal, normal;
-
-
-	// Calculate the number of faces in the model.
-	faceCount = vertices.size() / 3;
-
-	// Initialize the index to the model data.
-	index = 0;
-
-	// Go through all the faces and calculate the the tangent, binormal, and normal vectors.
-	for (i = 0; i < faceCount; i++)
-	{
-		// Get the three vertices for this face from the model.
-		vertex1.x = vertices[index].position.x;
-		vertex1.y = vertices[index].position.y;
-		vertex1.z = vertices[index].position.z;
-		vertex1.tu = vertices[index].texture.x;
-		vertex1.tv = vertices[index].texture.y;
-		vertex1.nx = vertices[index].normal.x;
-		vertex1.ny = vertices[index].normal.y;
-		vertex1.nz = vertices[index].normal.z;
-		index++;
-
-		vertex2.x = vertices[index].position.x;
-		vertex2.y = vertices[index].position.y;
-		vertex2.z = vertices[index].position.z;
-		vertex2.tu = vertices[index].texture.x;
-		vertex2.tv = vertices[index].texture.y;
-		vertex2.nx = vertices[index].normal.x;
-		vertex2.ny = vertices[index].normal.y;
-		vertex2.nz = vertices[index].normal.z;
-		index++;
-
-		vertex3.x = vertices[index].position.x;
-		vertex3.y = vertices[index].position.y;
-		vertex3.z = vertices[index].position.z;
-		vertex3.tu = vertices[index].texture.x;
-		vertex3.tv = vertices[index].texture.y;
-		vertex3.nx = vertices[index].normal.x;
-		vertex3.ny = vertices[index].normal.y;
-		vertex3.nz = vertices[index].normal.z;
-		index++;
-
-		// Calculate the tangent and binormal of that face.
-		CalculateTangentBinormal(vertex1, vertex2, vertex3, tangent, binormal);
-
-		// Calculate the new normal using the tangent and binormal.
-		CalculateNormal(tangent, binormal, normal);
-
-		// Store the normal, tangent, and binormal for this face back in the model structure.
-		vertices[index - 1].normal.x = normal.x;
-		vertices[index - 1].normal.y = normal.y;
-		vertices[index - 1].normal.z = normal.z;
-		vertices[index - 1].tangent.x = tangent.x;
-		vertices[index - 1].tangent.y = tangent.y;
-		vertices[index - 1].tangent.z = tangent.z;
-		vertices[index - 1].binormal.x = binormal.x;
-		vertices[index - 1].binormal.y = binormal.y;
-		vertices[index - 1].binormal.z = binormal.z;
-
-		vertices[index - 2].normal.x = normal.x;
-		vertices[index - 2].normal.y = normal.y;
-		vertices[index - 2].normal.z = normal.z;
-		vertices[index - 2].tangent.x = tangent.x;
-		vertices[index - 2].tangent.y = tangent.y;
-		vertices[index - 2].tangent.z = tangent.z;
-		vertices[index - 2].binormal.x = binormal.x;
-		vertices[index - 2].binormal.y = binormal.y;
-		vertices[index - 2].binormal.z = binormal.z;
-
-		vertices[index - 3].normal.x = normal.x;
-		vertices[index - 3].normal.y = normal.y;
-		vertices[index - 3].normal.z = normal.z;
-		vertices[index - 3].tangent.x = tangent.x;
-		vertices[index - 3].tangent.y = tangent.y;
-		vertices[index - 3].tangent.z = tangent.z;
-		vertices[index - 3].binormal.x = binormal.x;
-		vertices[index - 3].binormal.y = binormal.y;
-		vertices[index - 3].binormal.z = binormal.z;
-	}
-
-	return;
-}
+//void ModelClass::CalculateMeshVectors(std::vector<VertexType>& vertices)
+//{
+//	int faceCount, i;
+//	UINT index;
+//	TempVertexType vertex1, vertex2, vertex3;
+//	VectorType tangent, binormal, normal;
+//
+//
+//	// Calculate the number of faces in the model.
+//	faceCount = vertices.size() / 3;
+//
+//	// Initialize the index to the model data.
+//	index = 0;
+//
+//	// Go through all the faces and calculate the the tangent, binormal, and normal vectors.
+//	for (i = 0; i < faceCount; i++)
+//	{
+//		// Get the three vertices for this face from the model.
+//		vertex1.x = vertices[index].position.x;
+//		vertex1.y = vertices[index].position.y;
+//		vertex1.z = vertices[index].position.z;
+//		vertex1.tu = vertices[index].texture.x;
+//		vertex1.tv = vertices[index].texture.y;
+//		vertex1.nx = vertices[index].normal.x;
+//		vertex1.ny = vertices[index].normal.y;
+//		vertex1.nz = vertices[index].normal.z;
+//		index++;
+//
+//		vertex2.x = vertices[index].position.x;
+//		vertex2.y = vertices[index].position.y;
+//		vertex2.z = vertices[index].position.z;
+//		vertex2.tu = vertices[index].texture.x;
+//		vertex2.tv = vertices[index].texture.y;
+//		vertex2.nx = vertices[index].normal.x;
+//		vertex2.ny = vertices[index].normal.y;
+//		vertex2.nz = vertices[index].normal.z;
+//		index++;
+//
+//		vertex3.x = vertices[index].position.x;
+//		vertex3.y = vertices[index].position.y;
+//		vertex3.z = vertices[index].position.z;
+//		vertex3.tu = vertices[index].texture.x;
+//		vertex3.tv = vertices[index].texture.y;
+//		vertex3.nx = vertices[index].normal.x;
+//		vertex3.ny = vertices[index].normal.y;
+//		vertex3.nz = vertices[index].normal.z;
+//		index++;
+//
+//		// Calculate the tangent and binormal of that face.
+//		CalculateTangentBinormal(vertex1, vertex2, vertex3, tangent, binormal);
+//
+//		// Calculate the new normal using the tangent and binormal.
+//		CalculateNormal(tangent, binormal, normal);
+//
+//		// Store the normal, tangent, and binormal for this face back in the model structure.
+//		vertices[index - 1].normal.x = normal.x;
+//		vertices[index - 1].normal.y = normal.y;
+//		vertices[index - 1].normal.z = normal.z;
+//		vertices[index - 1].tangent.x = tangent.x;
+//		vertices[index - 1].tangent.y = tangent.y;
+//		vertices[index - 1].tangent.z = tangent.z;
+//		vertices[index - 1].binormal.x = binormal.x;
+//		vertices[index - 1].binormal.y = binormal.y;
+//		vertices[index - 1].binormal.z = binormal.z;
+//
+//		vertices[index - 2].normal.x = normal.x;
+//		vertices[index - 2].normal.y = normal.y;
+//		vertices[index - 2].normal.z = normal.z;
+//		vertices[index - 2].tangent.x = tangent.x;
+//		vertices[index - 2].tangent.y = tangent.y;
+//		vertices[index - 2].tangent.z = tangent.z;
+//		vertices[index - 2].binormal.x = binormal.x;
+//		vertices[index - 2].binormal.y = binormal.y;
+//		vertices[index - 2].binormal.z = binormal.z;
+//
+//		vertices[index - 3].normal.x = normal.x;
+//		vertices[index - 3].normal.y = normal.y;
+//		vertices[index - 3].normal.z = normal.z;
+//		vertices[index - 3].tangent.x = tangent.x;
+//		vertices[index - 3].tangent.y = tangent.y;
+//		vertices[index - 3].tangent.z = tangent.z;
+//		vertices[index - 3].binormal.x = binormal.x;
+//		vertices[index - 3].binormal.y = binormal.y;
+//		vertices[index - 3].binormal.z = binormal.z;
+//	}
+//
+//	return;
+//}
 
 
 //The CalculateTangentBinormal function takes in three vertices and then calculates and returns the tangent and binormal of those three vertices.
@@ -414,14 +381,18 @@ int ModelClass::GetIndexCount()
 {
 	return m_indexCount;
 }
-int ModelClass::GetMeshIndexSize(int meshNumber)
-{
-	return m_meshs[meshNumber].GetIndexSize();
-}
-int ModelClass::GetMeshSize()
-{
-	return m_meshs.size();
-}
+//int ModelClass::GetMeshIndexSize(int meshNumber)
+//{
+//	return m_meshs[meshNumber].GetIndexSize();
+//}
+//int ModelClass::GetMeshSize()
+//{
+//	return m_meshs.size();
+//}
+//std::vector<Mesh> ModelClass::GetMesh()
+//{
+//	return m_meshs;
+//}
 //The InitializeBuffers function is where we handle creating the vertex and index buffers.Usually you would read in a model and create the buffers from that data file.For this project we will just set the points in the vertex and index buffer manually since it is only a single triangle.
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
@@ -872,21 +843,23 @@ bool ModelClass::LoadModel(const WCHAR * filename)
 
 	return true;
 }
-
-bool ModelClass::LoadModel(const std::string& filePath)
-{
-	Assimp::Importer importer;
-
-	const aiScene* pScene = importer.ReadFile(filePath,
-											  aiProcess_Triangulate |
-											  aiProcess_ConvertToLeftHanded);
-	if(pScene == nullptr)
-		return false;
-
-	this->ProcessNode(pScene->mRootNode, pScene);
-	return true;
-}
-
+//
+//bool ModelClass::LoadModel(const std::string& filePath)
+//{
+//	this->directory = StringHelper::GetDirectoryFromPath(filePath);
+//
+//	Assimp::Importer importer;
+//
+//	const aiScene* pScene = importer.ReadFile(filePath,
+//											  aiProcess_Triangulate |
+//											  aiProcess_ConvertToLeftHanded);
+//	if(pScene == nullptr)
+//		return false;
+//
+//	this->ProcessNode(pScene->mRootNode, pScene);
+//	return true;
+//}
+//
 void ModelClass::ReleaseModel()
 {
 	if (m_model)
@@ -897,60 +870,160 @@ void ModelClass::ReleaseModel()
 
 	return;
 }
-
-void ModelClass::ProcessNode(aiNode* node, const aiScene* scene)
-{
-	for (UINT i = 0; i < node->mNumMeshes; i++)
-	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		m_meshs.push_back(this->ProcessMesh(mesh, scene));
-	}
-
-	for (UINT i = 0; i < node->mNumChildren; i++) 
-	{
-		this->ProcessNode(node->mChildren[i], scene);
-	}
-}
-
-Mesh ModelClass::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
-
-	std::vector<VertexType> vertices;
-	std::vector<DWORD> indices;
-
-	//Get vertices
-	for (UINT i = 0; i < mesh->mNumVertices; i++)
-	{
-		VertexType vertex;
-		vertex.position.x = mesh->mVertices[i].x;
-		vertex.position.y = mesh->mVertices[i].y;
-		vertex.position.z = mesh->mVertices[i].z;
-
-		if (mesh->mTextureCoords[0]) {
-			vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
-		}
-		vertex.normal.x = mesh->mNormals[i].x;
-		vertex.normal.y = mesh->mNormals[i].y;
-		vertex.normal.z = mesh->mNormals[i].z;
-		
-		vertices.push_back(vertex);
-	}
-
-	CalculateMeshVectors(vertices);
-
-	//Get indices
-	for (UINT i = 0; i < mesh->mNumFaces; i++)
-	{
-		aiFace face = mesh->mFaces[i];
-
-		for (UINT j = 0; j < face.mNumIndices; j++) 
-		{
-			indices.push_back(face.mIndices[j]);
-		}
-	}
-
-	std::vector<Texture> textures;
-	textures.push_back(Texture(this->m_device, Colors::UnloadedTextureColor, aiTextureType::aiTextureType_DIFFUSE));
-
-	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures);
-}
+//
+//void ModelClass::ProcessNode(aiNode* node, const aiScene* scene)
+//{
+//	for (UINT i = 0; i < node->mNumMeshes; i++)
+//	{
+//		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+//		m_meshs.push_back(this->ProcessMesh(mesh, scene));
+//	}
+//
+//	for (UINT i = 0; i < node->mNumChildren; i++) 
+//	{
+//		this->ProcessNode(node->mChildren[i], scene);
+//	}
+//}
+//
+//Mesh ModelClass::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
+//
+//	std::vector<VertexType> vertices;
+//	std::vector<DWORD> indices;
+//
+//	//Get vertices
+//	for (UINT i = 0; i < mesh->mNumVertices; i++)
+//	{
+//		VertexType vertex;
+//		vertex.position.x = mesh->mVertices[i].x;
+//		vertex.position.y = mesh->mVertices[i].y;
+//		vertex.position.z = mesh->mVertices[i].z;
+//
+//		if (mesh->mTextureCoords[0]) {
+//			vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
+//			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
+//		}
+//		vertex.normal.x = mesh->mNormals[i].x;
+//		vertex.normal.y = mesh->mNormals[i].y;
+//		vertex.normal.z = mesh->mNormals[i].z;
+//		
+//		vertices.push_back(vertex);
+//	}
+//
+//	CalculateMeshVectors(vertices);
+//
+//	//Get indices
+//	for (UINT i = 0; i < mesh->mNumFaces; i++)
+//	{
+//		aiFace face = mesh->mFaces[i];
+//
+//		for (UINT j = 0; j < face.mNumIndices; j++) 
+//		{
+//			indices.push_back(face.mIndices[j]);
+//		}
+//	}
+//
+//	std::vector<Texture> textures;
+//	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+//	std::vector<Texture> diffuseTextures = LoadMaterialTextures(material, aiTextureType::aiTextureType_DIFFUSE, scene);
+//	textures.insert(textures.end(), diffuseTextures.begin(), diffuseTextures.end());
+//
+//	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures);
+//}
+//
+//std::vector<Texture> ModelClass::LoadMaterialTextures(aiMaterial* material, aiTextureType textureType, const aiScene* scene)
+//{
+//	std::vector<Texture> materialTextures;
+//	TextureStorageType storetype = TextureStorageType::Invalid;
+//	unsigned int textureCount = material->GetTextureCount(textureType);
+//
+//	//if no texture
+//	if (textureCount == 0) 
+//	{
+//		storetype = TextureStorageType::None;
+//		aiColor3D aiColor(0.0f, 0.0f, 0.0f);
+//
+//		switch (textureType)
+//		{
+//		case aiTextureType_DIFFUSE:
+//			material->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
+//			if (aiColor.IsBlack()) //use grey if color is black
+//			{
+//				materialTextures.push_back(Texture(this->m_device, Colors::UnloadedTextureColor,textureType));
+//				return materialTextures;
+//			}
+//			materialTextures.push_back(Texture(this->m_device, Color(aiColor.r * 255, aiColor.g * 255, aiColor.b * 255), textureType));
+//			return materialTextures;
+//		}
+//	}
+//	else
+//	{
+//		for (UINT i = 0; i < textureCount; i++)
+//		{
+//			aiString path;
+//			material->GetTexture(textureType, i, &path);
+//			TextureStorageType storetype = DetermineTextureStorageType(scene, material, i, textureType);
+//			switch (storetype)
+//			{
+//			case TextureStorageType::Disk: 
+//			{
+//				std::string filename = this->directory + '/' + path.C_Str();
+//				Texture diskTexture(this->m_device, filename, textureType);
+//				materialTextures.push_back(diskTexture);
+//				break;
+//			}
+//			}
+//		}
+//	}
+//
+//	if (materialTextures.size() == 0) 
+//	{
+//		materialTextures.push_back(Texture(this->m_device, Colors::UnhandledTextureColor, textureType));
+//	}
+//	return materialTextures;
+//	
+//}
+//
+//TextureStorageType ModelClass::DetermineTextureStorageType(const aiScene* scene, aiMaterial* mat, unsigned int index, aiTextureType textureType)
+//{
+//	if (mat->GetTextureCount(textureType) == 0)
+//	{
+//		return TextureStorageType::None;
+//	}
+//
+//	aiString path;
+//	mat->GetTexture(textureType, index, &path);
+//	std::string texturePath = path.C_Str();
+//
+//	//check if texture is an index embedded texture
+//	if (texturePath[0] == '*') {
+//		if (scene->mTextures[0]->mHeight == 0) 
+//		{
+//			return TextureStorageType::EmbeddedIndexCompressed;
+//		}
+//		else
+//		{
+//			assert("SUPPERT DOES NOT EXIST YET FOR INDEXED NON COMPRESSED TEXTURES!" && 0);
+//			return TextureStorageType::EmbeddedIndexNonCompressed;
+//		}
+//	}
+//
+//	//check if texture is an embedded texture but not indexed  
+//	if (auto texture = scene->GetEmbeddedTexture(texturePath.c_str())) {
+//		if (texture->mHeight == 0) 
+//		{
+//			return TextureStorageType::EmbeddedCompressed;
+//		}
+//		else
+//		{
+//			assert("SUPPERT DOES NOT EXIST YET FOR EMBEDDED NON COMPRESSED TEXTURES!" && 0);
+//			return TextureStorageType::EmbeddedNonCompressed;
+//		}
+//	}
+//
+//	//check if texture is a filepath by checking for period before extension name
+//	if (texturePath.find('.') != std::string::npos) {
+//		return TextureStorageType::Disk;
+//	}
+//
+//	return TextureStorageType::None; //No texture exists
+//}

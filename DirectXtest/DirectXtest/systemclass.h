@@ -1,8 +1,6 @@
 ﻿#pragma once
-///このファイルは、システムクラスを定義する
-//////////////////////////
-// Filename: SystemClass.h
-//////////////////////////
+///システムクラス
+
 #ifndef _SYSTEMCLASS_H_
 #define _SYSTEMCLASS_H_
 
@@ -17,22 +15,9 @@
 
 
 #include <windows.h>
-#include <tchar.h>
-#include <string>
-//
-//#include "inputclass.h"
-//#include "graphicsclass.h"
-#include "Utility/StringConverter.h"
+#include "Utility/StringHelper.h"
 #include "applicationclass.h"
-//
-//#include "soundclass.h"
-//#include "fpsclass.h"
-//#include "cpuclass.h"
-//#include "timerclass.h"
-//#include "positionclass.h"
-///////////////////////////
-// Class name: SystemClass
-///////////////////////////
+
 class SystemClass
 {
 public:
@@ -58,29 +43,15 @@ private:
 	HWND m_hwnd;
 
 	ApplicationClass* m_Application;
-	//InputClass* m_Input;
-	//GraphicsClass* m_Graphics;
-	//SoundClass* m_Sound;
-
-	//FpsClass* m_Fps;
-	//CpuClass* m_Cpu;
-	//TimerClass* m_Timer;
-
-	//PositionClass* m_Position;
-	bool m_IsWireframeMode = 0;
+	
 };
 
 
-/////////////////////////
-// FUNCTION PROTOTYPES //
-/////////////////////////
+
 //プロトタイプ宣言
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
-/////////////
-// GLOBALS //
-/////////////
 //グロバル
 static SystemClass* ApplicationHandle = 0;
 

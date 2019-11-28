@@ -204,6 +204,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MiniMapClass.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="modellistclass.cpp" />
     <ClCompile Include="multitextureshaderclass.cpp" />
@@ -225,7 +226,7 @@
     <ClCompile Include="TerrainShaderClass.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
-    <ClCompile Include="Utility\StringConverter.cpp" />
+    <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="TerrainClass.cpp" />
     <ClCompile Include="textclass.cpp" />
@@ -266,6 +267,7 @@
     <ClInclude Include="Loader\WICTextureLoader.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MiniMapClass.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="modellistclass.h" />
     <ClInclude Include="multitextureshaderclass.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="SkyDomeClass.h" />
     <ClInclude Include="SkyDomeShaderClass.h" />
     <ClInclude Include="soundclass.h" />
+    <ClInclude Include="System\ConstanBufferTypes.h" />
     <ClInclude Include="System\ConstantBuffer.h" />
     <ClInclude Include="System\IndexBuffer.h" />
     <ClInclude Include="System\Vertex.h" />
@@ -294,7 +297,7 @@
     <ClInclude Include="Utility\Geometry.h" />
     <ClInclude Include="Utility\Light.h" />
     <ClInclude Include="Utility\Material.h" />
-    <ClInclude Include="Utility\StringConverter.h" />
+    <ClInclude Include="Utility\StringHelper.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="TerrainClass.h" />
     <ClInclude Include="textclass.h" />

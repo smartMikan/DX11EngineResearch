@@ -177,9 +177,6 @@
     <ClCompile Include="ApplicationClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Utility\StringConverter.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\ErrorLoger.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -242,6 +239,12 @@
     </ClCompile>
     <ClCompile Include="Color.cpp">
       <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\StringHelper.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -359,9 +362,6 @@
     <ClInclude Include="ApplicationClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\StringConverter.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Utility\ErrorLoger.h">
       <Filter>Utility</Filter>
     </ClInclude>
@@ -428,9 +428,6 @@
     <ClInclude Include="SkyCubeClass.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="SkyCubeShaderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -445,6 +442,18 @@
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>ヘッダー ファイル\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\StringHelper.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConstanBufferTypes.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyCubeShaderClass.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,15 +14,8 @@
 SystemClass::SystemClass()
 {
 	m_Application = 0;
-	/*m_Input = 0;
-	m_Graphics = 0;
-	m_Sound = 0;
-
-	m_Fps = 0;
-	m_Cpu = 0;
-	m_Timer = 0;
-
-	m_Position = 0;*/
+	m_hinstance = 0;
+	m_hwnd = 0;
 }
 
 SystemClass::SystemClass(const SystemClass& other)
@@ -74,98 +67,6 @@ bool SystemClass::Initialize()
 		return false;
 	}
 
-	//// Create the input object.  This object will be used to handle reading the keyboard input from the user.
-	//m_Input = new InputClass;
-	//if (!m_Input)
-	//{
-	//	return false;
-	//}
-
-	//Initialization of the Input object is now different as it requires handles to the window, instance, and the screen size variables. 
-	//It also returns a boolean value to indicate if it was successful or not in starting Direct Input.
-	// Initialize the input object.
-	// Initialize the input object.
-	/*result = m_Input->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
-	if (!result)
-	{
-		MessageBoxW(m_hwnd, L"Could not initialize the input object.", L"Error", MB_OK);
-		return false;
-	}*/
-
-
-	//// Create the graphics object.  This object will handle rendering all the graphics for this application.
-	//m_Graphics = new GraphicsClass;
-	//if (!m_Graphics)
-	//{
-	//	return false;
-	//}
-
-	// Initialize the graphics object.
-	/*result = m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
-	if (!result)
-	{
-		return false;
-	}*/
-
-	//Here is where we create the SoundClass object and then initialize it for use. 
-	//Note that in this tutorial the initialization will also start the wave file playing.
-
-	// Create the sound object.
-	/*m_Sound = new SoundClass;
-	if (!m_Sound)
-	{
-		return false;
-	}*/
-
-	// Initialize the sound object.
-	/*result = m_Sound->Initialize(m_hwnd);
-	if (!result)
-	{
-		MessageBoxW(m_hwnd, L"Could not initialize Direct Sound.", L"Error", MB_OK);
-		return false;
-	}*/
-
-	// Create the fps object.
-	/*m_Fps = new FpsClass;
-	if (!m_Fps)
-	{
-		return false;
-	}*/
-
-	// Initialize the fps object.
-	//m_Fps->Initialize();
-
-	//// Create the cpu object.
-	//m_Cpu = new CpuClass;
-	//if (!m_Cpu)
-	//{
-	//	return false;
-	//}
-
-	// Initialize the cpu object.
-	//m_Cpu->Initialize();
-
-	//// Create the timer object.
-	//m_Timer = new TimerClass;
-	//if (!m_Timer)
-	//{
-	//	return false;
-	//}
-
-	// Initialize the timer object.
-	//result = m_Timer->Initialize();
-	//if (!result)
-	//{
-	//	MessageBoxW(m_hwnd, L"Could not initialize the Timer object.", L"Error", MB_OK);
-	//	return false;
-	//}
-
-	//// Create the position object.
-	//m_Position = new PositionClass;
-	//if (!m_Position)
-	//{
-	//	return false;
-	//}
 
 	return true;
 }
@@ -185,57 +86,7 @@ void SystemClass::ProgramOver()
 		m_Application = 0;
 	}
 
-	//// Release the position object.
-	//if (m_Position)
-	//{
-	//	delete m_Position;
-	//	m_Position = 0;
-	//}
 
-	//// Release the timer object.
-	//if (m_Timer)
-	//{
-	//	delete m_Timer;
-	//	m_Timer = 0;
-	//}
-
-	//// Release the cpu object.
-	//if (m_Cpu)
-	//{
-	//	m_Cpu->Shutdown();
-	//	delete m_Cpu;
-	//	m_Cpu = 0;
-	//}
-
-	//// Release the fps object.
-	//if (m_Fps)
-	//{
-	//	delete m_Fps;
-	//	m_Fps = 0;
-	//}
-
-	//// Release the sound object.
-	//if (m_Sound)
-	//{
-	//	m_Sound->Shutdown();
-	//	delete m_Sound;
-	//	m_Sound = 0;
-	//}
-	//// Release the graphics object.
-	//if (m_Graphics)
-	//{
-	//	m_Graphics->ProgramEnd();
-	//	delete m_Graphics;
-	//	m_Graphics = 0;
-	//}
-
-	//// Release the input object.
-	//if (m_Input)
-	//{
-	//	m_Input->Shutdown();
-	//	delete m_Input;
-	//	m_Input = 0;
-	//}
 	// Shutdown the window.
 	ShutdownWindows();
 
@@ -289,12 +140,6 @@ void SystemClass::Run()
 			}
 		}
 
-		////The check for the escape key in the Run function is now done slightly different by checking the return value of the helper function in the InputClass.
-		//// Check if the user pressed escape and wants to quit.
-		//if (m_Input->IsEscapePressed() == true)
-		//{
-		//	done = true;
-		//}
 	}
 
 	return;
@@ -317,54 +162,6 @@ bool SystemClass::Frame()
 		return false;
 	}
 
-	//int mouseX, mouseY;
-
-	//bool keyDown;
-	//float rotationY;
-
-	//// Update the system stats.
-	//m_Timer->Frame();
-	//m_Fps->Frame();
-	//m_Cpu->Frame();
-
-	////During each frame the PositionClass object is update with the frame time.
-	//// Set the frame time for calculating the updated position.
-	//m_Position->SetFrameTime(m_Timer->GetTime());
-
-	//// Check if the left or right arrow key has been pressed, if so rotate the camera accordingly.
-	//
-	////During the Frame function we call the Input object's own Frame function to update the states of the keyboard and mouse. 
-	////This call can fail so we need to check the return value.
-	//// Do the input frame processing.
-	//result = m_Input->Frame();
-	//if (!result)
-	//{
-	//	return false;
-	//}
-
-	//// Get the location of the mouse from the input object,
-	//m_Input->GetMouseLocation(mouseX, mouseY);
-
-	//// Check if the left or right arrow key has been pressed, if so rotate the camera accordingly.
-	//keyDown = m_Input->IsLeftPressed();
-	//m_Position->TurnLeft(keyDown);
-
-	//keyDown = m_Input->IsRightPressed();
-	//m_Position->TurnRight(keyDown);
-
-	//// The new rotation of the camera is retrieved and sent to the Graphics::Frame function to update the camera position.
-	//// Get the current view point rotation.
-	//m_Position->GetRotation(rotationY);
-
-
-	//// Do the frame processing for the graphics object.
-	//result = m_Graphics->Frame(m_Fps->GetFps(), m_Cpu->GetCpuPercentage(), m_Timer->GetTime(), mouseY, mouseX,rotationY);
-	//if (!result)
-	//{
-	//	return false;
-	//}
-
-	
 
 	return true;
 }
@@ -376,39 +173,6 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam
 	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
-
-//The MessageHandler function is where we direct the windows system messages into.
-//This way we can listen for certain information that we are interested in. 
-//Currently we will just read if a key is pressed or if a key is released and pass that information on to the input object. 
-//All other information we will pass back to the windows default message handler.
-
-//LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
-//{
-//	switch (umsg)
-//	{
-//		// Check if a key has been pressed on the keyboard.
-//	case WM_KEYDOWN:
-//	{
-//		// If a key is pressed send it to the input object so it can record that state.
-//		m_Input->KeyDown((unsigned int)wparam);
-//		return 0;
-//	}
-//
-//	// Check if a key has been released on the keyboard.
-//	case WM_KEYUP:
-//	{
-//		// If a key is released then send it to the input object so it can unset the state for that key.
-//		m_Input->KeyUp((unsigned int)wparam);
-//		return 0;
-//	}
-//
-//	// Any other messages send to the default message handler as our application won't make use of them.
-//	default:
-//	{
-//		return DefWindowProc(hwnd, umsg, wparam, lparam);
-//	}
-//	}
-//}
 
 
 //The InitializeWindows function is where we put the code to build the window we will use to render to. 
@@ -488,7 +252,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	}
 
 
-	m_applicationName_wide = StringConverter::StringToWide(m_applicationName);
+	m_applicationName_wide = StringHelper::StringToWide(m_applicationName);
 
 	RECT wr; // window rectangle
 	wr.left = posX;

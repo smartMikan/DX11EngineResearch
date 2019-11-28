@@ -11,20 +11,23 @@
 #include "Texture.h"
 
 using namespace DirectX;
+using namespace MyVertex;
 
 class Mesh
 {
 
 public:
-	Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<VertexType>& vertices, std::vector<DWORD>& indices,std::vector<Texture>& textures);
+	Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<VertexType>& vertices, std::vector<DWORD>& indices,std::vector<Texture>& textures,const DirectX::XMMATRIX& transformMatrix);
 	Mesh(const Mesh& other);
 	void Draw();
 	int GetIndexSize();
+	const DirectX::XMMATRIX& GetTransformMatrix();
 
 private:
 	VertexBuffer<VertexType> m_vertexBuffer;
 	IndexBuffer m_indexBuffer;
 	ID3D11DeviceContext* m_deviceContext;
 	std::vector<Texture> m_textures;
+	DirectX::XMMATRIX transformMatrix;
 };
 

@@ -14,7 +14,6 @@ ShaderManagerClass::ShaderManagerClass()
 	m_SkyCubeShader = 0;
 	m_TerrainShader = 0;
 	m_ParticleShader = 0;
-	m_vertexShader = 0;
 }
 
 
@@ -152,20 +151,45 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	return true;
 }
 
-bool ShaderManagerClass::InitializeMyShader(ID3D11Device *device, HWND hwnd, std::wstring vertexShaderCsoPath, D3D11_INPUT_ELEMENT_DESC* inputlayout, std::wstring pixelShaderCsoPath)
+bool ShaderManagerClass::InitializeMyShader(ID3D11Device *device, std::wstring vertexShaderCsoPath, std::wstring pixelShaderCsoPath)
 {
-	if (m_vertexShader)
+
+	D3D11_INPUT_ELEMENT_DESC inputlayout[] =
 	{
-		m_vertexShader->Shutdown();
-		delete m_vertexShader;
-		m_vertexShader = 0;
+		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0}
+	};
+	UINT elementCount = ARRAYSIZE(inputlayout);
+
+	if (!m_vertexShader.Initialize(device, vertexShaderCsoPath, inputlayout, elementCount)) {
+		return false;
+	}
+	
+
+	D3D11_SAMPLER_DESC samplerDesc;
+
+	// Create a texture sampler state description.
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	if (!m_pixelShader.Initialize(device, pixelShaderCsoPath, &samplerDesc)) {
+		return false;
 	}
 
-	UINT elementsCount =1;
+	//InnitiallizeContantBuffer
+	m_constantBuffer.Initialize(device);
 
-	m_vertexShader = new VertexShader();
-	m_vertexShader->Initialize(device,vertexShaderCsoPath, inputlayout, elementsCount);
-	
 	return true;
 }
 
@@ -237,14 +261,7 @@ void ShaderManagerClass::Shutdown()
 		delete m_ColorShader;
 		m_ColorShader = 0;
 	}
-	
-	// Release the vertex shader object.
-	if (m_vertexShader)
-	{
-		m_vertexShader->Shutdown();
-		delete m_vertexShader;
-		m_vertexShader = 0;
-	}
+
 
 	return;
 }
@@ -310,4 +327,28 @@ bool ShaderManagerClass::RenderSkyCubeShader(ID3D11DeviceContext* deviceContext,
 	return m_SkyCubeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
 }
 
+
+void ShaderManagerClass::DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+{
+	//update ConstantBuffer
+	worldMatrix = XMMatrixTranspose(worldMatrix);
+	viewMatrix = XMMatrixTranspose(viewMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	m_constantBuffer.data.world = worldMatrix;
+	m_constantBuffer.data.view = viewMatrix;
+	m_constantBuffer.data.projection = projectionMatrix;
+
+	m_constantBuffer.ApplyChanges(deviceContext);
+	// Now set the matrix constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddress());
+
+	deviceContext->IASetInputLayout(this->m_vertexShader.GetInputLayout());
+	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	deviceContext->VSSetShader(m_vertexShader.GetShder(), NULL, 0);
+	deviceContext->PSSetShader(m_pixelShader.GetShder(), NULL, 0);
+
+
+}
 
