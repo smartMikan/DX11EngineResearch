@@ -10,8 +10,8 @@ struct CB_VS_MatrixBuffer
 
 struct CB_VS_Light_CameraBuffer
 {
-	DirectX::XMFLOAT3 cameraPosition;
-	float padding;
+	DirectX::XMFLOAT3 cameraPosition; //12
+	float padding; //4
 };
 
 
@@ -22,10 +22,10 @@ struct CB_PS_pixelshader
 
 struct CB_PS_LightBuffer
 {
-	XMFLOAT4 ambientColor;
-	XMFLOAT4 diffuseColor;
-	XMFLOAT3 lightDirection;
+	XMFLOAT4 ambientColor; //16
+	XMFLOAT4 diffuseColor; //16
+	XMFLOAT3 lightDirection; //12
 	//float padding;
-	float specularPower;
-	XMFLOAT4 specularColor;
+	float specularPower; //4
+	XMFLOAT4 specularColor; //16
 };
