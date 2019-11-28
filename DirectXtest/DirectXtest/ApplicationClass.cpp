@@ -69,7 +69,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 
 	// Initialize the shader manager object.
 	result = m_ShaderManager->Initialize(m_Direct3D->GetDevice(), hwnd);
-	result = m_ShaderManager->InitializeMyShader(m_Direct3D->GetDevice(), L"./Shader/TextureVertexShader.cso", L"./Shader/TexturePixelShader.cso");
+	result = m_ShaderManager->InitializeMyShader(m_Direct3D->GetDevice(), L"./Shader/LightVertexShader.cso", L"./Shader/LightPixelShader.cso");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the shader manager object.", L"Error", MB_OK);

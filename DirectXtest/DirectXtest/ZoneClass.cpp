@@ -543,7 +543,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 	modelPosition = worldMatrix;
 	modelPosition = XMMatrixTranslation(170.0f, 0.0f, 128.0f);
-	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix);
+	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
 	
 
 	Direct3D->TurnOnParticleBlending();

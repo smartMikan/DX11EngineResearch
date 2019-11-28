@@ -48,7 +48,7 @@ public:
 	bool RenderParticleShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
 
 
-	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor);
 
 private:
 	ColorShaderClass * m_ColorShader;
@@ -62,7 +62,9 @@ private:
 
 	VertexShader m_vertexShader;
 	PixelShader m_pixelShader;
-	ConstantBuffer<CB_VS_vertexshader> m_constantBuffer;
+	ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
+	ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
+	ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;
 
 };
 

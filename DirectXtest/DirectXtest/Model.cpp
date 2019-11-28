@@ -27,14 +27,14 @@ bool Model::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11
 }
 
 
-void Model::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+void Model::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor)
 {
 	
 	//VsSetConstantbuffer
 	for (int i = 0; i < m_meshes.size(); i++)
 	{
 		//UpdateConstanBuffer
-		shaderManager->DrawSetWithMyShader(this->m_deviceContext, m_meshes[i].GetTransformMatrix() * worldMatrix, viewMatrix, projectionMatrix);
+		shaderManager->DrawSetWithMyShader(this->m_deviceContext, m_meshes[i].GetTransformMatrix() * worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, specularPower, specularColor);
 		m_meshes[i].Draw();
 	}
 }
@@ -74,13 +74,13 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& pare
 
 Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix) {
 
-	std::vector<VertexType> vertices;
+	std::vector<Mesh::VertexType> vertices;
 	std::vector<DWORD> indices;
 
 	//Get vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
 	{
-		VertexType vertex;
+		Mesh::VertexType vertex;
 		vertex.position.x = mesh->mVertices[i].x;
 		vertex.position.y = mesh->mVertices[i].y;
 		vertex.position.z = mesh->mVertices[i].z;
@@ -90,9 +90,9 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
 		}
 
-		/*vertex.normal.x = mesh->mNormals[i].x;
+		vertex.normal.x = mesh->mNormals[i].x;
 		vertex.normal.y = mesh->mNormals[i].y;
-		vertex.normal.z = mesh->mNormals[i].z;*/
+		vertex.normal.z = mesh->mNormals[i].z;
 
 		vertices.push_back(vertex);
 	}
