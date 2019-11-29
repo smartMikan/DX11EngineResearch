@@ -86,9 +86,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 		vertex.position.z = mesh->mVertices[i].z;
 
 		if (mesh->mTextureCoords[0]) {
-			vertex.texture.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.texture.y = (float)mesh->mTextureCoords[0][i].y;
+			vertex.textureCoordinate.x = (float)mesh->mTextureCoords[0][i].x;
+			vertex.textureCoordinate.y = (float)mesh->mTextureCoords[0][i].y;
 		}
+
+		vertex.indices = mesh->mBones[i]->mWeights->mVertexId;
+		vertex.weights = mesh->mBones[i]->mWeights->mWeight;
 
 		vertex.normal.x = mesh->mNormals[i].x;
 		vertex.normal.y = mesh->mNormals[i].y;
