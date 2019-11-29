@@ -2,6 +2,7 @@
 
 #include "Mesh.h"
 #include "ShaderManagerClass.h"
+#include "SkinnedDataClass.h"
 using namespace DirectX;
 using namespace MyVertex;
 
@@ -29,5 +30,8 @@ private:
 	ID3D11DeviceContext* m_deviceContext;
 
 	std::string directory = "";
+
+	SkinnedDataClass m_skindata;
+
 };
 

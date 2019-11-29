@@ -41,6 +41,11 @@ void Mesh::Draw()
 			this->m_deviceContext->PSSetShaderResources(0, 1, m_textures[i].GetTextureResourceViewAddress());
 			break;
 		}
+		if (m_textures[i].GetType() == aiTextureType::aiTextureType_NORMALS) 
+		{
+			this->m_deviceContext->PSSetShaderResources(1, 1, m_textures[i].GetTextureResourceViewAddress());
+			break;
+		}
 	}
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
