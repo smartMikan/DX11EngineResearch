@@ -45,6 +45,8 @@ bool Model::LoadModel(const std::string& filePath)
 
 	Assimp::Importer importer;
 
+	
+
 	const aiScene* pScene = importer.ReadFile(filePath,
 		aiProcess_Triangulate |
 		aiProcess_ConvertToLeftHanded);
@@ -52,6 +54,8 @@ bool Model::LoadModel(const std::string& filePath)
 		return false;
 
 	this->ProcessNode(pScene->mRootNode, pScene,DirectX::XMMatrixIdentity());
+
+
 	return true;
 }
 
@@ -76,6 +80,11 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 
 	std::vector<Mesh::VertexType> vertices;
 	std::vector<DWORD> indices;
+	std::vector<int> bongHierarchy;
+	std::vector<XMFLOAT4X4> boneOffsets;
+	std::map<string, AnimationClip> animations;
+	AnimationClip animationclips;
+
 
 	//Get vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++)
@@ -90,15 +99,13 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 			vertex.textureCoordinate.y = (float)mesh->mTextureCoords[0][i].y;
 		}
 
-		vertex.indices = mesh->mBones[i]->mWeights->mVertexId;
-		vertex.weights = mesh->mBones[i]->mWeights->mWeight;
-
 		vertex.normal.x = mesh->mNormals[i].x;
 		vertex.normal.y = mesh->mNormals[i].y;
 		vertex.normal.z = mesh->mNormals[i].z;
 
 		vertices.push_back(vertex);
 	}
+
 
 
 	//Get indices
@@ -112,12 +119,22 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 		}
 	}
 
+	for (UINT i = 0; i < mesh->mNumBones; i++) {
+		XMFLOAT4X4 offset;
+		XMStoreFloat4x4(&offset,XMMatrixTranspose(XMMATRIX(&mesh->mBones[i]->mOffsetMatrix.a1)));
+		boneOffsets.push_back(offset);
+	}
+	
+	for (UINT i = 0; i < mesh->mNumAnimMeshes; i++) {
+		
+	}
+	
 	std::vector<Texture> textures;
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	std::vector<Texture> diffuseTextures = LoadMaterialTextures(material, aiTextureType::aiTextureType_DIFFUSE, scene);
 	textures.insert(textures.end(), diffuseTextures.begin(), diffuseTextures.end());
 
-	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures, transformMatrix);
+	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures, transformMatrix,bongHierarchy, boneOffsets, animations);
 }
 
 std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType textureType, const aiScene* scene)

@@ -1,6 +1,15 @@
 #include "Mesh.h"
 
-Mesh::Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<VertexType>& vertices, std::vector<DWORD>& indices, std::vector<Texture>& textures, const DirectX::XMMATRIX& transformMatrix)
+Mesh::Mesh(ID3D11Device* device, 
+	ID3D11DeviceContext* deviceContext, 
+	std::vector<VertexType>& vertices, 
+	std::vector<DWORD>& indices, 
+	std::vector<Texture>& textures, 
+	const DirectX::XMMATRIX& transformMatrix,
+	vector<int>& bongHierarchy, 
+	vector<XMFLOAT4X4>& boneOffsets, 
+	map<string, AnimationClip>& animations
+	)
 {
 	this->m_deviceContext = deviceContext;
 	this->m_textures = textures;
@@ -15,7 +24,7 @@ Mesh::Mesh(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector
 		ErrorLoger::Log(result, "Failed to initialize index buffer for mesh.");
 	}
 
-
+	m_skindata.Set(bongHierarchy, boneOffsets, animations);
 }
 
 Mesh::Mesh(const Mesh& other)

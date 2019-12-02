@@ -151,7 +151,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	// Initialize the model object.
-	result = m_MeshModel->Initialize("./3DModel/Harpy/Harpy5.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
+	result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);

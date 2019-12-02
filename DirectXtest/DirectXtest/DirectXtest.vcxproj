@@ -222,6 +222,7 @@
     <ClCompile Include="SkyDomeShaderClass.cpp" />
     <ClCompile Include="soundclass.cpp" />
     <ClCompile Include="System\IndexBuffer.cpp" />
+    <ClCompile Include="System\Vertex.cpp" />
     <ClCompile Include="System\VertexBuffer.cpp" />
     <ClCompile Include="TerrainCellClass.cpp" />
     <ClCompile Include="TerrainShaderClass.cpp" />

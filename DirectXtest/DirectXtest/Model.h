@@ -2,7 +2,7 @@
 
 #include "Mesh.h"
 #include "ShaderManagerClass.h"
-#include "SkinnedDataClass.h"
+
 using namespace DirectX;
 using namespace MyVertex;
 
@@ -31,7 +31,7 @@ private:
 
 	std::string directory = "";
 
-	SkinnedDataClass m_skindata;
+	
 
 };
 
