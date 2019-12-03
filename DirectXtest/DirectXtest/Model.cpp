@@ -34,7 +34,7 @@ void Model::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATR
 	for (int i = 0; i < m_meshes.size(); i++)
 	{
 		//UpdateConstanBuffer
-		shaderManager->DrawSetWithMyShader(this->m_deviceContext, m_meshes[i].GetTransformMatrix() * worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, specularPower, specularColor);
+		//shaderManager->DrawSetWithMyShader(this->m_deviceContext, m_meshes[i].GetTransformMatrix() * worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, specularPower, specularColor);
 		m_meshes[i].Draw();
 	}
 }
@@ -54,8 +54,18 @@ bool Model::LoadModel(const std::string& filePath)
 		return false;
 
 	this->ProcessNode(pScene->mRootNode, pScene,DirectX::XMMatrixIdentity());
+	if (pScene->HasAnimations() > 0) {
+		modelScene = new aiScene;
+		modelScene = pScene;
+		for (int i = 0; i < modelScene->mNumAnimations; i++)
+		{
+			ProcessAnimation(m_animation,modelScene->mAnimations);
 
+		}
+		
+	}
 
+	m_skindata.Set(bongHierarchy, boneOffsets, animations);
 	return true;
 }
 
@@ -134,7 +144,7 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 	std::vector<Texture> diffuseTextures = LoadMaterialTextures(material, aiTextureType::aiTextureType_DIFFUSE, scene);
 	textures.insert(textures.end(), diffuseTextures.begin(), diffuseTextures.end());
 
-	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures, transformMatrix,bongHierarchy, boneOffsets, animations);
+	return Mesh(this->m_device, this->m_deviceContext, vertices, indices, textures, transformMatrix);
 }
 
 std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType textureType, const aiScene* scene)
@@ -258,4 +268,11 @@ int Model::GetTextureIndex(aiString* pStr)
 {
 	assert(pStr->length >= 2);
 	return atoi(&pStr->C_Str()[1]);
+}
+
+void Model::ProcessAnimation(vector<AnimationClip>& animations, aiAnimation ** aianimation)
+{
+	KeyFrame keys;
+	keys.Scale = aianimation[0]->mChannels[0]->mScalingKeys[0];
+	
 }

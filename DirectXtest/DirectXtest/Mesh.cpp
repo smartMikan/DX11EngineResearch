@@ -5,10 +5,7 @@ Mesh::Mesh(ID3D11Device* device,
 	std::vector<VertexType>& vertices, 
 	std::vector<DWORD>& indices, 
 	std::vector<Texture>& textures, 
-	const DirectX::XMMATRIX& transformMatrix,
-	vector<int>& bongHierarchy, 
-	vector<XMFLOAT4X4>& boneOffsets, 
-	map<string, AnimationClip>& animations
+	const DirectX::XMMATRIX& transformMatrix
 	)
 {
 	this->m_deviceContext = deviceContext;
@@ -24,7 +21,7 @@ Mesh::Mesh(ID3D11Device* device,
 		ErrorLoger::Log(result, "Failed to initialize index buffer for mesh.");
 	}
 
-	m_skindata.Set(bongHierarchy, boneOffsets, animations);
+	
 }
 
 Mesh::Mesh(const Mesh& other)
