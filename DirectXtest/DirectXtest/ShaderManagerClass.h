@@ -62,15 +62,15 @@ private:
 
 	VertexShader m_vertexShader;
 	PixelShader m_pixelShader;
-	//ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
-	//ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
-	//ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;
+	ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
+	ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
+	ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;
 
-	ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixBuffer> m_BoneMatrixBuffer;
-	ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixTransformBuffer> m_BoneTransformBuffer;
-	ConstantBuffer<CB_PS_SkinBoneBumpMapMaterialBuffer> m_BoneMaterialBuffer;
-	ConstantBuffer<CB_PS_SkinBoneBumpMapCameraBuffer> m_BoneCameraBuffer;
-	ConstantBuffer<CB_PS_SkinBoneBumpMapLightBuffer> m_BoneLightBuffer;
+	//ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixBuffer> m_BoneMatrixBuffer;
+	//ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixTransformBuffer> m_BoneTransformBuffer;
+	//ConstantBuffer<CB_PS_SkinBoneBumpMapMaterialBuffer> m_BoneMaterialBuffer;
+	//ConstantBuffer<CB_PS_SkinBoneBumpMapCameraBuffer> m_BoneCameraBuffer;
+	//ConstantBuffer<CB_PS_SkinBoneBumpMapLightBuffer> m_BoneLightBuffer;
 
 };
 

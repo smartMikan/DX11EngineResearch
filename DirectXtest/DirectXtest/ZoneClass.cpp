@@ -70,7 +70,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(128.0f, 30.0f,10.0f);
+	m_Position->SetPosition(10.0f, 30.0f,10.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
 
 
@@ -289,7 +289,7 @@ void ZoneClass::Shutdown()
 
 	return;
 }
-bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu)
+bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu, TimerClass* TimeClass)
 {
 	bool result, foundHeight;
 	float posX, posY, posZ, rotX, rotY, rotZ, height;
@@ -330,7 +330,7 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 
 	// Render the graphics.
-	result = Render(Direct3D, ShaderManager, TextureManager);
+	result = Render(Direct3D, ShaderManager, TextureManager,TimeClass);
 	if (!result)
 	{
 		return false;
@@ -347,10 +347,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	m_Light->SetFrameTime(frameTime);
 
 	// Handle the input.
-	keyDown = Input->IsLeftPressed() || Input->GetHorizontal() < 0;
+	keyDown = Input->IsLeftPressed() /*|| Input->GetHorizontal() < 0*/;
 	m_Position->TurnLeft(keyDown);
 
-	keyDown = Input->IsRightPressed() || Input->GetHorizontal() > 0;
+	keyDown = Input->IsRightPressed() /*|| Input->GetHorizontal() > 0*/;
 	m_Position->TurnRight(keyDown);
 
 	keyDown = Input->IsUpPressed();
@@ -365,10 +365,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	keyDown = Input->IsZPressed();
 	m_Position->MoveDownward(keyDown);
 
-	keyDown = Input->IsPgUpPressed() || Input->GetVertical() < 0;
+	keyDown = Input->IsPgUpPressed() /*|| Input->GetVertical() < 0*/;
 	m_Position->LookUpward(keyDown);
 
-	keyDown = Input->IsPgDownPressed() || Input->GetVertical() > 0;
+	keyDown = Input->IsPgDownPressed() /*|| Input->GetVertical() > 0*/;
 	m_Position->LookDownward(keyDown);
 
 	// Get the view point position/rotation.
@@ -423,7 +423,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	return;
 }
 
-bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager)
+bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, TimerClass* TimeClass)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
@@ -537,32 +537,33 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	modelPosition = worldMatrix;
 	modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
 
-	m_Model->Render(Direct3D->GetDeviceContext());
+	/*m_Model->Render(Direct3D->GetDeviceContext());
 	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
-		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
+		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());*/
 
 	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(170.0f, 0.0f, 128.0f);
-	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
+	modelPosition = XMMatrixTranslation(10.0f, 0.0f, 128.0f);
+	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor(),TimeClass->GetTime());
 	
 
-	Direct3D->TurnOnParticleBlending();
-	// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_ParticleSystem->Render(Direct3D->GetDeviceContext());
-	
-	XMMATRIX particlePosition;
-	particlePosition = worldMatrix;
-	particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
-	// Render the model using the texture shader.
-	result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
-		m_ParticleSystem->GetTexture());
-	if (!result)
-	{
-		return false;
-	}
-	
-	// Turn off alpha blending.
-	Direct3D->TurnOffParticleBlending();
+	//Direct3D->TurnOnParticleBlending();
+	//// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	//m_ParticleSystem->Render(Direct3D->GetDeviceContext());
+	//
+	//XMMATRIX particlePosition;
+	//particlePosition = worldMatrix;
+	//particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
+	//
+	//// Render the particle using the texture shader.
+	//result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
+	//	m_ParticleSystem->GetTexture());
+	//if (!result)
+	//{
+	//	return false;
+	//}
+	//
+	//// Turn off alpha blending.
+	//Direct3D->TurnOffParticleBlending();
 
 
 	// Turn off the wire frame rendering once the terrain rendering is complete so we don't render anything else such as the UI in wire frame.

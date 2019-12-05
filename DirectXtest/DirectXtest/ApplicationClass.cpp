@@ -274,7 +274,7 @@ bool ApplicationClass::Frame()
 
 
 	// Do the zone frame processing.
-	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_TextureManager, m_Timer->GetTime(), m_Fps->GetFps(),m_Cpu->GetCpuPercentage());
+	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_TextureManager, m_Timer->GetTime(), m_Fps->GetFps(),m_Cpu->GetCpuPercentage(),m_Timer);
 	if (!result)
 	{
 		return false;

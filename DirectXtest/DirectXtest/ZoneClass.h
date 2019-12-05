@@ -40,13 +40,13 @@ public:
 
 	bool Initialize(D3DClass*, HWND, int, int, float);
 	void Shutdown();
-	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
+	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu, TimerClass* TimeClass);
 
 
 
 private:
 	void HandleMovementInput(InputClass*, float);
-	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
+	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*, TimerClass* TimeClass);
 
 private:
 	UserInterfaceClass * m_UserInterface;
