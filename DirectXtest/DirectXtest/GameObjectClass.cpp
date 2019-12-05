@@ -45,9 +45,9 @@ void GameObjectClass::Shutdown()
 	}
 }
 
-void GameObjectClass::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor)
+void GameObjectClass::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor, float time)
 {
-	m_Model.Draw(shaderManager, worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, specularPower, specularColor);
+	m_Model.Draw(shaderManager, worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, specularPower, specularColor,time);
 }
 
 

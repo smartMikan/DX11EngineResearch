@@ -201,8 +201,10 @@
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Loader\WICTextureLoader.cpp" />
+    <ClCompile Include="M3dLoaderClass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshGeometryClass.cpp" />
     <ClCompile Include="MiniMapClass.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="modelclass.cpp" />
@@ -215,7 +217,9 @@
     <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="ShaderManagerClass.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="SkeletalCharacterShaderClass.cpp" />
     <ClCompile Include="SkinnedDataClass.cpp" />
+    <ClCompile Include="SkinnedModelClass.cpp" />
     <ClCompile Include="SkyCubeClass.cpp" />
     <ClCompile Include="SkyCubeShaderClass.cpp" />
     <ClCompile Include="SkyDomeClass.cpp" />
@@ -250,6 +254,7 @@
     <ClInclude Include="ClipPlaneShaderClass.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="colorshaderclass.h" />
+    <ClInclude Include="CommonVertexFormat.h" />
     <ClInclude Include="cpuclass.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="ddstextureClass.h" />
@@ -267,7 +272,10 @@
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="Loader\DDSTextureLoader.h" />
     <ClInclude Include="Loader\WICTextureLoader.h" />
+    <ClInclude Include="M3dLoaderClass.h" />
+    <ClInclude Include="Macro.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshGeometryClass.h" />
     <ClInclude Include="MiniMapClass.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelclass.h" />
@@ -282,7 +290,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ShaderManagerClass.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="SkeletalCharacterShaderClass.h" />
     <ClInclude Include="SkinnedDataClass.h" />
+    <ClInclude Include="SkinnedModelClass.h" />
     <ClInclude Include="SkyCubeClass.h" />
     <ClInclude Include="SkyCubeShaderClass.h" />
     <ClInclude Include="SkyDomeClass.h" />

@@ -26,7 +26,7 @@
 #include "skycubeclass.h"
 #include "lightclass.h"
 #include "particlesystemclass.h"
-
+#include"SkinnedModelClass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ZoneClass
@@ -40,13 +40,13 @@ public:
 
 	bool Initialize(D3DClass*, HWND, int, int, float);
 	void Shutdown();
-	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
+	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu, TimerClass* TimeClass);
 
 
 
 private:
 	void HandleMovementInput(InputClass*, float);
-	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
+	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*, TimerClass* TimeClass);
 
 private:
 	UserInterfaceClass * m_UserInterface;
@@ -59,6 +59,14 @@ private:
 	SkyCubeClass* m_SkyCube;
 	ModelClass* m_Model;
 	GameObjectClass* m_MeshModel;
+
+
+	//人物骨骼动画类
+	SkinnedModelClass* mCharacterModel;
+
+	//人物实例类
+	SkinnedModelInstance mCharacterInstance1;
+	SkinnedModelInstance mCharacterInstance2;
 
 	ParticleSystemClass* m_ParticleSystem;
 	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked, m_cubemapsky;

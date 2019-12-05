@@ -27,7 +27,6 @@ struct PixelInputType
 {
     float4 Pos : SV_POSITION;
     float2 Tex : TEXCOORD0;
-    uint color : COLOR;
     float3 W_Normal : NORMAL; //世界空间的法线
     float3 W_Pos : POSITION;
     float4 W_Tangent : TANGENT; //世界空间的切线

@@ -19,6 +19,7 @@
 #include "skydomeshaderclass.h"
 #include "skycubeshaderclass.h"
 #include "particleshaderclass.h"
+#include"SkeletalCharacterShaderClass.h"
 
 #include "Shaders.h"
 #include "System/ConstantBuffer.h"
@@ -46,6 +47,8 @@ public:
 	bool RenderSkyCubeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 	bool RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView * normalMap, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor);
 	bool RenderParticleShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
+	bool RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
+		ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat);
 
 
 	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX* boneTransformOffSet, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor);
@@ -59,18 +62,19 @@ private:
 	SkyCubeShaderClass* m_SkyCubeShader;
 	TerrainShaderClass* m_TerrainShader;
 	ParticleShaderClass* m_ParticleShader;
+	SkeletalCharacterShaderClass* m_SkeletalCharacterShader;
 
 	VertexShader m_vertexShader;
 	PixelShader m_pixelShader;
-	//ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
-	//ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
-	//ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;
+	ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
+	ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
+	ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;
 
-	ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixBuffer> m_BoneMatrixBuffer;
-	ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixTransformBuffer> m_BoneTransformBuffer;
-	ConstantBuffer<CB_PS_SkinBoneBumpMapMaterialBuffer> m_BoneMaterialBuffer;
-	ConstantBuffer<CB_PS_SkinBoneBumpMapCameraBuffer> m_BoneCameraBuffer;
-	ConstantBuffer<CB_PS_SkinBoneBumpMapLightBuffer> m_BoneLightBuffer;
+	//ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixBuffer> m_BoneMatrixBuffer;
+	//ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixTransformBuffer> m_BoneTransformBuffer;
+	//ConstantBuffer<CB_PS_SkinBoneBumpMapMaterialBuffer> m_BoneMaterialBuffer;
+	//ConstantBuffer<CB_PS_SkinBoneBumpMapCameraBuffer> m_BoneCameraBuffer;
+	//ConstantBuffer<CB_PS_SkinBoneBumpMapLightBuffer> m_BoneLightBuffer;
 
 };
 

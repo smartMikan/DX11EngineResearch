@@ -70,7 +70,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(128.0f, 30.0f,10.0f);
+	m_Position->SetPosition(10.0f, 30.0f,10.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
 
 
@@ -199,11 +199,34 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	//Set the cubemap sky to to disabled.
 	m_cubemapsky = false;
 
+
+	//第二十一,创建SkinModelClass
+	mCharacterModel = new SkinnedModelClass(Direct3D->GetDevice(), string("./3DModel/AnimationFile/soldier.m3d"), wstring(L"./3DModel/AnimationFile/"));
+
+	//第二十二，实例化SkinModelClass
+	mCharacterInstance1.Model = mCharacterModel;
+	mCharacterInstance2.Model = mCharacterModel;
+	mCharacterInstance1.TimePos = 0.0f;
+	mCharacterInstance2.TimePos = 0.0f;
+	mCharacterInstance1.ClipName = "Take1";
+	mCharacterInstance2.ClipName = "Take1";
+	mCharacterInstance1.FinalTransforms.resize(mCharacterModel->SkinnedData.BoneCount());
+	mCharacterInstance2.FinalTransforms.resize(mCharacterModel->SkinnedData.BoneCount());
+
+	XMMATRIX modelScale = XMMatrixScaling(0.15f, 0.15f, -0.15f);
+	XMMATRIX modelRot = XMMatrixRotationY(0);
+	XMMATRIX modelOffset = XMMatrixTranslation(55.0f, 10.0f, 36.0f);
+	XMStoreFloat4x4(&mCharacterInstance1.World, modelScale * modelRot * modelOffset);
+
+	XMStoreFloat4x4(&mCharacterInstance2.World, modelScale * modelRot * modelOffset);
+
 	return true;
 }
 
 void ZoneClass::Shutdown()
 {
+
+
 
 	// Release the particle system object.
 	if (m_ParticleSystem)
@@ -289,7 +312,7 @@ void ZoneClass::Shutdown()
 
 	return;
 }
-bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu)
+bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu, TimerClass* TimeClass)
 {
 	bool result, foundHeight;
 	float posX, posY, posZ, rotX, rotY, rotZ, height;
@@ -330,7 +353,7 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 
 	// Render the graphics.
-	result = Render(Direct3D, ShaderManager, TextureManager);
+	result = Render(Direct3D, ShaderManager, TextureManager,TimeClass);
 	if (!result)
 	{
 		return false;
@@ -347,10 +370,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	m_Light->SetFrameTime(frameTime);
 
 	// Handle the input.
-	keyDown = Input->IsLeftPressed() || Input->GetHorizontal() < 0;
+	keyDown = Input->IsLeftPressed() /*|| Input->GetHorizontal() < 0*/;
 	m_Position->TurnLeft(keyDown);
 
-	keyDown = Input->IsRightPressed() || Input->GetHorizontal() > 0;
+	keyDown = Input->IsRightPressed() /*|| Input->GetHorizontal() > 0*/;
 	m_Position->TurnRight(keyDown);
 
 	keyDown = Input->IsUpPressed();
@@ -365,10 +388,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	keyDown = Input->IsZPressed();
 	m_Position->MoveDownward(keyDown);
 
-	keyDown = Input->IsPgUpPressed() || Input->GetVertical() < 0;
+	keyDown = Input->IsPgUpPressed() /*|| Input->GetVertical() < 0*/;
 	m_Position->LookUpward(keyDown);
 
-	keyDown = Input->IsPgDownPressed() || Input->GetVertical() > 0;
+	keyDown = Input->IsPgDownPressed() /*|| Input->GetVertical() > 0*/;
 	m_Position->LookDownward(keyDown);
 
 	// Get the view point position/rotation.
@@ -423,7 +446,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	return;
 }
 
-bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager)
+bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, TimerClass* TimeClass)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
@@ -448,38 +471,38 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Turn off back face culling.
-	Direct3D->TurnOffCulling();
+	//// Turn off back face culling.
+	//Direct3D->TurnOffCulling();
 
-	// Translate the sky dome to be centered around the camera position.
-	worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	//// Translate the sky dome to be centered around the camera position.
+	//worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	if (m_cubemapsky) {
-		Direct3D->TurnDepthStencilStateLessEqual();
-		// Render the sky cube using the sky cube shader.
-		m_SkyCube->Render(Direct3D->GetDeviceContext());
-		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SkyCube->GetIndexCount(), worldMatrix, viewMatrix,
-			projectionMatrix, m_SkyCube->GetTextureCube());
-		if (!result)
-		{
-			return false;
-		}
-	}
-	else
-	{
-		Direct3D->TurnZBufferOff();
-		// Render the sky dome using the sky dome shader.
-		m_SkyDome->Render(Direct3D->GetDeviceContext());
-		result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), worldMatrix, viewMatrix,
-			projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
-		if (!result)
-		{
-			return false;
-		}
-	}
+	//if (m_cubemapsky) {
+	//	Direct3D->TurnDepthStencilStateLessEqual();
+	//	// Render the sky cube using the sky cube shader.
+	//	m_SkyCube->Render(Direct3D->GetDeviceContext());
+	//	result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+	//		projectionMatrix, m_SkyCube->GetTextureCube());
+	//	if (!result)
+	//	{
+	//		return false;
+	//	}
+	//}
+	//else
+	//{
+	//	Direct3D->TurnZBufferOff();
+	//	// Render the sky dome using the sky dome shader.
+	//	m_SkyDome->Render(Direct3D->GetDeviceContext());
+	//	result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), worldMatrix, viewMatrix,
+	//		projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
+	//	if (!result)
+	//	{
+	//		return false;
+	//	}
+	//}
 
-	// Reset the world matrix.
-	Direct3D->GetWorldMatrix(worldMatrix);
+	//// Reset the world matrix.
+	//Direct3D->GetWorldMatrix(worldMatrix);
 
 	// Turn the Z buffer back and back face culling on.
 	Direct3D->TurnZBufferOn();
@@ -491,36 +514,37 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		Direct3D->EnableWireframe();
 	}
 
-	// Render the terrain cells (and cell lines if needed).
-	for (i = 0; i < m_Terrain->GetCellCount(); i++)
-	{
-		// Render each terrain cell if it is visible only.
-		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
-		if (result)
-		{
-			// Render the cell buffers using the terrain shader.
-			result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
-				projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
-				m_Light->GetDirection(), m_Light->GetDiffuseColor());
-			if (!result)
-			{
-				return false;
-			}
+	//// Render the terrain cells (and cell lines if needed).
+	//for (i = 0; i < m_Terrain->GetCellCount(); i++)
+	//{
+	//	// Render each terrain cell if it is visible only.
+	//	result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
+	//	if (result)
+	//	{
+	//		// Render the cell buffers using the terrain shader.
+	//		result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
+	//			projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+	//			m_Light->GetDirection(), m_Light->GetDiffuseColor());
+	//		if (!result)
+	//		{
+	//			return false;
+	//		}
 
-			// If needed then render the bounding box around this terrain cell using the color shader. 
-			if (m_cellLines)
-			{
-				m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
-				ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
-					viewMatrix, projectionMatrix);
-				if (!result)
-				{
-					return false;
-				}
-			}
-		}
-	}
+	//		// If needed then render the bounding box around this terrain cell using the color shader. 
+	//		if (m_cellLines)
+	//		{
+	//			m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
+	//			ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
+	//				viewMatrix, projectionMatrix);
+	//			if (!result)
+	//			{
+	//				return false;
+	//			}
+	//		}
+	//	}
+	//}
 
+	
 
 	//// Render the terrain grid using the color shader.
 	//m_Terrain->Render(Direct3D->GetDeviceContext());
@@ -532,37 +556,68 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//	return false;
 	//}
 
-	Direct3D->GetWorldMatrix(worldMatrix);
-	XMMATRIX modelPosition;
-	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
+	//Direct3D->GetWorldMatrix(worldMatrix);
+	//XMMATRIX modelPosition;
+	//modelPosition = worldMatrix;
+	//modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
 
-	m_Model->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
-		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
+	//m_Model->Render(Direct3D->GetDeviceContext());
+	//result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
+	//	projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
 
-	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(170.0f, 0.0f, 128.0f);
-	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
-	
+	//modelPosition = worldMatrix;
+	//modelPosition = XMMatrixTranslation(10.0f, 0.0f, 128.0f);
+	//m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor(),TimeClass->GetTime());
+	//
 
-	Direct3D->TurnOnParticleBlending();
-	// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_ParticleSystem->Render(Direct3D->GetDeviceContext());
-	
-	XMMATRIX particlePosition;
-	particlePosition = worldMatrix;
-	particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
-	// Render the model using the texture shader.
-	result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
-		m_ParticleSystem->GetTexture());
-	if (!result)
+
+	float Deltatime = TimeClass->GetTime();
+
+	//限定DeltaTime不能过大，也就是骨骼动画状态不能突变
+	if (Deltatime > 1.0f)
 	{
-		return false;
+		Deltatime = 0.0f;
 	}
-	
-	// Turn off alpha blending.
-	Direct3D->TurnOffParticleBlending();
+
+	//更新第一个人物的骨骼动画时间
+	mCharacterInstance1.Update(Deltatime);
+
+	//第二,获取三个变换矩阵(WorldMatrix和ProjMatrixViewMatrix来自CameraClass)
+	worldMatrix = XMLoadFloat4x4(&mCharacterInstance1.World);
+
+	//第三,进行渲染(人物顶点数据，索引数据，各种常量缓存，纹理资源等)
+	for (UINT subset = 0; subset < mCharacterInstance1.Model->SubsetCount; ++subset)
+	{
+		/**************绘制人物3DMesh的每个子部分******************/
+		//设置各种常量缓存资源，纹理资源
+		ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance1.FinalTransforms.size(), worldMatrix, viewMatrix, projectionMatrix,
+			mCharacterInstance1.Model->DiffuseMapSRV[subset], mCharacterInstance1.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance1.FinalTransforms[0], mCharacterInstance1.Model->Mat[subset]);
+
+		//DrawCall调用
+		mCharacterInstance1.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
+	}
+
+
+
+	//Direct3D->TurnOnParticleBlending();
+	//// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	//m_ParticleSystem->Render(Direct3D->GetDeviceContext());
+	//
+	//Direct3D->GetWorldMatrix(worldMatrix);
+	//XMMATRIX particlePosition;
+	//particlePosition = worldMatrix;
+	//particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
+	//
+	//// Render the particle using the texture shader.
+	//result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
+	//	m_ParticleSystem->GetTexture());
+	//if (!result)
+	//{
+	//	return false;
+	//}
+	//
+	//// Turn off alpha blending.
+	//Direct3D->TurnOffParticleBlending();
 
 
 	// Turn off the wire frame rendering once the terrain rendering is complete so we don't render anything else such as the UI in wire frame.
@@ -571,7 +626,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	{
 		Direct3D->DisableWireframe();
 	}
-
+	Direct3D->GetWorldMatrix(worldMatrix);
 	// Update the render counts in the UI.
 	result = m_UserInterface->UpdateRenderCounts(Direct3D->GetDeviceContext(), m_Terrain->GetRenderCount(), m_Terrain->GetCellsDrawn(),
 		m_Terrain->GetCellsCulled());

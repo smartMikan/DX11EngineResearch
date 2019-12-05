@@ -17,7 +17,6 @@ struct VertexInputType
     float4 position : POSITION;
     float3 normal : NORMAL;
     float4 tangent : TANGENT;
-    uint color : COLOR;
     float2 tex : TEXCOORD0;
     uint4 boneIndices : BLENDINDICES;
     float3 weights : BLENDWEIGHT;
@@ -27,7 +26,6 @@ struct PixelInputType
 {   
     float4 Pos : SV_POSITION;
     float2 Tex : TEXCOORD0;
-    uint color : COLOR;
     float3 W_Normal : NORMAL; //世界空间的法线
     float3 W_Pos : POSITION;
     float4 W_Tangent : TANGENT; //世界空间的切线
@@ -78,7 +76,6 @@ PixelInputType main(VertexInputType input)
 	//切线变换到世界空间
     output.W_Tangent = float4(normalize(mul(TangentL, (float3x3) worldMatrix)), input.tangent.w);
 
-    output.color = input.color;
     
     return output;
 
