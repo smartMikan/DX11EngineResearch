@@ -1,9 +1,9 @@
 #include "M3dLoaderClass.h"
 
-//½ö½öÊÇ¶ÁÈ¡ÏàÓ¦µÄÍø¸ñÊı¾İ£¬²¢Î´ÓĞ¹Ç÷À¶¯»­
+//ä»…ä»…æ˜¯è¯»å–ç›¸åº”çš„ç½‘æ ¼æ•°æ®ï¼Œå¹¶æœªæœ‰éª¨éª¼åŠ¨ç”»
 bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<M3dMaterial>& mats)
 {
-	//´ò¿ªM3d.ÎÄ¼ş¸ñÊ½
+	//æ‰“å¼€M3d.æ–‡ä»¶æ ¼å¼
 	ifstream fin(FileName);
 
 	UINT numMaterials = 0;
@@ -16,7 +16,7 @@ bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanVerte
 	if (fin)
 	{
 
-		fin >> ignore;//Ìø¹ıÒ»ĞĞ
+		fin >> ignore;//è·³è¿‡ä¸€è¡Œ
 		fin >> ignore >> numMaterials;
 		fin >> ignore >> numVertices;
 		fin >> ignore >> numTriangles;
@@ -35,11 +35,11 @@ bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanVerte
 
 
 
-//¶ÁÈ¡ÏàÓ¦µÄÍø¸ñÊı¾İºÍ¶¯»­Êı¾İ
+//è¯»å–ç›¸åº”çš„ç½‘æ ¼æ•°æ®å’ŒåŠ¨ç”»æ•°æ®
 bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanSkinnedVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<M3dMaterial>& mats, SkinnedDataClass& skinInfo)
 {
 
-	//´ò¿ªM3d.ÎÄ¼ş¸ñÊ½
+	//æ‰“å¼€M3d.æ–‡ä»¶æ ¼å¼
 	ifstream fin(FileName);
 
 	UINT numMaterials = 0;
@@ -52,7 +52,7 @@ bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanSkinn
 	if (fin)
 	{
 
-		fin >> ignore;//Ìø¹ıÒ»ĞĞ
+		fin >> ignore;//è·³è¿‡ä¸€è¡Œ
 		fin >> ignore >> numMaterials;
 		fin >> ignore >> numVertices;
 		fin >> ignore >> numTriangles;
@@ -80,7 +80,7 @@ bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanSkinn
 
 
 
-//¶ÁÈ¡²ÄÖÊ
+//è¯»å–æè´¨
 void M3dLoaderClass::ReadMaterials(ifstream& FileIn, UINT numMaterials, vector<M3dMaterial>& mats)
 {
 	string ignore;
@@ -89,7 +89,7 @@ void M3dLoaderClass::ReadMaterials(ifstream& FileIn, UINT numMaterials, vector<M
 	string DiffuseMapName;
 	string NormalMapName;
 
-	FileIn >> ignore; //Ìø¹ıÎÄ¼şÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡æ–‡ä»¶å¤´ä¸€è¡Œ
 	for (UINT i = 0; i < numMaterials; ++i)
 	{
 		FileIn >> ignore >> mats[i].Mat.Ambient.x >> mats[i].Mat.Ambient.y >> mats[i].Mat.Ambient.z;
@@ -103,7 +103,7 @@ void M3dLoaderClass::ReadMaterials(ifstream& FileIn, UINT numMaterials, vector<M
 		FileIn >> ignore >> NormalMapName;
 
 
-		//½«DiffuseMapNameºÍNormalMapName´Óstring±äÎªwstring¸ñÊ½
+		//å°†DiffuseMapNameå’ŒNormalMapNameä»stringå˜ä¸ºwstringæ ¼å¼
 		mats[i].DiffuseMapName.resize(DiffuseMapName.size(), ' ');
 		mats[i].NormalMapName.resize(NormalMapName.size(), ' ');
 		std::copy(DiffuseMapName.begin(), DiffuseMapName.end(), mats[i].DiffuseMapName.begin());
@@ -111,13 +111,13 @@ void M3dLoaderClass::ReadMaterials(ifstream& FileIn, UINT numMaterials, vector<M
 	}
 }
 
-//¶ÁÈ¡×Ó¼¯±í
+//è¯»å–å­é›†è¡¨
 void M3dLoaderClass::ReadSubsetTable(ifstream& FileIn, UINT numSubsets, vector<MeshGeometryClass::Subset>& subsets)
 {
 	string ignore;
 	subsets.resize(numSubsets);
 
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 	for (UINT i = 0; i < numSubsets; ++i)
 	{
 		FileIn >> ignore >> subsets[i].Id;
@@ -128,12 +128,12 @@ void M3dLoaderClass::ReadSubsetTable(ifstream& FileIn, UINT numSubsets, vector<M
 	}
 }
 
-//¶ÁÈ¡¶¥µãµÄÊôĞÔ¼¯ºÏ
+//è¯»å–é¡¶ç‚¹çš„å±æ€§é›†åˆ
 void M3dLoaderClass::ReadVertices(ifstream& FileIn, UINT numVertices, vector<PosNormalTexTanVertex>& vertices)
 {
 	string ignore;
 	vertices.resize(numVertices);
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 
 	for (UINT i = 0; i < numVertices; ++i)
 	{
@@ -146,12 +146,12 @@ void M3dLoaderClass::ReadVertices(ifstream& FileIn, UINT numVertices, vector<Pos
 
 }
 
-// ¶ÁÈ¡ÃÉÆ¤¶¥µãÊôĞÔ
+// è¯»å–è’™çš®é¡¶ç‚¹å±æ€§
 void M3dLoaderClass::ReadSkinnedVertices(ifstream& FileIn, UINT numVertices, vector<PosNormalTexTanSkinnedVertex>& vertices)
 {
 	string ignore;
 	vertices.resize(numVertices);
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 	int boneIndices[4];
 	for (UINT i = 0; i < numVertices; ++i)
 	{
@@ -170,14 +170,14 @@ void M3dLoaderClass::ReadSkinnedVertices(ifstream& FileIn, UINT numVertices, vec
 }
 
 
-//¶ÁÈ¡Èı½ÇĞÎË÷Òı
+//è¯»å–ä¸‰è§’å½¢ç´¢å¼•
 void M3dLoaderClass::ReadTriangles(ifstream& FileIn, UINT numTriangles, vector<unsigned long>& indices)
 {
 	string ignore;
 
-	//numTriangles*3¸öË÷ÒıÊıÄ¿
+	//numTriangles*3ä¸ªç´¢å¼•æ•°ç›®
 	indices.resize(numTriangles * 3);
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 	for (UINT i = 0; i < numTriangles; ++i)
 	{
 		FileIn >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
@@ -186,12 +186,12 @@ void M3dLoaderClass::ReadTriangles(ifstream& FileIn, UINT numTriangles, vector<u
 
 
 
-//¶ÁÈ¡¹Ç÷ÀÎ»ÒÆ
+//è¯»å–éª¨éª¼ä½ç§»
 void M3dLoaderClass::ReadBoneOffets(ifstream& FileIn, UINT numBones, vector<XMFLOAT4X4>& boneOffsets)
 {
 	string ignore;
 	boneOffsets.resize(numBones);
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 
 	for (UINT i = 0; i < numBones; ++i)
 	{
@@ -203,30 +203,30 @@ void M3dLoaderClass::ReadBoneOffets(ifstream& FileIn, UINT numBones, vector<XMFL
 }
 
 
-//¶ÁÈ¡¹Ç÷À²ã¼¶(ÒÔÊı×éĞÎÊ½³ÊÏÖµÄ¹Ç÷ÀÊ÷¹ØÏµ)
+//è¯»å–éª¨éª¼å±‚çº§(ä»¥æ•°ç»„å½¢å¼å‘ˆç°çš„éª¨éª¼æ ‘å…³ç³»)
 void M3dLoaderClass::ReadBoneHierarchy(ifstream& FileIn, UINT numBones, vector<int>& boneIndexToParentIndex)
 {
 	string ignore;
 	boneIndexToParentIndex.resize(numBones);
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 	for (UINT i = 0; i < numBones; ++i)
 	{
 		FileIn >> ignore >> boneIndexToParentIndex[i];
 	}
 }
 
-//¶ÁÈ¡¶¯»­Æ¬¶Î
+//è¯»å–åŠ¨ç”»ç‰‡æ®µ
 void M3dLoaderClass::ReadAnimationClips(ifstream& FileIn, UINT numBones, UINT numAnimationClips, map<string, AnimationClip>& animations)
 {
 	string ignore;
-	FileIn >> ignore; //Ìø¹ıÍ·Ò»ĞĞ
+	FileIn >> ignore; //è·³è¿‡å¤´ä¸€è¡Œ
 	for (UINT clipIndex = 0; clipIndex < numAnimationClips; ++clipIndex)
 	{
 		string clipName;
 
-		//»ñÈ¡¶¯»­Æ¬¶ÎÃû
+		//è·å–åŠ¨ç”»ç‰‡æ®µå
 		FileIn >> ignore >> clipName;
-		FileIn >> ignore; //Ìø¹ı"{"
+		FileIn >> ignore; //è·³è¿‡"{"
 		AnimationClip clip;
 		clip.BoneAnimations.resize(numBones);
 
@@ -235,18 +235,18 @@ void M3dLoaderClass::ReadAnimationClips(ifstream& FileIn, UINT numBones, UINT nu
 			ReadBoneKeyFrame(FileIn, numBones, clip.BoneAnimations[boneIndex]);
 		}
 
-		FileIn >> ignore; //Ìø¹ı"}"
+		FileIn >> ignore; //è·³è¿‡"}"
 		animations[clipName] = clip;
 	}
 }
 
-//¶ÁÈ¡¹ÇÍ·¹Ø¼üÖ¡
+//è¯»å–éª¨å¤´å…³é”®å¸§
 void M3dLoaderClass::ReadBoneKeyFrame(ifstream& FileIn, UINT numBones, BoneAnimation& boneAnimation)
 {
 	string ignore;
 	UINT numKeyframes = 0;
 	FileIn >> ignore >> ignore >> numKeyframes;
-	FileIn >> ignore; //Ìø¹ı¡°{¡±
+	FileIn >> ignore; //è·³è¿‡â€œ{â€
 	boneAnimation.keyFrames.resize(numKeyframes);
 
 	for (UINT KeyFrameIndex = 0; KeyFrameIndex < numKeyframes; ++KeyFrameIndex)
@@ -262,6 +262,6 @@ void M3dLoaderClass::ReadBoneKeyFrame(ifstream& FileIn, UINT numBones, BoneAnima
 		boneAnimation.keyFrames[KeyFrameIndex].Scale = Scale;
 		boneAnimation.keyFrames[KeyFrameIndex].RotationQuat = Quat;
 	}
-	FileIn >> ignore; //Ìø¹ı¡°}¡±
+	FileIn >> ignore; //è·³è¿‡â€œ}â€
 
 }

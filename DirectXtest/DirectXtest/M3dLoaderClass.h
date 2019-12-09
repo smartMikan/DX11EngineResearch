@@ -15,7 +15,7 @@ using std::wstring;
 using std::ifstream;
 using std::istringstream;
 
-//M3dÍø¸ñÄ£ĞÍµÄ²ÄÖÊÊôĞÔ
+//M3dç½‘æ ¼æ¨¡å‹çš„æè´¨å±æ€§
 struct M3dMaterial
 {
 	Material Mat;
@@ -29,31 +29,31 @@ class M3dLoaderClass
 {
 private:
 
-	//¶ÁÈ¡²ÄÖÊ
+	//è¯»å–æè´¨
 	void ReadMaterials(ifstream& FileIn, UINT numMaterials, vector<M3dMaterial>& mats);
 
-	//¶ÁÈ¡×Ó¼¯±í
+	//è¯»å–å­é›†è¡¨
 	void ReadSubsetTable(ifstream& FileIn, UINT numSubsets, vector<MeshGeometryClass::Subset>& subsets);
 
-	//¶ÁÈ¡¶¥µãµÄÊôĞÔ¼¯ºÏ
+	//è¯»å–é¡¶ç‚¹çš„å±æ€§é›†åˆ
 	void ReadVertices(ifstream& FileIn, UINT numVertices, vector<PosNormalTexTanVertex>& vertices);
 
-	//¶ÁÈ¡ÃÉÆ¤¶¥µãÊôĞÔ
+	//è¯»å–è’™çš®é¡¶ç‚¹å±æ€§
 	void ReadSkinnedVertices(ifstream& FileIn, UINT numVertices, vector<PosNormalTexTanSkinnedVertex>& vertices);
 
-	//¶ÁÈ¡Èı½ÇĞÎË÷Òı
+	//è¯»å–ä¸‰è§’å½¢ç´¢å¼•
 	void ReadTriangles(ifstream& FileIn, UINT numTriangles, vector<unsigned long>& indices);
 
-	//¶ÁÈ¡¹Ç÷ÀÎ»ÒÆ
+	//è¯»å–éª¨éª¼ä½ç§»
 	void ReadBoneOffets(ifstream& FileIn, UINT numBones, vector<XMFLOAT4X4>& boneOffsets);
 
-	//¶ÁÈ¡¹Ç÷À²ã¼¶(ÒÔÊı×éĞÎÊ½³ÊÏÖµÄ¹Ç÷ÀÊ÷¹ØÏµ)
+	//è¯»å–éª¨éª¼å±‚çº§(ä»¥æ•°ç»„å½¢å¼å‘ˆç°çš„éª¨éª¼æ ‘å…³ç³»)
 	void ReadBoneHierarchy(ifstream& FileIn, UINT numBones, vector<int>& boneIndexToParentIndex);
 
-	//¶ÁÈ¡¶¯»­Æ¬¶Î
+	//è¯»å–åŠ¨ç”»ç‰‡æ®µ
 	void ReadAnimationClips(ifstream& FileIn, UINT numBones, UINT numAnimationClips, map<string, AnimationClip>& animations);
 
-	//¶ÁÈ¡¹ÇÍ·¹Ø¼üÖ¡
+	//è¯»å–éª¨å¤´å…³é”®å¸§
 	void ReadBoneKeyFrame(ifstream& FileIn, UINT numBones, BoneAnimation& boneAnimation);
 
 

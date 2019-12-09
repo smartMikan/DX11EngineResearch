@@ -215,7 +215,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	XMMATRIX modelScale = XMMatrixScaling(0.15f, 0.15f, -0.15f);
 	XMMATRIX modelRot = XMMatrixRotationY(0);
-	XMMATRIX modelOffset = XMMatrixTranslation(55.0f, 10.0f, 36.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(0.0f, 0.0f, 36.0f);
 	XMStoreFloat4x4(&mCharacterInstance1.World, modelScale * modelRot * modelOffset);
 
 	XMStoreFloat4x4(&mCharacterInstance2.World, modelScale * modelRot * modelOffset);
@@ -471,38 +471,38 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	//// Turn off back face culling.
-	//Direct3D->TurnOffCulling();
+	// Turn off back face culling.
+	Direct3D->TurnOffCulling();
 
-	//// Translate the sky dome to be centered around the camera position.
-	//worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	// Translate the sky dome to be centered around the camera position.
+	worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	//if (m_cubemapsky) {
-	//	Direct3D->TurnDepthStencilStateLessEqual();
-	//	// Render the sky cube using the sky cube shader.
-	//	m_SkyCube->Render(Direct3D->GetDeviceContext());
-	//	result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SkyCube->GetIndexCount(), worldMatrix, viewMatrix,
-	//		projectionMatrix, m_SkyCube->GetTextureCube());
-	//	if (!result)
-	//	{
-	//		return false;
-	//	}
-	//}
-	//else
-	//{
-	//	Direct3D->TurnZBufferOff();
-	//	// Render the sky dome using the sky dome shader.
-	//	m_SkyDome->Render(Direct3D->GetDeviceContext());
-	//	result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), worldMatrix, viewMatrix,
-	//		projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
-	//	if (!result)
-	//	{
-	//		return false;
-	//	}
-	//}
+	if (m_cubemapsky) {
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_SkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_SkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		Direct3D->TurnZBufferOff();
+		// Render the sky dome using the sky dome shader.
+		m_SkyDome->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyDomeShader(Direct3D->GetDeviceContext(), m_SkyDome->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
+		if (!result)
+		{
+			return false;
+		}
+	}
 
-	//// Reset the world matrix.
-	//Direct3D->GetWorldMatrix(worldMatrix);
+	// Reset the world matrix.
+	Direct3D->GetWorldMatrix(worldMatrix);
 
 	// Turn the Z buffer back and back face culling on.
 	Direct3D->TurnZBufferOn();
@@ -514,35 +514,35 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		Direct3D->EnableWireframe();
 	}
 
-	//// Render the terrain cells (and cell lines if needed).
-	//for (i = 0; i < m_Terrain->GetCellCount(); i++)
-	//{
-	//	// Render each terrain cell if it is visible only.
-	//	result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
-	//	if (result)
-	//	{
-	//		// Render the cell buffers using the terrain shader.
-	//		result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
-	//			projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
-	//			m_Light->GetDirection(), m_Light->GetDiffuseColor());
-	//		if (!result)
-	//		{
-	//			return false;
-	//		}
+	// Render the terrain cells (and cell lines if needed).
+	for (i = 0; i < m_Terrain->GetCellCount(); i++)
+	{
+		// Render each terrain cell if it is visible only.
+		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
+		if (result)
+		{
+			// Render the cell buffers using the terrain shader.
+			result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellIndexCount(i), worldMatrix, viewMatrix,
+				projectionMatrix, TextureManager->GetTexture(0), TextureManager->GetTexture(1),
+				m_Light->GetDirection(), m_Light->GetDiffuseColor());
+			if (!result)
+			{
+				return false;
+			}
 
-	//		// If needed then render the bounding box around this terrain cell using the color shader. 
-	//		if (m_cellLines)
-	//		{
-	//			m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
-	//			ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
-	//				viewMatrix, projectionMatrix);
-	//			if (!result)
-	//			{
-	//				return false;
-	//			}
-	//		}
-	//	}
-	//}
+			// If needed then render the bounding box around this terrain cell using the color shader. 
+			if (m_cellLines)
+			{
+				m_Terrain->RenderCellLines(Direct3D->GetDeviceContext(), i);
+				ShaderManager->RenderColorShader(Direct3D->GetDeviceContext(), m_Terrain->GetCellLinesIndexCount(i), worldMatrix,
+					viewMatrix, projectionMatrix);
+				if (!result)
+				{
+					return false;
+				}
+			}
+		}
+	}
 
 	
 
@@ -571,7 +571,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//
 
 
-	float Deltatime = TimeClass->GetTime();
+	float Deltatime = 0.01f;
 
 	//限定DeltaTime不能过大，也就是骨骼动画状态不能突变
 	if (Deltatime > 1.0f)
