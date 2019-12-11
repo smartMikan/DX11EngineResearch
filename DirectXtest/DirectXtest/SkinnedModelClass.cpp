@@ -60,7 +60,7 @@ void SkinnedModelInstance::Update(float dt)
 	TimePos += dt;
 	Model->SkinnedData.GetFinalTransforms(ClipName, TimePos, FinalTransforms);
 
-	//Ñ­»·¶¯»­
+	
 	if (TimePos > Model->SkinnedData.GetClipEndTime(ClipName))
 		TimePos = 0.0f;
 }
