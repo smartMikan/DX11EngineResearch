@@ -50,7 +50,7 @@ class SkinnedDataClass
 
 private:
 
-	//ÒÔÊı×éĞÎÊ½±úæ¾µÄÊ÷£¬a[i]=j£¬´ú±úÑÚi¸ù¹ÇÍ·µÄÄ¸¹ÇÍ·ÏÂ±Eªj   
+	//ä»¥æ•°ç»„å½¢å¼æŸ„å©¢çš„æ ‘ï¼Œa[i]=jï¼Œä»£æŸ„æ©iæ ¹éª¨å¤´çš„æ¯éª¨å¤´ä¸‹çœ®EçŒ¨   
 	vector<int> mBoneHierarchy;
 
 	vector<XMFLOAT4X4> mBoneOffsets;
@@ -67,7 +67,7 @@ public:
 	void Set(vector<int>& bongHierarchy, vector<XMFLOAT4X4>& boneOffsets, map<string, AnimationClip>& animations);
 
 
-	//»ñÈ¡Ä³Ò»Ê±¼äµãµÄÄ³Ò»¸ö¶¯»­Æ¬¶ÎµÄËùÓĞ¹ÇÍ·µÄ±ä»»¾ØÕE
+	//è·å–æŸä¸€æ—¶é—´ç‚¹çš„æŸä¸€ä¸ªåŠ¨ç”»ç‰‡æ®µçš„æ‰€æœ‰éª¨å¤´çš„å˜æ¢çŸ©è«„E
 	void GetFinalTransforms(const string& AnimationClipName, float TimePos, vector<XMFLOAT4X4>& finalTransforms)const;
 
 

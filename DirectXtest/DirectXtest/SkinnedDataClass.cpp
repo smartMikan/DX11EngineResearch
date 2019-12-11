@@ -14,40 +14,40 @@ KeyFrame::~KeyFrame()
 
 float BoneAnimation::GetStartTime()const
 {
-	//µÚÒ»Ö¡µÄÊ±¼äµãÎª¿ªÊ¼Ê±¼ä
+	//ç¬¬ä¸€å¸§çš„æ—¶é—´ç‚¹ä¸ºå¼€å§‹æ—¶é—´
 	return keyFrames.front().TimePos;
 }
 
 float BoneAnimation::GetEndTime()const
 {
-	//×îºóÒ»Ö¡µÄÊ±¼äµãÎª½áÊøÊ±¼ä
+	//æœ€åä¸€å¸§çš„æ—¶é—´ç‚¹ä¸ºç»“æŸæ—¶é—´
 	return keyFrames.back().TimePos;
 }
 
-//µÃµ½Ä³¸ö¹ÇÍ·ÔÚÊ±¼ätµÄ±ä»»¾ØÕó
+//å¾—åˆ°æŸä¸ªéª¨å¤´åœ¨æ—¶é—´tçš„å˜æ¢çŸ©é˜µ
 void BoneAnimation::Interpolate(float t, XMFLOAT4X4& M)const
 {
 	if (t < keyFrames.front().TimePos)
 	{
-		XMVECTOR S = XMLoadFloat3(&keyFrames.front().Scale);  //Ëõ·Å¾ØÕó
-		XMVECTOR P = XMLoadFloat3(&keyFrames.front().Translation);  //Æ½ÒÆ¾ØÕó
-		XMVECTOR Q = XMLoadFloat4(&keyFrames.front().RotationQuat); //Ğı×ªËÄÔªËØ
+		XMVECTOR S = XMLoadFloat3(&keyFrames.front().Scale);  //ç¼©æ”¾çŸ©é˜µ
+		XMVECTOR P = XMLoadFloat3(&keyFrames.front().Translation);  //å¹³ç§»çŸ©é˜µ
+		XMVECTOR Q = XMLoadFloat4(&keyFrames.front().RotationQuat); //æ—‹è½¬å››å…ƒç´ 
 
 		XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
-		// XMMatrixAffineTransformationµÄµÚ¶ş¸ö²ÎÊıÎªĞı×ªÖĞĞÄ	
+		// XMMatrixAffineTransformationçš„ç¬¬äºŒä¸ªå‚æ•°ä¸ºæ—‹è½¬ä¸­å¿ƒ	
 		XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
 	}
 
 	else if (t >= keyFrames.back().TimePos)
 	{
-		XMVECTOR S = XMLoadFloat3(&keyFrames.back().Scale);  //Ëõ·Å¾ØÕó
-		XMVECTOR P = XMLoadFloat3(&keyFrames.back().Translation);  //Æ½ÒÆ¾ØÕó
-		XMVECTOR Q = XMLoadFloat4(&keyFrames.back().RotationQuat); //Ğı×ªËÄÔªËØ
+		XMVECTOR S = XMLoadFloat3(&keyFrames.back().Scale);  //ç¼©æ”¾çŸ©é˜µ
+		XMVECTOR P = XMLoadFloat3(&keyFrames.back().Translation);  //å¹³ç§»çŸ©é˜µ
+		XMVECTOR Q = XMLoadFloat4(&keyFrames.back().RotationQuat); //æ—‹è½¬å››å…ƒç´ 
 
 		XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 
-		// XMMatrixAffineTransformationµÄµÚ¶ş¸ö²ÎÊıÎªĞı×ªÖĞĞÄ	
+		// XMMatrixAffineTransformationçš„ç¬¬äºŒä¸ªå‚æ•°ä¸ºæ—‹è½¬ä¸­å¿ƒ	
 		XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
 	}
 	else
@@ -67,15 +67,15 @@ void BoneAnimation::Interpolate(float t, XMFLOAT4X4& M)const
 				XMVECTOR Q0 = XMLoadFloat4(&keyFrames[i].RotationQuat);
 				XMVECTOR Q1 = XMLoadFloat4(&keyFrames[i + 1].RotationQuat);
 
-				//¶ÔÏàÁÚÁ½¸öÖ¡ÊıµÄ¶¯»­µÄÏàÓ¦±ä»¯Á¿½øĞĞ²åÖµ
+				//å¯¹ç›¸é‚»ä¸¤ä¸ªå¸§æ•°çš„åŠ¨ç”»çš„ç›¸åº”å˜åŒ–é‡è¿›è¡Œæ’å€¼
 
-				//Ëõ·ÅÁ¿½øĞĞ²åÖµ
+				//ç¼©æ”¾é‡è¿›è¡Œæ’å€¼
 				XMVECTOR S = XMVectorLerp(S0, S1, lerpPercent);
 
-				//ÒÆ¶¯Á¿½øĞĞ²åÖµ
+				//ç§»åŠ¨é‡è¿›è¡Œæ’å€¼
 				XMVECTOR P = XMVectorLerp(P0, P1, lerpPercent);
 
-				//¶ÔĞı×ªÁ¿½øĞĞ²åÖµ
+				//å¯¹æ—‹è½¬é‡è¿›è¡Œæ’å€¼
 				XMVECTOR Q = XMVectorLerp(Q0, Q1, lerpPercent);
 
 				XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
@@ -90,7 +90,7 @@ void BoneAnimation::Interpolate(float t, XMFLOAT4X4& M)const
 
 float AnimationClip::GetClipStartTime()const
 {
-	//ÕÒµ½ÔÚÒ»¸ö¶¯»­Æ¬¶ÎËùÓĞ¹ÇÍ·µÄ¿ªÊ¼Ê±¼äµÄ×îĞ¡Öµ
+	//æ‰¾åˆ°åœ¨ä¸€ä¸ªåŠ¨ç”»ç‰‡æ®µæ‰€æœ‰éª¨å¤´çš„å¼€å§‹æ—¶é—´çš„æœ€å°å€¼
 	float t = 10000000.0f;
 
 	for (UINT i = 0; i < BoneAnimations.size(); ++i)
@@ -104,7 +104,7 @@ float AnimationClip::GetClipStartTime()const
 
 float AnimationClip::GetClipEndTime()const
 {
-	//ÕÒµ½ÔÚÒ»¸ö¶¯»­Æ¬¶ÎËùÓĞ¹ÇÍ·µÄ½áÊøÊ±¼äµÄ×î´óÖµ
+	//æ‰¾åˆ°åœ¨ä¸€ä¸ªåŠ¨ç”»ç‰‡æ®µæ‰€æœ‰éª¨å¤´çš„ç»“æŸæ—¶é—´çš„æœ€å¤§å€¼
 	float t = 0.0f;
 
 	for (UINT i = 0; i < BoneAnimations.size(); ++i)
@@ -115,7 +115,7 @@ float AnimationClip::GetClipEndTime()const
 	return t;
 }
 
-//µÃµ½ËùÓĞ¹ÇÍ·ÔÚÊ±¼ätµÄ±ä»»¾ØÕóÊı×é,boneTransform[i]´ú±íµÚi¸ù¹ÇÍ·ÔÚÊ±¼ätµÄ±ä»»¾ØÕó
+//å¾—åˆ°æ‰€æœ‰éª¨å¤´åœ¨æ—¶é—´tçš„å˜æ¢çŸ©é˜µæ•°ç»„,boneTransform[i]ä»£è¡¨ç¬¬iæ ¹éª¨å¤´åœ¨æ—¶é—´tçš„å˜æ¢çŸ©é˜µ
 void AnimationClip::Interpolate(float t, vector<XMFLOAT4X4>& boneTransform)const
 {
 	for (UINT i = 0; i < BoneAnimations.size(); ++i)
@@ -152,26 +152,26 @@ void  SkinnedDataClass::Set(vector<int>& boneHierarchy, vector<XMFLOAT4X4>& bone
 }
 
 
-//»ñÈ¡Ä³Ò»Ê±¼äµãµÄÄ³Ò»¸ö¶¯»­Æ¬¶ÎµÄËùÓĞ¹ÇÍ·µÄ±ä»»¾ØÕó
+//è·å–æŸä¸€æ—¶é—´ç‚¹çš„æŸä¸€ä¸ªåŠ¨ç”»ç‰‡æ®µçš„æ‰€æœ‰éª¨å¤´çš„å˜æ¢çŸ©é˜µ
 void  SkinnedDataClass::GetFinalTransforms(const string& AnimationClipName, float TimePos, vector<XMFLOAT4X4>& finalTransforms) const
 {
 	UINT numBones = mBoneOffsets.size();
 
-	//²åÖµµÃµ½Ä³¸ö¶¯»­Æ¬¶ÎÔÚÄ³¸öÊ±¼äµãËùÓĞ¹ÇÍ·µ½Ä¸¹ÇÍ·µÄ±ä»»¾ØÕó
+	//æ’å€¼å¾—åˆ°æŸä¸ªåŠ¨ç”»ç‰‡æ®µåœ¨æŸä¸ªæ—¶é—´ç‚¹æ‰€æœ‰éª¨å¤´åˆ°æ¯éª¨å¤´çš„å˜æ¢çŸ©é˜µ
 	vector<XMFLOAT4X4> toParentTransform(numBones);
 
 	auto AniClip = mAnimations.find(AnimationClipName);
 
-	//Çó³öÄ³¸öÊ±¼äµãËùÓĞ¹ÇÍ·µ½ÏàÓ¦µÄÄ¸¹ÇÍ·µÄ±ä»»¾ØÕó£¬ÆäÊµM3D¸÷¹ÇÍ·´æ´¢µÄScale,Translation,QuatÎª±ä»»µ½Ä¸¹ÇÍ·µÄ±ä»»ÊôĞÔ
+	//æ±‚å‡ºæŸä¸ªæ—¶é—´ç‚¹æ‰€æœ‰éª¨å¤´åˆ°ç›¸åº”çš„æ¯éª¨å¤´çš„å˜æ¢çŸ©é˜µï¼Œå…¶å®M3Då„éª¨å¤´å­˜å‚¨çš„Scale,Translation,Quatä¸ºå˜æ¢åˆ°æ¯éª¨å¤´çš„å˜æ¢å±æ€§
 	AniClip->second.Interpolate(TimePos, toParentTransform);
 
-	//±éÀúËùÓĞ²ã¼¶£¬±ä»»ËùÓĞ¹ÇÍ·µ½¸ù½Úµã¿Õ¼ä
+	//éå†æ‰€æœ‰å±‚çº§ï¼Œå˜æ¢æ‰€æœ‰éª¨å¤´åˆ°æ ¹èŠ‚ç‚¹ç©ºé—´
 	vector<XMFLOAT4X4> toRootTransforms(numBones);
 
-	//¸ù¹ÇÍ·µÄÏÂ±êÎª0,¸ù¹ÇÍ·Ã»ÓĞÄ¸¹ÇÍ·,Òò´ËËüµÄ¸ù¿Õ¼ä±ä»»Ò²¾ÍÊÇ¸ù½ÚµãµÄ¾Ö²¿¿Õ¼ä±ä»»
+	//æ ¹éª¨å¤´çš„ä¸‹æ ‡ä¸º0,æ ¹éª¨å¤´æ²¡æœ‰æ¯éª¨å¤´,å› æ­¤å®ƒçš„æ ¹ç©ºé—´å˜æ¢ä¹Ÿå°±æ˜¯æ ¹èŠ‚ç‚¹çš„å±€éƒ¨ç©ºé—´å˜æ¢
 	toRootTransforms[0] = toParentTransform[0];
 
-	//ÏÖÔÚÕÒµ½Ã¿¸ù¹ÇÍ·µ½¸ù¿Õ¼äµÄ±ä»»(×Ô¶¥ÏòÏÂ,¸´ÔÓ¶ÈÎªO(n),Èç¹û×Ôµ×ÏòÉÏ£¬Ôò¸´ÔÓ¶ÈÎªO(n*n))
+	//ç°åœ¨æ‰¾åˆ°æ¯æ ¹éª¨å¤´åˆ°æ ¹ç©ºé—´çš„å˜æ¢(è‡ªé¡¶å‘ä¸‹,å¤æ‚åº¦ä¸ºO(n),å¦‚æœè‡ªåº•å‘ä¸Šï¼Œåˆ™å¤æ‚åº¦ä¸ºO(n*n))
 	for (UINT i = 1; i < numBones; ++i)
 	{
 		XMMATRIX toParent = XMLoadFloat4x4(&toParentTransform[i]);
@@ -185,7 +185,7 @@ void  SkinnedDataClass::GetFinalTransforms(const string& AnimationClipName, floa
 		XMStoreFloat4x4(&toRootTransforms[i], toRoot);
 	}
 
-	//µÃµ½¶¯»­Æ¬¶ÎËùÓĞ¹ÇÍ·ÔÚÄ³¸öÊ±¼äµãµÄ×îºó±ä»»(ÏÈÆ½ÒÆ£¬ÔÚ½øĞĞ¸ù¿Õ¼ä±ä»¯)
+	//å¾—åˆ°åŠ¨ç”»ç‰‡æ®µæ‰€æœ‰éª¨å¤´åœ¨æŸä¸ªæ—¶é—´ç‚¹çš„æœ€åå˜æ¢(å…ˆå¹³ç§»ï¼Œåœ¨è¿›è¡Œæ ¹ç©ºé—´å˜åŒ–)
 	for (UINT i = 0; i < numBones; ++i)
 	{
 		XMMATRIX offset = XMLoadFloat4x4(&mBoneOffsets[i]);

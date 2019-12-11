@@ -188,6 +188,9 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 	std::map<string, AnimationClip> animations;
 	AnimationClip animationclips;
 	
+
+	
+
 	//for (size_t i = 0; i < mesh->mNumBones; i++)
 	//{
 	//	scene->mRootNode->FindNode(mesh->mBones[i]->mName);
