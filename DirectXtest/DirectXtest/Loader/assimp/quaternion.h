@@ -79,6 +79,8 @@ public:
     /** Returns a matrix representation of the quaternion */
     aiMatrix3x3t<TReal> GetMatrix() const;
 
+	aiMatrix4x4t<TReal> GetMatrix4x4() const;
+
 public:
 
     bool operator== (const aiQuaterniont& o) const;

@@ -99,7 +99,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TypeLibraryFile>
       </TypeLibraryFile>
@@ -145,7 +145,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;</AdditionalLibraryDirectories>
       <TypeLibraryFile>
       </TypeLibraryFile>

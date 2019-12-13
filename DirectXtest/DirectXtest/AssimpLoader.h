@@ -6,6 +6,7 @@
 #include"SkinnedDataClass.h"
 #include"CommonVertexFormat.h"
 #include"SkinnedDataClass.h"
+#include "Mesh.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -26,33 +27,40 @@ class AssimpLoader
 
 private:
 
-	//读取材质
+	//load materials
 	void ReadMaterials(const aiScene * aiscene, UINT numMaterials, vector<aiMaterial>& mats);
 
-	//读取子集表
-	void ReadSubsetTable(aiScene* aiscene, UINT numSubsets, vector<MeshGeometryClass::Subset>& subsets);
+	//load subset table
+	void ReadSubsetTable(const aiScene* aiscene, UINT numSubsets, vector<MeshGeometryClass::Subset>& subsets);
 
-	//读取顶点的属性集合
-	void ReadVertices(aiScene* aicene, UINT numVertices, vector<PosNormalTexTanVertex>& vertices);
+	//read vertieces
+	void ReadVertices(const aiScene* aicene, UINT numVertices, vector<PosNormalTexTanVertex>& vertices);
 
-	//读取蒙皮顶点属性
-	void ReadSkinnedVertices(aiScene* aicene, UINT numVertices, vector<PosNormalTexTanSkinnedVertex>& vertices);
+	//read skinned vertieces
+	void ReadSkinnedVertices(const aiScene* aicene, UINT numVertices, vector<PosNormalTexTanSkinnedVertex>& vertices);
 
-	//读取三角形索引
-	void ReadTriangles(aiScene* aicene, UINT numTriangles, vector<unsigned long>& indices);
+	//read indices
+	void ReadTriangles(const aiScene* aicene, UINT numTriangles, vector<unsigned long>& indices);
 
-	//读取骨骼位移
-	void ReadBoneOffets(aiScene* aicene, UINT numBones, vector<XMFLOAT4X4>& boneOffsets);
+	//read bone offset
+	void ReadBoneOffets(const aiScene* aicene, UINT numBones, vector<XMFLOAT4X4>& boneOffsets);
 
-	//读取骨骼层级(以数组形式呈现的骨骼树关系)
-	void ReadBoneHierarchy(aiScene* aicene, UINT numBones, vector<int>& boneIndexToParentIndex);
+	//read bone hierachy
+	void ReadBoneHierarchy(const aiScene* aicene, UINT numBones, vector<int>& boneIndexToParentIndex);
 
-	//读取动画片段
-	void ReadAnimationClips(aiScene* aicene, UINT numBones, UINT numAnimationClips, map<string, AnimationClip>& animations);
+	//read animation clips
+	void ReadAnimationClips(const aiScene* aicene, UINT numBones, UINT numAnimationClips, map<string, AnimationClip>& animations);
 
-	//读取骨头关键帧
-	void ReadBoneKeyFrame(aiScene* aicene, UINT numBones, BoneAnimation& boneAnimation);
+	//read bone keyframes
+	void ReadBoneKeyFrame(const aiScene* aicene, UINT numBones, BoneAnimation& boneAnimation);
 
+
+
+	void ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix, vector<PosNormalTexTanSkinnedVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<aiMaterial>& mats, SkinnedDataClass & skinInfo);
+	void ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix, UINT meshID, vector<PosNormalTexTanSkinnedVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<aiMaterial>& mats, SkinnedDataClass & skinInfo);
+	std::vector<Texture>LoadMaterialTextures(aiMaterial* material, aiTextureType textureType, const aiScene* scene);
+	TextureStorageType DetermineTextureStorageType(const aiScene* scene, aiMaterial* mat, unsigned int index, aiTextureType textureType);
+	int GetTextureIndex(aiString* pStr);
 
 private:
 	std::string directory = "";

@@ -76,6 +76,9 @@ bool Model::LoadModel(const std::string& filePath)
 
 	this->ProcessNode(m_pScene->mRootNode, m_pScene,DirectX::XMMatrixIdentity());
 	
+	
+	
+
 	//const aiAnimation* anim = modelScene->mAnimations[0];
 	//double currentTime = fmod(1000, anim->mDuration);
 
@@ -190,7 +193,6 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 	
 
 	
-
 	//for (size_t i = 0; i < mesh->mNumBones; i++)
 	//{
 	//	scene->mRootNode->FindNode(mesh->mBones[i]->mName);
@@ -214,6 +216,14 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 		vertex.normal.y = mesh->mNormals[i].y;
 		vertex.normal.z = mesh->mNormals[i].z;
 
+		if (mesh->mTangents != nullptr) {
+			vertex.tangent.x = mesh->mTangents->x;
+			vertex.tangent.y = mesh->mTangents->y;
+			vertex.tangent.z = mesh->mTangents->z;
+			vertex.tangent.w = 1;
+		}
+
+
 
 		vertices.push_back(vertex);
 	}
@@ -230,31 +240,31 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 			indices.push_back(face.mIndices[j]);
 		}
 	}
-	/*for (UINT i = 0; i < mesh->mNumBones; i++) {
+	
+
+	// calculate bone matrices
+	std::vector<aiMatrix4x4> boneMatrices(mesh->mNumBones);
+	for (size_t i = 0; i < mesh->mNumBones; ++i)
+	{
+		const aiBone* bone = mesh->mBones[i];
+
+		// find the corresponding node by again looking recursively through the node hierarchy for the same name
+		const aiNode* node = FindNodeRecursivelyByName(scene->mRootNode, bone->mName);
+
+		// start with the mesh-to-bone matrix 
+		boneMatrices[i] = bone->mOffsetMatrix;
+		// and now append all node transformations down the parent chain until we're back at mesh coordinates again
+		const aiNode* tempNode = node;
+		while (tempNode)
+		{
+			boneMatrices[i] *= tempNode->mTransformation;   // check your matrix multiplication order here!!!
+			tempNode = tempNode->mParent;
+		}
+
 		XMFLOAT4X4 offset;
-		XMStoreFloat4x4(&offset,XMMatrixTranspose(XMMATRIX(&mesh->mBones[i]->mOffsetMatrix.a1)));
+		XMStoreFloat4x4(&offset, XMMatrixTranspose(XMMATRIX(&boneMatrices[i].a1)));
 		boneOffsets.push_back(offset);
-	}*/
-	/*const aiMesh* mesh = mesh;*/
-	//// calculate bone matrices
-	//std::vector<aiMatrix4x4> boneMatrices(mesh->mNumBones);
-	//for (size_t a = 0; a < mesh->mNumBones; ++a)
-	//{
-	//	const aiBone* bone = mesh->mBones[a];
-
-	//	// find the corresponding node by again looking recursively through the node hierarchy for the same name
-	//	aiNode* node = FindNodeRecursivelyByName(modelScene->mRootNode, bone->mName);
-
-	//	// start with the mesh-to-bone matrix 
-	//	boneMatrices[a] = bone->mOffsetMatrix;
-	//	// and now append all node transformations down the parent chain until we're back at mesh coordinates again
-	//	const aiNode* tempNode = node;
-	//	while (tempNode)
-	//	{
-	//		boneMatrices[a] *= tempNode->mTransformation;   // check your matrix multiplication order here!!!
-	//		tempNode = tempNode->mParent;
-	//	}
-	//}
+	}
 	
 	
 	std::vector<Texture> textures;
@@ -299,32 +309,32 @@ std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* material, aiTexture
 			storetype = DetermineTextureStorageType(scene, material, i, textureType);
 			switch (storetype)
 			{
-			case TextureStorageType::EmbeddedIndexCompressed:
-			{
-				int index = GetTextureIndex(&path);
-				Texture embeddedIndexedTexture(this->m_device, 
-											   reinterpret_cast<uint8_t*>(scene->mTextures[index]->pcData),
-											   scene->mTextures[index]->mWidth,
-											   textureType);
-				break;
-			}
+				case TextureStorageType::EmbeddedIndexCompressed:
+				{
+					int index = GetTextureIndex(&path);
+					Texture embeddedIndexedTexture(this->m_device, 
+												   reinterpret_cast<uint8_t*>(scene->mTextures[index]->pcData),
+												   scene->mTextures[index]->mWidth,
+												   textureType);
+					break;
+				}
 
-			case TextureStorageType::EmbeddedCompressed: 
-			{
-				const aiTexture* pTexture = scene->GetEmbeddedTexture(path.C_Str());
-				Texture embeddedTexture(this->m_device, reinterpret_cast<uint8_t*>(pTexture->pcData),
-					pTexture->mWidth, textureType);
-				materialTextures.push_back(embeddedTexture);
-				break;
-			}
+				case TextureStorageType::EmbeddedCompressed: 
+				{
+					const aiTexture* pTexture = scene->GetEmbeddedTexture(path.C_Str());
+					Texture embeddedTexture(this->m_device, reinterpret_cast<uint8_t*>(pTexture->pcData),
+						pTexture->mWidth, textureType);
+					materialTextures.push_back(embeddedTexture);
+					break;
+				}
 
-			case TextureStorageType::Disk:
-			{
-				std::string filename = this->directory + '/' + path.C_Str();
-				Texture diskTexture(this->m_device, filename, textureType);
-				materialTextures.push_back(diskTexture);
-				break;
-			}
+				case TextureStorageType::Disk:
+				{
+					std::string filename = this->directory + '/' + path.C_Str();
+					Texture diskTexture(this->m_device, filename, textureType);
+					materialTextures.push_back(diskTexture);
+					break;
+				}
 			}
 		}
 	}
@@ -559,50 +569,66 @@ const aiNodeAnim* Model::FindNodeAnim(const aiAnimation* pAnimation, const strin
 	return NULL;
 }
 
-//void Model::ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelScene)
-//{
-//	const aiAnimation* anim = modelScene->mAnimations[0];
-//	double currentTime = fmod(1000, anim->mDuration);
-//
-//	for (size_t a = 0; a < anim->mNumChannels; ++a)
-//	{
-//		const aiNodeAnim* channel = anim->mChannels[a];
-//		aiVector3D curPosition;
-//		aiQuaternion curRotation;
-//		// scaling purposefully left out 
-//		// find the node which the channel affects
-//		aiNode* targetNode = FindNodeRecursivelyByName(modelScene->mRootNode, channel->mNodeName);
-//		// find current position
-//		size_t posIndex = 0;
-//		while (1)
-//		{
-//			// break if this is the last key - there are no more keys after this one, we need to use it
-//			if (posIndex + 1 >= channel->mNumPositionKeys)
-//				break;
-//			// break if the next key lies in the future - the current one is the correct one then
-//			if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
-//				break;
-//		}
-//		// maybe add a check here if the anim has any position keys at all
-//		curPosition = channel->mPositionKeys[posIndex].mValue;
-//		// same goes for rotation, but I shorten it now
-//		size_t rotIndex = 0;
-//		while (1)
-//		{
-//			if (rotIndex + 1 >= channel->mNumRotationKeys)
-//				break;
-//			if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
-//				break;
-//		}
-//		curRotation = channel->mRotationKeys[posIndex].mValue;
-//		// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
-//		aiMatrix4x4 trafo = curRotation.GetMatrix();
-//		trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
-//		// assign this transformation to the node
-//		targetNode->mTransformation = trafo;
-//	}
-//
-//
-//	KeyFrame keys;
-//
-//}
+const aiNode* Model::FindNodeRecursivelyByName(const aiNode* node, aiString nodeName) {
+
+	if (node->mName == nodeName) 
+	{
+		return node;
+	}
+
+	for (UINT i = 0; i < node->mNumChildren;i++) 
+	{
+		FindNodeRecursivelyByName(node->mChildren[i], nodeName);
+	}
+}
+
+
+void Model::ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelScene)
+{
+	const aiAnimation* anim = modelScene->mAnimations[0];
+	double currentTime = fmod(1000, anim->mDuration);
+
+	for (size_t a = 0; a < anim->mNumChannels; ++a)
+	{
+		const aiNodeAnim* channel = anim->mChannels[a];
+		aiVector3D curPosition;
+		aiQuaternion curRotation;
+		// scaling purposefully left out 
+		// find the node which the channel affects
+		const aiNode* targetNode = FindNodeRecursivelyByName(modelScene->mRootNode, channel->mNodeName);
+		// find current position
+		size_t posIndex = 0;
+		while (1)
+		{
+			// break if this is the last key - there are no more keys after this one, we need to use it
+			if (posIndex + 1 >= channel->mNumPositionKeys)
+				break;
+			// break if the next key lies in the future - the current one is the correct one then
+			if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
+				break;
+		}
+		// maybe add a check here if the anim has any position keys at all
+		curPosition = channel->mPositionKeys[posIndex].mValue;
+		// same goes for rotation, but I shorten it now
+		size_t rotIndex = 0;
+		while (1)
+		{
+			if (rotIndex + 1 >= channel->mNumRotationKeys)
+				break;
+			if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
+				break;
+		}
+		curRotation = channel->mRotationKeys[posIndex].mValue;
+		// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
+		aiMatrix4x4 trafo = curRotation.GetMatrix4x4();
+		trafo.a4 = curPosition.x;
+		trafo.b4 = curPosition.y;
+		trafo.c4 = curPosition.z;
+		// assign this transformation to the node
+		targetNode->mTransformation = trafo;
+	}
+
+
+	KeyFrame keys;
+
+}

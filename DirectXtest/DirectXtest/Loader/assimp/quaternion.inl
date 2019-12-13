@@ -159,6 +159,31 @@ inline aiMatrix3x3t<TReal> aiQuaterniont<TReal>::GetMatrix() const
     return resMatrix;
 }
 
+template<typename TReal>
+inline aiMatrix4x4t<TReal> aiQuaterniont<TReal>::GetMatrix4x4() const
+{
+    aiMatrix4x4t<TReal> resMatrix;
+    resMatrix.a1 = static_cast<TReal>(1.0) - static_cast<TReal>(2.0) * (y * y + z * z);
+    resMatrix.a2 = static_cast<TReal>(2.0) * (x * y - z * w);
+    resMatrix.a3 = static_cast<TReal>(2.0) * (x * z + y * w);
+    resMatrix.a4 = static_cast<TReal>(0.0)
+    resMatrix.b1 = static_cast<TReal>(2.0) * (x * y + z * w);
+    resMatrix.b2 = static_cast<TReal>(1.0) - static_cast<TReal>(2.0) * (x * x + z * z);
+    resMatrix.b3 = static_cast<TReal>(2.0) * (y * z - x * w);
+    resMatrix.b4 = static_cast<TReal>(0.0)
+    resMatrix.c1 = static_cast<TReal>(2.0) * (x * z - y * w);
+    resMatrix.c2 = static_cast<TReal>(2.0) * (y * z + x * w);
+    resMatrix.c3 = static_cast<TReal>(1.0) - static_cast<TReal>(2.0) * (x * x + y * y);
+    resMatrix.c4 = static_cast<TReal>(0.0);
+    resMatrix.d1 = static_cast<TReal>(0.0);
+    resMatrix.d2 = static_cast<TReal>(0.0);
+    resMatrix.d3 = static_cast<TReal>(0.0);
+    resMatrix.d4 = static_cast<TReal>(1.0);
+
+    return resMatrix;
+}
+
+
 // ---------------------------------------------------------------------------
 // Construction from an axis-angle pair
 template<typename TReal>

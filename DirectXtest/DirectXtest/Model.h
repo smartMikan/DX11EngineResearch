@@ -29,7 +29,7 @@ private:
 	int GetTextureIndex(aiString* pStr);
 
 
-	//void ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelScene);
+	
 
 	
 	void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const XMMATRIX& ParentTransform, Mesh* mesh);
@@ -41,6 +41,10 @@ private:
 	UINT FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim);
 
 	const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const string NodeName);
+	
+	void ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelScene);
+	const aiNode* FindNodeRecursivelyByName(const aiNode* node, aiString nodeName);
+
 private:
 
 	std::vector<Mesh> m_meshes;

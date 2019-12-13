@@ -71,7 +71,7 @@ extern "C" {
  *  Maximum number of indices per face (polygon). */
 
 #ifndef AI_MAX_BONE_WEIGHTS
-#   define AI_MAX_BONE_WEIGHTS 0x7fffffff
+#   define AI_MAX_BONE_WEIGHTS 0x4
 #endif
 
 /** @def AI_MAX_VERTICES
