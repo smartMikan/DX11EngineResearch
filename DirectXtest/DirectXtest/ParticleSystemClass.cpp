@@ -1,4 +1,4 @@
-#include "ParticleSystemClass.h"
+﻿#include "ParticleSystemClass.h"
 
 
 ParticleSystemClass::ParticleSystemClass()
@@ -145,13 +145,13 @@ bool ParticleSystemClass::InitializeParticleSystem()
 	int i;
 
 	// Set the random deviation of where the particles can be located when emitted.
-	m_particleDeviationX = 5.0f;
+	m_particleDeviationX = 3.0f;
 	m_particleDeviationY = 0.1f;
-	m_particleDeviationZ = 5.0f;
+	m_particleDeviationZ = 3.0f;
 
 	// Set the speed and speed variation of particles.
 	m_particleVelocity = 1.0f;
-	m_particleVelocityVariation = 0.2f;
+	m_particleVelocityVariation = 0.3f;
 
 	// Set the physical size of the particles.
 	m_particleSize = 0.2f;

@@ -32,7 +32,7 @@ bool SoundClass::Initialize(HWND hwnd)
 	}
 
 	// Load a wave audio file onto a secondary buffer.
-	result = LoadWaveFile(L"./Resources/03.wav", &m_secondaryBuffer1);
+	result = LoadWaveFile(L"./Resources/02.wav", &m_secondaryBuffer1);
 	if (!result)
 	{
 		return false;

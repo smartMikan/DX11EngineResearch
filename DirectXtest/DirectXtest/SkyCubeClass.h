@@ -2,9 +2,13 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
+#include "Utility/ErrorLoger.h"
 #include "System/VertexBuffer.h"
 #include "System/IndexBuffer.h"
 #include "Loader/WICTextureLoader.h"
+#include "Loader/DDSTextureLoader.h"
+#include <vector>
+
 using namespace DirectX;
 using namespace std;
 
@@ -32,8 +36,14 @@ public:
 
 	bool Initialize(ID3D11Device* device,
 		ID3D11DeviceContext* deviceContext,
-		const WCHAR* cubemapFilename,
+		const std::wstring & cubemapFilename,
 		bool generateMips = false);
+
+	bool Initialize(ID3D11Device * device,
+		ID3D11DeviceContext * deviceContext,
+		const std::vector<std::wstring>& cubemapFilenames,
+		bool generateMips = false);	
+
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
@@ -57,7 +67,13 @@ private:
 		ID3D11Texture2D** textureArray,
 		ID3D11ShaderResourceView** textureCubeView,
 		bool generateMips = false);
-
+	HRESULT CreateWICTexture2DCubeFromFile(
+		ID3D11Device * d3dDevice,
+		ID3D11DeviceContext * d3dDeviceContext,
+		const std::vector<std::wstring>& cubeMapFileNames,
+		ID3D11Texture2D ** textureArray,
+		ID3D11ShaderResourceView ** textureCubeView,
+		bool generateMips);
 
 private:
 	ID3D11Buffer* m_VertexBuffer;

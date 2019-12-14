@@ -25,7 +25,7 @@ public:
 	SystemClass(const SystemClass&);
 	~SystemClass();
 
-	bool Initialize();
+	bool Initialize(const wstring& configFile);
 	void ProgramOver();
 	void Run();
 
@@ -36,6 +36,7 @@ private:
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
 
+	bool LoadConfigFile(const wstring& filename);
 private:
 	std::string m_applicationName;
 	std::wstring m_applicationName_wide;
@@ -43,6 +44,7 @@ private:
 	HWND m_hwnd;
 
 	ApplicationClass* m_Application;
+	bool FULLSCREEN = false;
 	
 };
 

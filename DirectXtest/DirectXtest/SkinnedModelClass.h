@@ -7,6 +7,7 @@
 #include"TextureManagerClass.h"
 #include"CommonVertexFormat.h"
 #include"M3DLoaderClass.h"
+#include"positionclass.h"
 #include<D3Dcommon.h>  
 //#include<D3DX11.h>
 #include <d3dcompiler.h>
@@ -39,6 +40,7 @@ public:
 
 struct SkinnedModelInstance
 {
+	PositionClass* position;
 	SkinnedModelClass* Model;
 	float TimePos;
 	std::string ClipName;
@@ -46,6 +48,7 @@ struct SkinnedModelInstance
 	std::vector<XMFLOAT4X4> FinalTransforms;
 
 	void Update(float dt);
+	void DeUpdate(float dt);
 };
 
 #endif // !_SKINNED_MODEL_CLASS

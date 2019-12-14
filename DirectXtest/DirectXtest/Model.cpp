@@ -1,4 +1,4 @@
-#include "Model.h"
+﻿#include "Model.h"
 
 
 
@@ -216,14 +216,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 		vertex.normal.y = mesh->mNormals[i].y;
 		vertex.normal.z = mesh->mNormals[i].z;
 
-		if (mesh->mTangents != nullptr) {
+		/*if (mesh->mTangents != nullptr) {
 			vertex.tangent.x = mesh->mTangents->x;
 			vertex.tangent.y = mesh->mTangents->y;
 			vertex.tangent.z = mesh->mTangents->z;
 			vertex.tangent.w = 1;
-		}
-
-
+		}*/
 
 		vertices.push_back(vertex);
 	}
@@ -625,7 +623,8 @@ void Model::ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelSc
 		trafo.b4 = curPosition.y;
 		trafo.c4 = curPosition.z;
 		// assign this transformation to the node
-		targetNode->mTransformation = trafo;
+		//targetNode->mTransformation = trafo;
+		//XMFLOAT4 finaltransform = 
 	}
 
 

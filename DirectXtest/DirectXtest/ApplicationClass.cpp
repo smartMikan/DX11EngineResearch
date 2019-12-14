@@ -26,9 +26,12 @@ ApplicationClass::~ApplicationClass()
 }
 
 
-bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight)
+bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd,bool fullscreen,int screenWidth, int screenHeight)
 {
 	bool result;
+
+	
+
 	// Create the input object.
 	m_Input = new InputClass;
 	if (!m_Input)
@@ -54,7 +57,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 	}
 
 	// Initialize the Direct3D object.
-	result = m_Direct3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, FULL_SCREEN, SCREEN_DEPTH, SCREEN_NEAR);
+	result = m_Direct3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, fullscreen, SCREEN_DEPTH, SCREEN_NEAR);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize Direct3D.", L"Error", MB_OK);
@@ -152,7 +155,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidt
 
 	// Initialize the zone object.
 	result = m_Zone->Initialize(m_Direct3D, hwnd, screenWidth, screenHeight, SCREEN_DEPTH);
-	if (!result)
+  	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the zone object.", L"Error", MB_OK);
 		return false;
@@ -275,7 +278,7 @@ bool ApplicationClass::Frame()
 
 
 	// Do the zone frame processing.
-	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_TextureManager, m_Timer->GetTime(), m_Fps->GetFps(),m_Cpu->GetCpuPercentage(),m_Timer);
+	result = m_Zone->Frame(m_Direct3D, m_Input, m_ShaderManager, m_TextureManager, m_Timer->GetTime(), m_Fps->GetFps(),m_Cpu->GetCpuPercentage());
 	if (!result)
 	{
 		return false;
@@ -283,3 +286,6 @@ bool ApplicationClass::Frame()
 
 	return result;
 }
+
+
+

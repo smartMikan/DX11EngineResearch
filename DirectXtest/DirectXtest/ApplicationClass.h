@@ -1,23 +1,16 @@
 ﻿#pragma once
-///////////////////////////////////////////////////////////////////////////////
-// Filename: applicationclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _APPLICATIONCLASS_H_
-#define _APPLICATIONCLASS_H_
 
 
-/////////////
-// GLOBALS //
-/////////////
-const bool FULL_SCREEN = false;
+
+//const bool FULL_SCREEN = full;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
 
+#include <fstream>
+#include <stdio.h>
 
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
+
 #include "inputclass.h"
 #include "d3dclass.h"
 #include "shadermanagerclass.h"
@@ -30,9 +23,7 @@ const float SCREEN_NEAR = 0.1f;
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: ApplicationClass
-////////////////////////////////////////////////////////////////////////////////
+
 class ApplicationClass
 {
 public:
@@ -40,7 +31,7 @@ public:
 	ApplicationClass(const ApplicationClass&);
 	~ApplicationClass();
 
-	bool Initialize(HINSTANCE, HWND, int, int);
+	bool Initialize(HINSTANCE, HWND,bool, int, int);
 	void Shutdown();
 	bool Frame();
 
@@ -56,6 +47,6 @@ private:
 
 	SoundClass* m_Sound;
 
-};
 
-#endif
+
+};

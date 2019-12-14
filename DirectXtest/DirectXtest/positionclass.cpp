@@ -1,4 +1,4 @@
-#include "positionclass.h"
+﻿#include "positionclass.h"
 
 
 //The class constructor initializes the private member variables to zero to start with.
@@ -71,6 +71,10 @@ void PositionClass::GetPosition(float& x, float& y, float& z)
 	return;
 }
 
+XMFLOAT3 PositionClass::GetPosition()
+{
+	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
+}
 
 void PositionClass::GetRotation(float& x, float& y, float& z)
 {
@@ -84,6 +88,11 @@ void PositionClass::GetRotation(float& x, float& y, float& z)
 void PositionClass::GetRotation(float & y)
 {
 	y = m_rotationY;
+}
+
+float PositionClass::GetRotationY()
+{
+	return m_rotationY;
 }
 
 //The following eight movement functions all work nearly the same. All eight functions are called each frame. 
@@ -348,4 +357,54 @@ void PositionClass::LookDownward(bool keydown)
 	}
 
 	return;
+}
+
+void PositionClass::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
+{
+	if (!isleft) {
+		// If the key is pressed increase the speed at which the camera turns right.  If not slow down the turn speed.
+		if (keydown) {
+			m_rightTurnSpeed += m_frameTime * 0.01f;
+			if (m_rightTurnSpeed > (m_frameTime*0.15f)) {
+				m_rightTurnSpeed = m_frameTime * 0.15f;
+			}
+		}
+		else
+		{
+			m_rightTurnSpeed -= m_frameTime * 0.01f;
+			if (m_rightTurnSpeed < 0.0f) {
+				m_rightTurnSpeed = 0.0f;
+			}
+		}
+	}
+	else
+	{
+		// If the key is pressed increase the speed at which the camera turns left.  If not slow down the turn speed.
+		if (keydown) {
+			m_leftTurnSpeed += m_frameTime * 0.01f;
+			if (m_leftTurnSpeed > (m_frameTime*0.15f)) {
+				m_leftTurnSpeed = m_frameTime * 0.15f;
+			}
+		}
+		else
+		{
+			m_leftTurnSpeed -= m_frameTime * 0.01f;
+			if (m_leftTurnSpeed < 0.0f) {
+				m_leftTurnSpeed = 0.0f;
+			}
+		}
+	}
+	// Update the rotation using the turning speed.
+	m_rotationY += m_rightTurnSpeed - m_leftTurnSpeed;
+	if (m_rotationY > 360.0f) {
+		m_rotationY -= 360.0f;
+	}
+	if (m_rotationY < 0.0f) {
+		m_rotationY += 360.0f;
+	}
+	// Update the position using the roatation.
+	m_positionX = targetpsotion.x - sinf(m_rotationY * 0.0174532925f) * 5.0f;
+	m_positionZ = targetpsotion.z - cosf(m_rotationY * 0.0174532925f) * 5.0f;
+	m_positionY = targetpsotion.y + 4.0f;
+
 }

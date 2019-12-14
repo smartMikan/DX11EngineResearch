@@ -40,13 +40,13 @@ public:
 
 	bool Initialize(D3DClass*, HWND, int, int, float);
 	void Shutdown();
-	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu, TimerClass* TimeClass);
+	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
 
 
 private:
-	void HandleMovementInput(InputClass*, float);
-	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*, TimerClass* TimeClass);
+	void HandleMovementInput(InputClass*, float frameTime,float fps);
+	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
 
 private:
 	UserInterfaceClass * m_UserInterface;
@@ -56,7 +56,11 @@ private:
 	TerrainClass* m_Terrain;
 	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;
-	SkyCubeClass* m_SkyCube;
+	SkyCubeClass* m_DayLightSkyCube;
+	SkyCubeClass* m_SunsetSkyCube;
+	SkyCubeClass* m_DesertSkyCube;
+	SkyCubeClass* m_NebulaSkyCube;
+	SkyCubeClass* m_PlanetSkyCube;
 	ModelClass* m_Model;
 	GameObjectClass* m_MeshModel;
 
@@ -69,7 +73,12 @@ private:
 	SkinnedModelInstance mCharacterInstance2;
 
 	ParticleSystemClass* m_ParticleSystem;
-	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked, m_cubemapsky;
+	bool m_particleFollow = true;
+
+	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;
+	int m_cubemapsky = 0;
+
+	XMMATRIX modelPosition;
 };
 
 #endif

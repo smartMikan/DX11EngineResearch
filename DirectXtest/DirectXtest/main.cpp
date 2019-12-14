@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	// Initialize and run the system object.
 	//初期化
-	result = System->Initialize();
+	result = System->Initialize(L"./config.txt");
 	if (result)
 	{
 		//成功する場合、Run()関数を実行

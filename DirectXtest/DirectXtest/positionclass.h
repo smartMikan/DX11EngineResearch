@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //To allow for camera movement by using the left and right arrow key in this tutorial we create a new class to calculate and maintain the position of the viewer. 
 //This class will only handle turning left and right for now but can be expanded to maintain all different movement changes.
@@ -7,8 +7,11 @@
 #ifndef _POSITIONCLASS_H_
 #define _POSITIONCLASS_H_
 
-
+#include <DirectXMath.h>
 #include <math.h>
+using namespace DirectX;
+
+
 
 class PositionClass
 {
@@ -24,8 +27,10 @@ public:
 	void SetRotation(float, float, float);
 
 	void GetPosition(float&x, float&y, float&z);
+	XMFLOAT3 GetPosition();
 	void GetRotation(float&x, float&y, float&z);
 	void GetRotation(float&y);
+	float GetRotationY();
 
 	void MoveForward(bool keydown);
 	void MoveBackward(bool keydown);
@@ -35,6 +40,9 @@ public:
 	void TurnRight(bool keydown);
 	void LookUpward(bool keydown);
 	void LookDownward(bool keydown);
+
+	void Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion);
+
 
 private:
 	float m_positionX, m_positionY, m_positionZ;

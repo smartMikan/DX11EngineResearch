@@ -39,11 +39,17 @@ SystemClass::~SystemClass()
 //The following Initialize function does all the setup for the application. 
 //It first calls InitializeWindows which will create the window for our application to use. 
 //It also creates and initializes both the input and graphics objects that the application will use for handling user input and rendering graphics to the screen.
-bool SystemClass::Initialize()
+bool SystemClass::Initialize(const wstring& configFile)
 {
 	int screenWidth, screenHeight;
 	bool result;
 
+	result = LoadConfigFile(configFile);
+	if (!result)
+	{
+		MessageBoxW(m_hwnd, L"Could not Read ConfigFile.", L"Error", MB_OK);
+		return false;
+	}
 
 	// Initialize the width and height of the screen to zero before sending the variables into the function.
 	screenWidth = 0;
@@ -61,7 +67,7 @@ bool SystemClass::Initialize()
 	}
 
 	// Initialize the application wrapper object.
-	result = m_Application->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
+	result = m_Application->Initialize(m_hinstance, m_hwnd, FULLSCREEN, screenWidth, screenHeight);
 	if (!result)
 	{
 		return false;
@@ -224,7 +230,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 	// Setup the screen settings depending on whether it is running in full screen or in windowed mode.
-	if (FULL_SCREEN)
+	if (FULLSCREEN)
 	{
 		// If full screen set the screen to maximum size of the users desktop and 32bit.
 		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
@@ -307,7 +313,7 @@ void SystemClass::ShutdownWindows()
 	ShowCursor(true);
 
 	// Fix the display settings if leaving full screen mode.
-	if (FULL_SCREEN)
+	if (FULLSCREEN)
 	{
 		ChangeDisplaySettings(NULL, 0);
 	}
@@ -324,6 +330,41 @@ void SystemClass::ShutdownWindows()
 	ApplicationHandle = NULL;
 
 	return;
+}
+
+bool SystemClass::LoadConfigFile(const wstring& filename)
+{
+	ifstream fin;
+	char input;
+	int full_screen;
+	// Open the setup file.  If it could not open the file then exit.
+	fin.open(filename);
+	if (fin.fail())
+	{
+		return false;
+	}
+
+	// Read up to the terrain file name.
+	fin.get(input);
+	while (input != ':')
+	{
+		fin.get(input);
+	}
+
+	// Read in the terrain file name.
+	fin >> full_screen;
+	if (full_screen == 0) {
+		FULLSCREEN = false;
+	}
+	else
+	{
+		FULLSCREEN = true;
+	}
+
+	// Close the setup file.
+	fin.close();
+
+	return true;
 }
 
 //The WndProc function is where windows sends its messages to.

@@ -1,4 +1,4 @@
-#include"SkinnedModelClass.h"
+﻿#include"SkinnedModelClass.h"
 
 
 SkinnedModelClass::SkinnedModelClass(ID3D11Device* device, const string& modelFileName, wstring texturePath)
@@ -63,6 +63,32 @@ void SkinnedModelInstance::Update(float dt)
 	
 	if (TimePos > Model->SkinnedData.GetClipEndTime(ClipName))
 		TimePos = 0.0f;
+	if (TimePos < 0.0f) {
+		TimePos = Model->SkinnedData.GetClipEndTime(ClipName);
+	}
 }
+
+void SkinnedModelInstance::DeUpdate(float dt) {
+	if (TimePos == 0.0f) {
+		return;
+	}
+	if (TimePos > Model->SkinnedData.GetClipEndTime(ClipName) / 2) {
+
+		TimePos += dt;
+	}
+	else
+	{
+		TimePos -= dt;
+	}
+	if (TimePos > Model->SkinnedData.GetClipEndTime(ClipName)) {
+
+		TimePos = 0.0f;
+	}
+	if (TimePos < 0.0f) {
+		TimePos = Model->SkinnedData.GetClipEndTime(ClipName);
+	}
+
+}
+
 
 

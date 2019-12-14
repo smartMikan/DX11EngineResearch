@@ -11,7 +11,11 @@ ZoneClass::ZoneClass()
 	m_Light = 0;
 	m_Terrain = 0;
 	m_SkyDome = 0;
-	m_SkyCube = 0;
+	m_DayLightSkyCube = 0;
+	m_SunsetSkyCube = 0;
+	m_DesertSkyCube = 0;
+	m_NebulaSkyCube = 0;
+	m_PlanetSkyCube = 0;
 	m_Model = 0;
 	m_MeshModel = 0;
 	m_Frustum = 0;
@@ -100,19 +104,84 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Create the sky dome object.
-	m_SkyCube = new SkyCubeClass;
-	if (!m_SkyCube)
+	m_DayLightSkyCube = new SkyCubeClass;
+	if (!m_DayLightSkyCube)
 	{
 		return false;
 	}
 
 	// Initialize the sky dome object.
-	result = m_SkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext() ,L"./3DModel/Texture/daylight.jpg");
+	result = m_DayLightSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext() ,L"./3DModel/Texture/daylight.jpg");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sky cube object.", L"Error", MB_OK);
 		return false;
 	}
+
+
+	m_SunsetSkyCube = new SkyCubeClass;
+	if (!m_SunsetSkyCube)
+	{
+		return false;
+	}
+
+	// Initialize the sky dome object.
+	result = m_SunsetSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), std::vector<std::wstring>{
+			L"./3DModel/Texture/sunset_posX.bmp", L"./3DModel/Texture/sunset_negX.bmp",
+			L"./3DModel/Texture/sunset_posY.bmp", L"./3DModel/Texture/sunset_negY.bmp",
+			L"./3DModel/Texture/sunset_posZ.bmp", L"./3DModel/Texture/sunset_negZ.bmp", });
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the sunset sky cube object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_DesertSkyCube = new SkyCubeClass;
+	if (!m_DesertSkyCube)
+	{
+		return false;
+	}
+
+	// Initialize the sky dome object.
+	result = m_DesertSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./3DModel/Texture/desertcube1024.dds");
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the desert sky cube object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_NebulaSkyCube = new SkyCubeClass;
+	if (!m_NebulaSkyCube)
+	{
+		return false;
+	}
+	// Initialize the sky dome object.
+	result = m_NebulaSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), std::vector<std::wstring>{
+		    L"./SkyBoxVolume2/Stars01/rightImage.png", L"./SkyBoxVolume2/Stars01/leftImage.png",
+			L"./SkyBoxVolume2/Stars01/upImage.png", L"./SkyBoxVolume2/Stars01/downImage.png",
+			L"./SkyBoxVolume2/Stars01/backImage.png", L"./SkyBoxVolume2/Stars01/frontImage.png", });
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the sunset sky cube object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_PlanetSkyCube = new SkyCubeClass;
+	if (!m_PlanetSkyCube)
+	{
+		return false;
+	}
+	// Initialize the sky dome object.
+	result = m_PlanetSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), std::vector<std::wstring>{
+		L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/leftImage.png", L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/rightImage.png",
+			L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/upImage.png", L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/downImage.png",
+			L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/frontImage.png", L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/backImage.png", });
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the sunset sky cube object.", L"Error", MB_OK);
+		return false;
+	}
+
 
 	// Create the terrain object.
 	m_Terrain = new TerrainClass;
@@ -145,18 +214,18 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	m_MeshModel = new GameObjectClass;
-	if (!m_MeshModel)
-	{
-		return false;
-	}
+	//m_MeshModel = new GameObjectClass;
+	//if (!m_MeshModel)
+	//{
+	//	return false;
+	//}
 	// Initialize the model object.
-	result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
-	if (!result)
-	{
-		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
-		return false;
-	}
+	//result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
+	//if (!result)
+	//{
+	//	MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
+	//	return false;
+	//}
 
 	// Create the light object.
 	m_Light = new LightClass;
@@ -179,7 +248,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the particle system object.
-	result = m_ParticleSystem->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./Resources/star.tga");
+	result = m_ParticleSystem->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./Resources/star2.tga");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the particle object.", L"Error", MB_OK);
@@ -200,10 +269,10 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_cubemapsky = false;
 
 
-	//第二十一,创建SkinModelClass
+	//create SkinModelClass
 	mCharacterModel = new SkinnedModelClass(Direct3D->GetDevice(), string("./3DModel/AnimationFile/soldier.m3d"), wstring(L"./3DModel/AnimationFile/"));
 
-	//第二十二，实例化SkinModelClass
+	//create SkinModel Instance
 	mCharacterInstance1.Model = mCharacterModel;
 	mCharacterInstance2.Model = mCharacterModel;
 	mCharacterInstance1.TimePos = 0.0f;
@@ -213,20 +282,38 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	mCharacterInstance1.FinalTransforms.resize(mCharacterModel->SkinnedData.BoneCount());
 	mCharacterInstance2.FinalTransforms.resize(mCharacterModel->SkinnedData.BoneCount());
 
-	XMMATRIX modelScale = XMMatrixScaling(0.15f, 0.15f, -0.15f);
+	mCharacterInstance1.position = new PositionClass();
+	mCharacterInstance2.position = new PositionClass();
+
+	XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
 	XMMATRIX modelRot = XMMatrixRotationY(0);
-	XMMATRIX modelOffset = XMMatrixTranslation(0.0f, 0.0f, 36.0f);
+	XMMATRIX modelOffset = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	XMStoreFloat4x4(&mCharacterInstance1.World, modelScale * modelRot * modelOffset);
 
 	XMStoreFloat4x4(&mCharacterInstance2.World, modelScale * modelRot * modelOffset);
+	mCharacterInstance1.Update(0.01f);
 
+	modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
+	mCharacterInstance1.position->SetPosition(0, 0, 0);
 	return true;
 }
 
 void ZoneClass::Shutdown()
 {
+	if (mCharacterInstance1.position) {
+		delete mCharacterInstance1.position;
+		mCharacterInstance1.position = 0;
+	}
 
+	if (mCharacterInstance2.position) {
+		delete mCharacterInstance2.position;
+		mCharacterInstance2.position = 0;
+	}
 
+	if (mCharacterModel) {
+		delete mCharacterModel;
+		mCharacterModel = 0;
+	}
 
 	// Release the particle system object.
 	if (m_ParticleSystem)
@@ -245,11 +332,36 @@ void ZoneClass::Shutdown()
 	}
 
 	// Release the sky dome object.
-	if (m_SkyCube)
+	if (m_DayLightSkyCube)
 	{
-		m_SkyCube->Shutdown();
-		delete m_SkyCube;
-		m_SkyCube = 0;
+		m_DayLightSkyCube->Shutdown();
+		delete m_DayLightSkyCube;
+		m_DayLightSkyCube = 0;
+	}
+	if (m_SunsetSkyCube)
+	{
+		m_SunsetSkyCube->Shutdown();
+		delete m_SunsetSkyCube;
+		m_SunsetSkyCube = 0;
+	}
+	if (m_DesertSkyCube)
+	{
+		m_DesertSkyCube->Shutdown();
+		delete m_DesertSkyCube;
+		m_DesertSkyCube = 0;
+	}
+
+	if (m_NebulaSkyCube)
+	{
+		m_NebulaSkyCube->Shutdown();
+		delete m_NebulaSkyCube;
+		m_NebulaSkyCube = 0;
+	}
+	if (m_PlanetSkyCube)
+	{
+		m_PlanetSkyCube->Shutdown();
+		delete m_PlanetSkyCube;
+		m_PlanetSkyCube = 0;
 	}
 
 	// Release the sky dome object.
@@ -312,17 +424,18 @@ void ZoneClass::Shutdown()
 
 	return;
 }
-bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu, TimerClass* TimeClass)
+bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu)
 {
 	bool result, foundHeight;
 	float posX, posY, posZ, rotX, rotY, rotZ, height;
 
 
 	// Do the frame input processing.
-	HandleMovementInput(Input, frameTime);
+	HandleMovementInput(Input, frameTime,fps);
 
 	// Get the view point position/rotation.
-	m_Position->GetPosition(posX, posY, posZ);
+	mCharacterInstance1.position->GetPosition(posX, posY, posZ);
+	//m_Position->GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
 
 	// Do the frame processing for the user interface.
@@ -346,14 +459,15 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 		if (foundHeight)
 		{
 			// If there was a triangle under the camera then position the camera just above it by one meter.
-			m_Position->SetPosition(posX, height + 1.0f, posZ);
-			m_Camera->SetPosition(posX, height + 1.0f, posZ);
+			//m_Position->SetPosition(posX, height + 5.0f, posZ);
+			mCharacterInstance1.position->SetPosition(posX, height, posZ);
+			//m_Camera->SetPosition(posX, height, posZ);
 		}
 	}
 
 
 	// Render the graphics.
-	result = Render(Direct3D, ShaderManager, TextureManager,TimeClass);
+	result = Render(Direct3D, ShaderManager, TextureManager);
 	if (!result)
 	{
 		return false;
@@ -361,32 +475,68 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 	return true;
 }
-void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
+void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps)
 {
 	bool keyDown;
 	float posX, posY, posZ, rotX, rotY, rotZ;
+	XMFLOAT3 orbitposition = mCharacterInstance1.position->GetPosition();
+		/*XMFLOAT3(1, 1, 1);*/
+	//XMVECTOR a = XMLoadFloat3(&orbitposition);
+	//a = XMVector3TransformCoord(a, modelPosition);
+	//XMStoreFloat3(&orbitposition, a);
+
 	// Set the frame time for calculating the updated position.
+	mCharacterInstance1.position->SetFrameTime(frameTime);
 	m_Position->SetFrameTime(frameTime);
 	m_Light->SetFrameTime(frameTime);
 
+	float Deltatime = 1 / fps;
+
+	//limit the range of delta time
+	if (Deltatime > 1.0f)
+	{
+		Deltatime = 0.0f;
+	}
+
 	// Handle the input.
 	keyDown = Input->IsLeftPressed() /*|| Input->GetHorizontal() < 0*/;
-	m_Position->TurnLeft(keyDown);
+	//m_Position->TurnLeft(keyDown);
+	mCharacterInstance1.position->TurnLeft(keyDown);
+	m_Position->Orbit(keyDown,true,orbitposition);
 
 	keyDown = Input->IsRightPressed() /*|| Input->GetHorizontal() > 0*/;
-	m_Position->TurnRight(keyDown);
+	//m_Position->TurnRight(keyDown);
+	mCharacterInstance1.position->TurnRight(keyDown);
+	m_Position->Orbit(keyDown, false, orbitposition);
 
 	keyDown = Input->IsUpPressed();
-	m_Position->MoveForward(keyDown);
+	//m_Position->MoveForward(keyDown);
+	mCharacterInstance1.position->MoveForward(keyDown);
+
+	if (keyDown) {
+		//update the model animation
+		mCharacterInstance1.Update(Deltatime);
+	}
 
 	keyDown = Input->IsDownPressed();
-	m_Position->MoveBackward(keyDown);
+	//m_Position->MoveBackward(keyDown);
+	mCharacterInstance1.position->MoveBackward(keyDown);
+
+	if (keyDown) {
+		//update the model animation
+		mCharacterInstance1.Update(-Deltatime);
+	}
+
+
+
 
 	keyDown = Input->IsAPressed();
-	m_Position->MoveUpward(keyDown);
+	//m_Position->MoveUpward(keyDown);
+	mCharacterInstance1.position ->MoveUpward(keyDown);
 
 	keyDown = Input->IsZPressed();
-	m_Position->MoveDownward(keyDown);
+	//m_Position->MoveDownward(keyDown);
+	mCharacterInstance1.position->MoveDownward(keyDown);
 
 	keyDown = Input->IsPgUpPressed() /*|| Input->GetVertical() < 0*/;
 	m_Position->LookUpward(keyDown);
@@ -398,6 +548,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 	m_Position->GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
 
+	mCharacterInstance1.position->SetRotation(0, rotY, 0);
 	// Set the position of the camera.
 	m_Camera->SetPosition(posX, posY, posZ);
 	m_Camera->SetRotation(rotX, rotY, rotZ);
@@ -435,22 +586,31 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime)
 
 	if (Input->IsF5Toggled())
 	{
-		m_ParticleSystem->SetParticleProperty(500, 10, 500, -3, 1, 0.2, 1000);
+		m_particleFollow = !m_particleFollow;
+		if (m_particleFollow == true) {
+			m_ParticleSystem->SetParticleProperty();
+		}
+		else
+		{
+			m_ParticleSystem->SetParticleProperty(500, 10, 500, -3, 1, 0.2, 1000);
+		}
+		
 	}
 
 	if (Input->IsF6Toggled())
 	{
-		m_cubemapsky = !m_cubemapsky;
+		m_cubemapsky = (m_cubemapsky + 1) % 6;
 	}
 
 	return;
 }
 
-bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, TimerClass* TimeClass)
+bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, baseViewMatrix, orthoMatrix;
 	bool result;
 	XMFLOAT3 cameraPosition;
+	
 	int i;
 
 	// Generate the view matrix based on the camera's position.
@@ -477,19 +637,9 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	// Translate the sky dome to be centered around the camera position.
 	worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
-	if (m_cubemapsky) {
-		Direct3D->TurnDepthStencilStateLessEqual();
-		// Render the sky cube using the sky cube shader.
-		m_SkyCube->Render(Direct3D->GetDeviceContext());
-		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SkyCube->GetIndexCount(), worldMatrix, viewMatrix,
-			projectionMatrix, m_SkyCube->GetTextureCube());
-		if (!result)
-		{
-			return false;
-		}
-	}
-	else
+	switch (m_cubemapsky)
 	{
+	case 0:
 		Direct3D->TurnZBufferOff();
 		// Render the sky dome using the sky dome shader.
 		m_SkyDome->Render(Direct3D->GetDeviceContext());
@@ -499,7 +649,66 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		{
 			return false;
 		}
+		break;
+	case 1:
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_DayLightSkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_DayLightSkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_DayLightSkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+		break;
+	case 2:
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_SunsetSkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_SunsetSkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_SunsetSkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+		break;
+	case 3:
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_DesertSkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_DesertSkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_DesertSkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+		break;
+	case 4:
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_NebulaSkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_NebulaSkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_NebulaSkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+		break;
+	case 5:
+		Direct3D->TurnDepthStencilStateLessEqual();
+		// Render the sky cube using the sky cube shader.
+		m_PlanetSkyCube->Render(Direct3D->GetDeviceContext());
+		result = ShaderManager->RenderSkyCubeShader(Direct3D->GetDeviceContext(), m_PlanetSkyCube->GetIndexCount(), worldMatrix, viewMatrix,
+			projectionMatrix, m_PlanetSkyCube->GetTextureCube());
+		if (!result)
+		{
+			return false;
+		}
+		break;
+	default:
+		break;
 	}
+	
 
 	// Reset the world matrix.
 	Direct3D->GetWorldMatrix(worldMatrix);
@@ -556,14 +765,16 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//	return false;
 	//}
 
-	//Direct3D->GetWorldMatrix(worldMatrix);
-	//XMMATRIX modelPosition;
-	//modelPosition = worldMatrix;
-	//modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
+	Direct3D->GetWorldMatrix(worldMatrix);
+	
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
 
-	//m_Model->Render(Direct3D->GetDeviceContext());
-	//result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
-	//	projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
+	m_Model->Render(Direct3D->GetDeviceContext());
+	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
+		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
+
+
 
 	//modelPosition = worldMatrix;
 	//modelPosition = XMMatrixTranslation(10.0f, 0.0f, 128.0f);
@@ -571,53 +782,59 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//
 
 
-	float Deltatime = 0.01f;
+	//float Deltatime = 0.01f;
+	
 
-	//限定DeltaTime不能过大，也就是骨骼动画状态不能突变
-	if (Deltatime > 1.0f)
-	{
-		Deltatime = 0.0f;
-	}
+	
+	XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
+	XMMATRIX modelRot = XMMatrixRotationY(mCharacterInstance1.position->GetRotationY() * 0.0174532925f);
+	XMFLOAT3 position = mCharacterInstance1.position->GetPosition();
+	XMMATRIX modelOffset = XMMatrixTranslation(position.x, position.y, position.z);
+	//get model world matrix
+	//modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
+	modelPosition = modelScale * modelRot * modelOffset;
+	
 
-	//更新第一个人物的骨骼动画时间
-	mCharacterInstance1.Update(Deltatime);
 
-	//第二,获取三个变换矩阵(WorldMatrix和ProjMatrixViewMatrix来自CameraClass)
-	worldMatrix = XMLoadFloat4x4(&mCharacterInstance1.World);
-
-	//第三,进行渲染(人物顶点数据，索引数据，各种常量缓存，纹理资源等)
+	//render model for each subset
 	for (UINT subset = 0; subset < mCharacterInstance1.Model->SubsetCount; ++subset)
 	{
-		/**************绘制人物3DMesh的每个子部分******************/
-		//设置各种常量缓存资源，纹理资源
-		ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance1.FinalTransforms.size(), worldMatrix, viewMatrix, projectionMatrix,
+		
+		ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance1.FinalTransforms.size(), modelPosition, viewMatrix, projectionMatrix,
 			mCharacterInstance1.Model->DiffuseMapSRV[subset], mCharacterInstance1.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance1.FinalTransforms[0], mCharacterInstance1.Model->Mat[subset]);
 
-		//DrawCall调用
+		//DrawCall
 		mCharacterInstance1.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
 	}
 
 
 
-	//Direct3D->TurnOnParticleBlending();
-	//// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	//m_ParticleSystem->Render(Direct3D->GetDeviceContext());
-	//
-	//Direct3D->GetWorldMatrix(worldMatrix);
-	//XMMATRIX particlePosition;
-	//particlePosition = worldMatrix;
+	Direct3D->TurnOnParticleBlending();
+	// Put the particle system vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	m_ParticleSystem->Render(Direct3D->GetDeviceContext());
+	
+	Direct3D->GetWorldMatrix(worldMatrix);
+	XMMATRIX particlePosition;
+	double angle = atan2(position.x - cameraPosition.x, position.z - cameraPosition.z) * (180.0 / XM_PI);
+	float rotation = (float)angle * 0.0174532925f;
+
+	particlePosition = worldMatrix;
+	particlePosition *= XMMatrixRotationY(rotation);
 	//particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
-	//
-	//// Render the particle using the texture shader.
-	//result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
-	//	m_ParticleSystem->GetTexture());
-	//if (!result)
-	//{
-	//	return false;
-	//}
-	//
-	//// Turn off alpha blending.
-	//Direct3D->TurnOffParticleBlending();
+	particlePosition *= XMMatrixTranslation(position.x, position.y + 2.0f, position.z);
+
+	
+
+	// Render the particle using the texture shader.
+	result = ShaderManager->RenderParticleShader(Direct3D->GetDeviceContext(), m_ParticleSystem->GetIndexCount(), particlePosition, viewMatrix, projectionMatrix,
+		m_ParticleSystem->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+	
+	// Turn off alpha blending.
+	Direct3D->TurnOffParticleBlending();
 
 
 	// Turn off the wire frame rendering once the terrain rendering is complete so we don't render anything else such as the UI in wire frame.
