@@ -298,7 +298,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	SetFocus(m_hwnd);
 
 	// Hide the mouse cursor.
-	ShowCursor(false);
+	//ShowCursor(false);
 
 	return;
 }
@@ -367,6 +367,10 @@ bool SystemClass::LoadConfigFile(const wstring& filename)
 	return true;
 }
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
+
 //The WndProc function is where windows sends its messages to.
 //You'll notice we tell windows the name of it when we initialize the window class with wc.lpfnWndProc = WndProc in the InitializeWindows function above.
 //I included it in this class file since we tie it directly into the system class by having it send all the messages to the MessageHandler function defined inside SystemClass. 
@@ -374,6 +378,11 @@ bool SystemClass::LoadConfigFile(const wstring& filename)
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, umessage, wparam, lparam)) 
+	{
+		return true;
+	}
+
 	switch (umessage)
 	{
 		// Check if the window is being destroyed.

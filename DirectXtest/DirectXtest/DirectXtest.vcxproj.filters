@@ -58,6 +58,12 @@
     <Filter Include="ソース ファイル\Model">
       <UniqueIdentifier>{ba10da1f-5127-4d7f-a5c3-3ec5e0d50f5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\ImGUI">
+      <UniqueIdentifier>{06b06fb0-ff2d-4573-9ea2-35e5db2b9c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ImGUI">
+      <UniqueIdentifier>{69c31ccb-f583-45a0-8a67-485a33cb2713}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -265,6 +271,24 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="AssimpSkinnedModel.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGUI\imgui.cpp">
+      <Filter>ソース ファイル\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGUI\imgui_draw.cpp">
+      <Filter>ソース ファイル\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGUI\imgui_impl_dx11.cpp">
+      <Filter>ソース ファイル\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGUI\imgui_impl_win32.cpp">
+      <Filter>ソース ファイル\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGUI\imgui_widgets.cpp">
+      <Filter>ソース ファイル\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -503,6 +527,30 @@
     <ClInclude Include="AssimpLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ImGUI\imconfig.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGUI\imgui.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGUI\imgui_impl_dx11.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGUI\imgui_internal.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGUI\imstb_rectpack.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGUI\imstb_textedit.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGUI\imstb_truetype.h">
+      <Filter>ヘッダー ファイル\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiClass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.dgsl">
@@ -510,6 +558,123 @@
     </None>
     <None Include="Scene.fbx">
       <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="Shader\TranslateVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\AlphaMapVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\BumpMapPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\BumpMapVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\ClipPlanePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\ClipPlaneVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\colorps.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\colorvs.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\FadePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\FadeVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\FogPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\FogVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\FontPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\FontVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\LightMapPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\LightMapVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\LightPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\LightVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\MultiTexturePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\MultiTextureVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\ParticlePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\ParticleVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\PixelShader2.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\ReflectPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\ReflectVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SkinBoneBumpMapPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SkinBoneBumpMapVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SkyCubePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SkyCubeVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SkyDomePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SkyDomeVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SpecMapPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\SpecMapVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\TerrainPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\TerrainVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\TexturePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\TextureVertexShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\TranslatePixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Shader\AlphaMapPixelShader.hlsl">
+      <Filter>リソース ファイル\Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -574,125 +739,6 @@
     <Text Include="3DModel\square.txt">
       <Filter>リソース ファイル\3DModel</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shader\colorps.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\colorvs.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\LightPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\LightVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\PixelShader2.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TexturePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TextureVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FontPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FontVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\MultiTextureVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\MultiTexturePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\LightMapVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\LightMapPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\AlphaMapVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\AlphaMapPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\BumpMapVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\BumpMapPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SpecMapVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SpecMapPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FogVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FogPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ClipPlaneVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ClipPlanePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TranslateVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TranslatePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ReflectVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ReflectPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkyDomeVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkyDomePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FadeVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\FadePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TerrainVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TerrainPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ParticleVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ParticlePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkyCubeVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkyCubePixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkinBoneBumpMapVertexShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\SkinBoneBumpMapPixelShader.hlsl">
-      <Filter>リソース ファイル\Shader</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Media Include="Resources\01.wav">

@@ -42,6 +42,9 @@ public:
 	void Shutdown();
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
+	float cubeTranslation[3] = {3.0f,3.0f,3.0f};
+
+	LightClass* m_Light;
 
 
 private:
@@ -52,7 +55,6 @@ private:
 	UserInterfaceClass * m_UserInterface;
 	CameraClass* m_Camera;
 	PositionClass* m_Position;
-	LightClass* m_Light;
 	TerrainClass* m_Terrain;
 	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;

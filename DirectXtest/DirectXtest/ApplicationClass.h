@@ -20,9 +20,7 @@ const float SCREEN_NEAR = 0.1f;
 #include "cpuclass.h"
 #include "zoneclass.h"
 #include "soundclass.h"
-
-
-
+#include "ImGuiClass.h"
 
 class ApplicationClass
 {
@@ -46,7 +44,7 @@ private:
 	ZoneClass* m_Zone;
 
 	SoundClass* m_Sound;
-
+	ImGuiClass* m_ImGui;
 
 
 };

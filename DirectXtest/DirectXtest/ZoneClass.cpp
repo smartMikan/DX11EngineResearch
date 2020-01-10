@@ -20,6 +20,9 @@ ZoneClass::ZoneClass()
 	m_MeshModel = 0;
 	m_Frustum = 0;
 	m_ParticleSystem = 0;
+
+
+
 }
 
 
@@ -768,7 +771,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	Direct3D->GetWorldMatrix(worldMatrix);
 	
 	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(128.0f, 1.5f, 128.0f);
+	modelPosition = XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
 
 	m_Model->Render(Direct3D->GetDeviceContext());
 	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
@@ -862,8 +865,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		}
 	}
 
-	// Present the rendered scene to the screen.
-	Direct3D->EndScene();
+	
 
 	return true;
 }

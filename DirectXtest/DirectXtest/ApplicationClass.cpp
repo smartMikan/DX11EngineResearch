@@ -14,6 +14,7 @@ ApplicationClass::ApplicationClass()
 	m_TextureManager = 0;
 	m_Zone = 0;
 	m_Sound = 0;
+	m_ImGui - 0;
 }
 
 ApplicationClass::ApplicationClass(const ApplicationClass& other)
@@ -176,11 +177,38 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd,bool fullscreen
 		return false;
 	}
 
+
+	//Create ImGui object
+	m_ImGui = new ImGuiClass();
+	if (!m_ImGui) {
+		return false;
+	}
+
+	//Initialize ImGui object
+	result = m_ImGui->Initialize(hwnd,m_Direct3D);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize ImGUI Object.", L"Error", MB_OK);
+		return false;
+	}
+
+
+
 	return true;
 }
 
 void ApplicationClass::Shutdown()
 {
+	// Release ImGui object.
+	if (m_ImGui)
+	{
+		m_ImGui->ShutDown();
+		delete m_ImGui;
+		m_ImGui = 0;
+	}
+
+
+
 	// Release the zone object.
 	if (m_Zone)
 	{
@@ -283,6 +311,16 @@ bool ApplicationClass::Frame()
 	{
 		return false;
 	}
+
+	
+
+	result = m_ImGui->Frame(m_Zone);
+
+
+
+
+	// Present the rendered scene to the screen.
+	m_Direct3D->EndScene();
 
 	return result;
 }

@@ -1,1 +1,1 @@
-FULL Screen :1
+FULL Screen :0
