@@ -19,7 +19,7 @@ const float SCREEN_NEAR = 0.1f;
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "inputclass.h"
-#include "d3dclass.h"
+#include "./d3d/d3dclass.h"
 #include "shadermanagerclass.h"
 #include "texturemanagerclass.h"
 #include "timerclass.h"

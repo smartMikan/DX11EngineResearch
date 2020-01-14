@@ -118,16 +118,20 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System\ApplicationClass.cpp" />
     <ClCompile Include="System\cpuclass.cpp" />
+    <ClCompile Include="System\d3d\d3dclass.cpp" />
     <ClCompile Include="System\fpsclass.cpp" />
     <ClCompile Include="System\inputclass.cpp" />
+    <ClCompile Include="System\sound\soundclass.cpp" />
     <ClCompile Include="System\systemclass.cpp" />
     <ClCompile Include="System\timerclass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="System\ApplicationClass.h" />
     <ClInclude Include="System\cpuclass.h" />
+    <ClInclude Include="System\d3d\d3dclass.h" />
     <ClInclude Include="System\fpsclass.h" />
     <ClInclude Include="System\inputclass.h" />
+    <ClInclude Include="System\sound\soundclass.h" />
     <ClInclude Include="System\systemclass.h" />
     <ClInclude Include="System\timerclass.h" />
   </ItemGroup>

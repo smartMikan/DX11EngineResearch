@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	//終了処理
 	// Shutdown and release the system object.
 	//オブジェクト消す、メモリーリリース関数
-	System->ProgramOver();
+	System->Release();
 	delete System;
 	System = 0;
 
