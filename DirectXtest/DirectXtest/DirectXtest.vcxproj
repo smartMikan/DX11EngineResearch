@@ -70,20 +70,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x86\debug;C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,9 +98,9 @@
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x86\debug;$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <ImportLibrary>D3D11.lib</ImportLibrary>
@@ -119,12 +119,12 @@
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\debug;$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <ImportLibrary>D3D11.lib</ImportLibrary>
-      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,9 +144,9 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs</AdditionalLibraryDirectories>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <ImportLibrary>D3D11.lib</ImportLibrary>
@@ -169,12 +169,12 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <ImportLibrary>D3D11.lib</ImportLibrary>
-      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
