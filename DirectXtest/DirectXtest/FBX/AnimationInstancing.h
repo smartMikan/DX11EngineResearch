@@ -1,5 +1,9 @@
 ﻿#pragma once
 #include "Animation.h"
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
 
 //アニメーションを持って、インスタンシングするクラスです。
 class CAnimationInstancing

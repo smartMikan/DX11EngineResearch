@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+﻿#include <fbxsdk.h>
 #include "FbxToDxTranslation.h"
 
 //反射平面を作ります。

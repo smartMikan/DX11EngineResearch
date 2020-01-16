@@ -1,4 +1,4 @@
-////////////////////////////
+﻿////////////////////////////
 // Filename: inputclass.cpp
 ////////////////////////////
 
@@ -311,6 +311,28 @@ bool InputClass::IsEscapePressed()
 	return false;
 }
 
+bool InputClass::IsSpacePressed()
+{
+	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	if (m_keyboardState[DIK_SPACE] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsLeftCtrlPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
+	if (m_keyboardState[DIK_LCONTROL] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool InputClass::IsLeftPressed()
 {
 	// Do a bitwise and on the keyboard state to check if the LeftArrow key is currently being pressed.
@@ -375,6 +397,17 @@ bool InputClass::IsAPressed()
 	return false;
 }
 
+bool InputClass::IsDPressed()
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_D] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 
 bool InputClass::IsZPressed()
 {
@@ -402,6 +435,18 @@ bool InputClass::IsWPressed()
 {
 	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
 	if (m_keyboardState[DIK_W] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsSPressed()
+{
+
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[DIK_S] & 0x80)
 	{
 		return true;
 	}

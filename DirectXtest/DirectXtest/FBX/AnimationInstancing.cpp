@@ -1,6 +1,9 @@
-﻿#include "stdafx.h"
+﻿#include <fbxsdk.h>
+#include <unordered_map>
 #include "AnimationInstancing.h"
 #include "FbxToDxTranslation.h"
+
+
 
 CAnimationInstancing::CAnimationInstancing()
 {

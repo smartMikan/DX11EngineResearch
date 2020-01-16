@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include <fbxsdk.h>
 #include "Animation.h"
 
 

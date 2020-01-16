@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include<Windows.h>
 #include<directxmath.h>
@@ -50,7 +50,7 @@ class SkinnedDataClass
 
 private:
 
-	//以数组形式柄婢的树，a[i]=j，代柄掩i根骨头的母骨头下眮E猨   
+	
 	vector<int> mBoneHierarchy;
 
 	vector<XMFLOAT4X4> mBoneOffsets;
@@ -67,7 +67,7 @@ public:
 	void Set(vector<int>& bongHierarchy, vector<XMFLOAT4X4>& boneOffsets, map<string, AnimationClip>& animations);
 
 
-	//获取某一时间点的某一个动画片段的所有骨头的变换矩諄E
+	//获取某一时间点的某一个动画片段的所有骨头的变换
 	void GetFinalTransforms(const string& AnimationClipName, float TimePos, vector<XMFLOAT4X4>& finalTransforms)const;
 
 

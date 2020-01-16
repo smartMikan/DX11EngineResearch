@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+﻿#include <fbxsdk.h>
 #include "AnimationController.h"
 #include "FbxToDxTranslation.h"
 

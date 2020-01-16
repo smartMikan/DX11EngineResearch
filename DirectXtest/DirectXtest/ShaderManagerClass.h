@@ -51,7 +51,7 @@ public:
 		ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat);
 
 
-	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX* boneTransformOffSet, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor);
+	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor);
 
 private:
 	ColorShaderClass * m_ColorShader;

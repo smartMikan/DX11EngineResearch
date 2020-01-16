@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: lightclass.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,6 +12,8 @@
 
 #include <directxmath.h>
 
+#include "positionclass.h"
+#include <directxmath.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: LightClass
@@ -25,11 +27,14 @@ public:
 	LightClass(const LightClass&);
 	~LightClass();
 
+	PositionClass m_position;
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
 	void SetDirection(float, float, float);
-	
+	void SetDirectionYawPitchRoll(float, float, float);
+
+
 	void SetSpecularColor(float, float, float, float);
 	void SetSpecularPower(float);
 
@@ -37,15 +42,15 @@ public:
 	XMFLOAT4 GetAmbientColor();
 	XMFLOAT4 GetDiffuseColor();
 	XMFLOAT3 GetDirection();
-	
+
 	XMFLOAT4 GetSpecularColor();
 	float GetSpecularPower();
 
 	void SetFrameTime(float time);
 
-	void TurnRight(bool keydown);
+	//void TurnRight(bool keydown);
 
-	void TurnLeft(bool keydown);
+	//void TurnLeft(bool keydown);
 
 
 private:
@@ -57,8 +62,9 @@ private:
 	float m_specularPower;
 
 	float m_frameTime;
-	float m_rotationZ;
-	float m_leftTurnSpeed, m_rightTurnSpeed;
+
+	//float m_rotationZ;
+	//float m_leftTurnSpeed, m_rightTurnSpeed;
 };
 
 #endif

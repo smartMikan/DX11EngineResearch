@@ -78,8 +78,8 @@
     <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\FBXSDK2018.1.1\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\FBXSDK2018.1.1\lib\vs2015\x64\debug;C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
@@ -94,7 +94,7 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <AssemblerOutput>All</AssemblerOutput>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXtest\Loader\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\debug;$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>F:\FBXSDK2018.1.1\lib\vs2015\x64\debug;$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <TypeLibraryFile>
       </TypeLibraryFile>
@@ -182,6 +182,7 @@
     <ClCompile Include="AssimpSkinnedModel.cpp" />
     <ClCompile Include="bitmapclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
+    <ClCompile Include="CharacterClass.cpp" />
     <ClCompile Include="ClipPlaneShaderClass.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="AssimpSkinnedModel.h" />
     <ClInclude Include="bitmapclass.h" />
     <ClInclude Include="cameraclass.h" />
+    <ClInclude Include="CharacterClass.h" />
     <ClInclude Include="ClipPlaneShaderClass.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="colorshaderclass.h" />

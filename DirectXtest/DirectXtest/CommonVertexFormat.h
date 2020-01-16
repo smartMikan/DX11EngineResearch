@@ -3,7 +3,7 @@
 #define _COMMON_VERTEX_FORMAT_H
 
 #include<Windows.h>
-//#include<xnamath.h>
+
 #include<directxmath.h>
 using namespace DirectX;
 struct Vertex

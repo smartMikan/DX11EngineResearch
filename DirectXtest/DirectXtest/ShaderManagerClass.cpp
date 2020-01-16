@@ -369,7 +369,7 @@ bool ShaderManagerClass::RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dD
 		NormalMap, AmbientLight, diffuseLight, LightDirection, CameraPos, BoneTransforms, mat);
 }
 
-void ShaderManagerClass::DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX* boneTransformOffSet, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor)
+void ShaderManagerClass::DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor)
 {
 	//update ConstantBuffer
 

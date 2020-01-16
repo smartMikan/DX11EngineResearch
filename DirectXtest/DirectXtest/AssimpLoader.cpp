@@ -1,4 +1,4 @@
-#include "AssimpLoader.h"
+﻿#include "AssimpLoader.h"
 
 
 bool AssimpLoader::LoadAssimp(const string & FileName, vector<PosNormalTexTanVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<aiMaterial>& mats)
@@ -138,8 +138,6 @@ void AssimpLoader::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRI
 void AssimpLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix, UINT meshID, vector<PosNormalTexTanSkinnedVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<aiMaterial>& mats, SkinnedDataClass & skinInfo)
 {
 	
-
-
 
 	//for (size_t i = 0; i < mesh->mNumBones; i++)
 	//{

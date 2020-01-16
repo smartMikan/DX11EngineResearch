@@ -62,6 +62,9 @@ void PositionClass::SetRotation(float x, float y, float z)
 	return;
 }
 
+
+
+
 //The GetPosition and GetRotation functions return the current position and rotation of the camera location. In this tutorial these functions are called to provide the location and rotation of the camera for display purposes. We will draw the position/rotation as text strings on the left side of the screen. This is very useful for debugging.
 void PositionClass::GetPosition(float& x, float& y, float& z)
 {

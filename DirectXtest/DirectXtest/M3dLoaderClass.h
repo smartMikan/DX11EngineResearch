@@ -1,11 +1,10 @@
-#pragma once
+﻿#pragma once
 
 
 
 #include"MeshGeometryClass.h"
 #include"SkinnedDataClass.h"
 #include"CommonVertexFormat.h"
-#include"SkinnedDataClass.h"
 #include<iostream>
 #include<fstream>
 #include<istream>

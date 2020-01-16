@@ -217,18 +217,18 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	//m_MeshModel = new GameObjectClass;
-	//if (!m_MeshModel)
-	//{
-	//	return false;
-	//}
-	// Initialize the model object.
-	//result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
-	//if (!result)
-	//{
-	//	MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
-	//	return false;
-	//}
+	m_MeshModel = new GameObjectClass;
+	if (!m_MeshModel)
+	{
+		return false;
+	}
+	//Initialize the model object.
+	result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
+		return false;
+	}
 
 	// Create the light object.
 	m_Light = new LightClass;
@@ -238,7 +238,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(-1.0f, -1.0f, 1.0f);
+	
+	//m_Light->SetDirection(-1.0f, -1.0f, 1.0f);
+	
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
@@ -294,10 +296,14 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	XMStoreFloat4x4(&mCharacterInstance1.World, modelScale * modelRot * modelOffset);
 
 	XMStoreFloat4x4(&mCharacterInstance2.World, modelScale * modelRot * modelOffset);
+
 	mCharacterInstance1.Update(0.01f);
+	mCharacterInstance2.Update(0.01f);
 
 	modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
 	mCharacterInstance1.position->SetPosition(0, 0, 0);
+	mCharacterInstance2.position->SetPosition(10, 0, 15);
+
 	return true;
 }
 
@@ -438,6 +444,9 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 	// Get the view point position/rotation.
 	mCharacterInstance1.position->GetPosition(posX, posY, posZ);
+
+	//mCharacterInstance2.position->GetPosition(posX, posY, posZ);
+
 	//m_Position->GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
 
@@ -502,17 +511,17 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps
 	}
 
 	// Handle the input.
-	keyDown = Input->IsLeftPressed() /*|| Input->GetHorizontal() < 0*/;
+	keyDown = Input->IsLeftPressed() || Input->IsAPressed();
 	//m_Position->TurnLeft(keyDown);
 	mCharacterInstance1.position->TurnLeft(keyDown);
 	m_Position->Orbit(keyDown,true,orbitposition);
 
-	keyDown = Input->IsRightPressed() /*|| Input->GetHorizontal() > 0*/;
+	keyDown = Input->IsRightPressed() || Input->IsDPressed();
 	//m_Position->TurnRight(keyDown);
 	mCharacterInstance1.position->TurnRight(keyDown);
 	m_Position->Orbit(keyDown, false, orbitposition);
 
-	keyDown = Input->IsUpPressed();
+	keyDown = Input->IsUpPressed() || Input->IsWPressed();
 	//m_Position->MoveForward(keyDown);
 	mCharacterInstance1.position->MoveForward(keyDown);
 
@@ -521,7 +530,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps
 		mCharacterInstance1.Update(Deltatime);
 	}
 
-	keyDown = Input->IsDownPressed();
+	keyDown = Input->IsDownPressed() || Input->IsSPressed();
 	//m_Position->MoveBackward(keyDown);
 	mCharacterInstance1.position->MoveBackward(keyDown);
 
@@ -533,11 +542,11 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps
 
 
 
-	keyDown = Input->IsAPressed();
+	keyDown = Input->IsSpacePressed();
 	//m_Position->MoveUpward(keyDown);
 	mCharacterInstance1.position ->MoveUpward(keyDown);
 
-	keyDown = Input->IsZPressed();
+	keyDown = Input->IsLeftCtrlPressed();
 	//m_Position->MoveDownward(keyDown);
 	mCharacterInstance1.position->MoveDownward(keyDown);
 
@@ -556,12 +565,12 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps
 	m_Camera->SetPosition(posX, posY, posZ);
 	m_Camera->SetRotation(rotX, rotY, rotZ);
 
-	// Set the rotation of the light.
-	keyDown = Input->IsQPressed();
-	m_Light->TurnLeft(keyDown);
+	//// Set the rotation of the light.
+	//keyDown = Input->IsQPressed();
+	//m_Light->TurnLeft(keyDown);
 
-	keyDown = Input->IsWPressed();
-	m_Light->TurnRight(keyDown);
+	//keyDown = Input->IsWPressed();
+	//m_Light->TurnRight(keyDown);
 
 	// Determine if the user interface should be displayed or not.
 	if (Input->IsF1Toggled())
@@ -756,8 +765,6 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		}
 	}
 
-	
-
 	//// Render the terrain grid using the color shader.
 	//m_Terrain->Render(Direct3D->GetDeviceContext());
 	//result = result = ShaderManager->RenderTerrainShader(Direct3D->GetDeviceContext(), m_Terrain->GetIndexCount(), worldMatrix, viewMatrix,
@@ -779,15 +786,16 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 
 
-	//modelPosition = worldMatrix;
-	//modelPosition = XMMatrixTranslation(10.0f, 0.0f, 128.0f);
-	//m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor(),TimeClass->GetTime());
-	//
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(10.0f, 0.0f, 30.0f);
+	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	modelPosition = meshModelScale * modelPosition;
+
+	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
+	
 
 
 	//float Deltatime = 0.01f;
-	
-
 	
 	XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
 	XMMATRIX modelRot = XMMatrixRotationY(mCharacterInstance1.position->GetRotationY() * 0.0174532925f);
@@ -809,6 +817,24 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		//DrawCall
 		mCharacterInstance1.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
 	}
+
+
+
+	position = mCharacterInstance2.position->GetPosition();
+	modelOffset = XMMatrixTranslation(position.x, position.y, position.z);
+	modelPosition = modelScale * modelOffset;
+
+	//render model for each subset
+	for (UINT subset = 0; subset < mCharacterInstance2.Model->SubsetCount; ++subset)
+	{
+
+		ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance2.FinalTransforms.size(), modelPosition, viewMatrix, projectionMatrix,
+			mCharacterInstance2.Model->DiffuseMapSRV[subset], mCharacterInstance2.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance2.FinalTransforms[0], mCharacterInstance2.Model->Mat[subset]);
+
+		//DrawCall
+		mCharacterInstance2.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
+	}
+
 
 
 

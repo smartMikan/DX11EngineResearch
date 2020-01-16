@@ -6,7 +6,6 @@
 #ifndef _ZONECLASS_H_
 #define _ZONECLASS_H_
 
-
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
@@ -28,12 +27,15 @@
 #include "particlesystemclass.h"
 #include"SkinnedModelClass.h"
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ZoneClass
 ////////////////////////////////////////////////////////////////////////////////
 class ZoneClass
 {
 public:
+
 	ZoneClass();
 	ZoneClass(const ZoneClass&);
 	~ZoneClass();
@@ -45,7 +47,7 @@ public:
 	float cubeTranslation[3] = {3.0f,3.0f,3.0f};
 
 	LightClass* m_Light;
-
+	SkinnedModelInstance mCharacterInstance2;
 
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
@@ -72,8 +74,7 @@ private:
 
 	//人物实例类
 	SkinnedModelInstance mCharacterInstance1;
-	SkinnedModelInstance mCharacterInstance2;
-
+	
 	ParticleSystemClass* m_ParticleSystem;
 	bool m_particleFollow = true;
 
@@ -81,6 +82,7 @@ private:
 	int m_cubemapsky = 0;
 
 	XMMATRIX modelPosition;
+
 };
 
 #endif

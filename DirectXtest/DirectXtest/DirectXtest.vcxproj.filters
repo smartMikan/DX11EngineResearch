@@ -64,6 +64,18 @@
     <Filter Include="ヘッダー ファイル\ImGUI">
       <UniqueIdentifier>{69c31ccb-f583-45a0-8a67-485a33cb2713}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Model\M3d">
+      <UniqueIdentifier>{512a17df-d0f5-4363-be17-3b365f3a595a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\M3d">
+      <UniqueIdentifier>{d3a586b6-4de6-4061-962d-9576e5e0928b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Model\Assimp">
+      <UniqueIdentifier>{75e6c2df-718f-4b32-b0e9-f6826de19295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Model\Assimp">
+      <UniqueIdentifier>{20e4913c-73db-4493-83c5-ffb7091adb68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -234,9 +246,6 @@
     <ClCompile Include="SkyCubeShaderClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="GameObjectClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -249,29 +258,8 @@
     <ClCompile Include="Utility\StringHelper.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedDataClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="System\Vertex.cpp">
       <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="M3dLoaderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SkeletalCharacterShaderClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedModelClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGeometryClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="AssimpSkinnedModel.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ImGUI\imgui.cpp">
       <Filter>ソース ファイル\ImGUI</Filter>
@@ -290,6 +278,33 @@
     </ClCompile>
     <ClCompile Include="ImGuiClass.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterClass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="M3dLoaderClass.cpp">
+      <Filter>ソース ファイル\Model\M3d</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGeometryClass.cpp">
+      <Filter>ソース ファイル\Model\M3d</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedDataClass.cpp">
+      <Filter>ソース ファイル\Model\M3d</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedModelClass.cpp">
+      <Filter>ソース ファイル\Model\M3d</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalCharacterShaderClass.cpp">
+      <Filter>ソース ファイル\Model\M3d</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpSkinnedModel.cpp">
+      <Filter>ソース ファイル\Model\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>ソース ファイル\Model\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル\Model\Assimp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -473,9 +488,6 @@
     <ClInclude Include="SkyCubeClass.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="System\Vertex.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -491,40 +503,13 @@
     <ClInclude Include="Utility\StringHelper.h">
       <Filter>Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="System\ConstanBufferTypes.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="SkyCubeShaderClass.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedDataClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="M3dLoaderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SkeletalCharacterShaderClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedModelClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGeometryClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Macro.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonVertexFormat.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpSkinnedModel.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpLoader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ImGUI\imconfig.h">
@@ -550,6 +535,39 @@
     </ClInclude>
     <ClInclude Include="ImGuiClass.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterClass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="M3dLoaderClass.h">
+      <Filter>ヘッダー ファイル\Model\M3d</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGeometryClass.h">
+      <Filter>ヘッダー ファイル\Model\M3d</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedDataClass.h">
+      <Filter>ヘッダー ファイル\Model\M3d</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedModelClass.h">
+      <Filter>ヘッダー ファイル\Model\M3d</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalCharacterShaderClass.h">
+      <Filter>ヘッダー ファイル\Model\M3d</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpLoader.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpSkinnedModel.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonVertexFormat.h">
+      <Filter>ヘッダー ファイル\Model\M3d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

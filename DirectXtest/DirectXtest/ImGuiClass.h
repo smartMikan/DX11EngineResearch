@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 
 #include "Utility/StringHelper.h"
@@ -7,6 +7,7 @@
 #include "ImGUI\imgui_impl_dx11.h"
 #include "ImGUI\imgui_impl_win32.h"
 #include "ZoneClass.h"
+
 
 class ImGuiClass
 {

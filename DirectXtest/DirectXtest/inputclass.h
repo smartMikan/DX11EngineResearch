@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 ///
 //To keep the projects simple I used the windows input for the time being until I do a project on DirectInput (which is far superior). 
 //The input class handles the user input from the keyboard. 
@@ -46,6 +46,18 @@ public:
 		float gravity, dead, sensitivity;
 	};
 
+	struct Key
+	{
+		bool isPressed;
+		bool isReleased;
+	};
+
+
+	enum KeyCode
+	{
+
+	};
+
 
 public:
 	InputClass();
@@ -57,7 +69,8 @@ public:
 	bool Frame();
 
 	bool IsEscapePressed();
-	
+	bool IsSpacePressed();
+	bool IsLeftCtrlPressed();
 	void GetMouseLocation(int&, int&);
 	
 	bool IsLeftPressed();
@@ -65,9 +78,11 @@ public:
 	bool IsUpPressed();
 	bool IsDownPressed();
 	bool IsAPressed();
+	bool IsDPressed();
 	bool IsZPressed();
 	bool IsQPressed();
 	bool IsWPressed();
+	bool IsSPressed();
 	bool IsPgUpPressed();
 	bool IsPgDownPressed();
 
@@ -83,6 +98,9 @@ public:
 	
 	float GetHorizontal();
 	float GetVertical();
+
+	KeyCode keylist;
+	bool IsKeyPressed(KeyCode key);
 
 	/*void KeyDown(unsigned int);
 	void KeyUp(unsigned int);
@@ -113,6 +131,10 @@ private:
 	bool m_F4_released;
 	bool m_F5_released;
 	bool m_F6_released;
+
+
+	
+	Key  m_keys[256];
 	//
 	//bool m_keys[256];	//Down:True //Up:False
 };
