@@ -69,10 +69,10 @@ private:
 	GameObjectClass* m_MeshModel;
 
 
-	//人物骨骼动画类
+	//M3d Character Model Data
 	SkinnedModelClass* mCharacterModel;
 
-	//人物实例类
+	//Character Instance
 	SkinnedModelInstance mCharacterInstance1;
 	
 	ParticleSystemClass* m_ParticleSystem;
