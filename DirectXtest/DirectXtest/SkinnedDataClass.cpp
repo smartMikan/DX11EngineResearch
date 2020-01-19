@@ -24,6 +24,7 @@ float BoneAnimation::GetEndTime()const
 	return keyFrames.back().TimePos;
 }
 
+
 //得到某个骨头在时间t的变换矩阵
 void BoneAnimation::Interpolate(float t, XMFLOAT4X4& M)const
 {
@@ -158,6 +159,7 @@ void  SkinnedDataClass::GetFinalTransforms(const string& AnimationClipName, floa
 	UINT numBones = mBoneOffsets.size();
 
 	//插值得到某个动画片段在某个时间点所有骨头到母骨头的变换矩阵
+
 	vector<XMFLOAT4X4> toParentTransform(numBones);
 
 	auto AniClip = mAnimations.find(AnimationClipName);
@@ -166,6 +168,7 @@ void  SkinnedDataClass::GetFinalTransforms(const string& AnimationClipName, floa
 	AniClip->second.Interpolate(TimePos, toParentTransform);
 
 	//遍历所有层级，变换所有骨头到根节点空间
+
 	vector<XMFLOAT4X4> toRootTransforms(numBones);
 
 	//根骨头的下标为0,根骨头没有母骨头,因此它的根空间变换也就是根节点的局部空间变换

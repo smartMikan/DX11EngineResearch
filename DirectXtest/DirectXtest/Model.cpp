@@ -68,46 +68,18 @@ bool Model::LoadModel(const std::string& filePath)
 
 	this->ProcessNode(m_pScene->mRootNode, m_pScene,DirectX::XMMatrixIdentity());
 
-	//const aiAnimation* anim = modelScene->mAnimations[0];
-	//double currentTime = fmod(1000, anim->mDuration);
 
-	//for (size_t a = 0; a < anim->mNumChannels; ++a)
-	//{
-	//	const aiNodeAnim* channel = anim->mChannels[a];
-	//	aiVector3D curPosition;
-	//	aiQuaternion curRotation;
-	//	// scaling purposefully left out 
-	//	// find the node which the channel affects
-	//	aiNode* targetNode = FindNodeRecursivelyByName(modelScene->mRootNode, channel->mNodeName);
-	//	// find current position
-	//	size_t posIndex = 0;
-	//	while (1)
-	//	{
-	//		// break if this is the last key - there are no more keys after this one, we need to use it
-	//		if (posIndex + 1 >= channel->mNumPositionKeys)
-	//			break;
-	//		// break if the next key lies in the future - the current one is the correct one then
-	//		if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
-	//			break;
-	//	}
-	//	// maybe add a check here if the anim has any position keys at all
-	//	curPosition = channel->mPositionKeys[posIndex].mValue;
-	//	// same goes for rotation, but I shorten it now
-	//	size_t rotIndex = 0;
-	//	while (1)
-	//	{
-	//		if (rotIndex + 1 >= channel->mNumRotationKeys)
-	//			break;
-	//		if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
-	//			break;
-	//	}
-	//	curRotation = channel->mRotationKeys[posIndex].mValue;
-	//	// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
-	//	aiMatrix4x4 trafo = curRotation.GetMatrix();
-	//	trafo.a4 = curPosition.x; trafo.b4 = curPosition.y; trafo.c4 = curPosition.z;
-	//	// assign this transformation to the node
-	//	targetNode->mTransformation = trafo;
-	//}
+	bool hasAnim = m_pScene->HasAnimations();
+	if (hasAnim == true) 
+	{
+		numOfAnim = m_pScene->mNumAnimations;
+		this->ProcessAnimation(skinnedData, m_pScene);
+	}
+	
+	
+
+	
+
 	//// all using the results from the previous code snippet
 	//std::vector<aiVector3D> resultPos(mesh->mNumVertices);
 	//std::vector<aiVector3D> resultNorm(mesh->mNumVertices);
@@ -235,8 +207,8 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 	//{
 	//	const aiBone* bone = mesh->mBones[i];
 
-	//	// find the corresponding node by again looking recursively through the node hierarchy for the same name
-	//	//const aiNode* node = FindNodeRecursivelyByName(scene->mRootNode, bone->mName);
+		// find the corresponding node by again looking recursively through the node hierarchy for the same name
+		const aiNode* node = FindNodeRecursivelyByName(scene->mRootNode, bone->mName);
 
 	//	// start with the mesh-to-bone matrix 
 	//	boneMatrices[i] = bone->mOffsetMatrix;
@@ -556,67 +528,138 @@ int Model::GetTextureIndex(aiString* pStr)
 //	return NULL;
 //}
 //
-//const aiNode* Model::FindNodeRecursivelyByName(const aiNode* node, aiString nodeName) {
-//
-//	if (node->mName == nodeName) 
-//	{
-//		return node;
-//	}
-//
-//	for (UINT i = 0; i < node->mNumChildren;i++) 
-//	{
-//		FindNodeRecursivelyByName(node->mChildren[i], nodeName);
-//	}
-//}
+const aiNode* Model::FindNodeRecursivelyByName(const aiNode* node, aiString nodeName) {
+
+	if (node->mName == nodeName) 
+	{
+		return node;
+	}
+
+	for (UINT i = 0; i < node->mNumChildren;i++) 
+	{
+		FindNodeRecursivelyByName(node->mChildren[i], nodeName);
+	}
+}
 
 
-//void Model::ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelScene)
-//{
-//	const aiAnimation* anim = modelScene->mAnimations[0];
-//	double currentTime = fmod(1000, anim->mDuration);
-//
-//	for (size_t a = 0; a < anim->mNumChannels; ++a)
-//	{
-//		const aiNodeAnim* channel = anim->mChannels[a];
-//		aiVector3D curPosition;
-//		aiQuaternion curRotation;
-//		// scaling purposefully left out 
-//		// find the node which the channel affects
-//		const aiNode* targetNode = FindNodeRecursivelyByName(modelScene->mRootNode, channel->mNodeName);
-//		// find current position
-//		size_t posIndex = 0;
-//		while (1)
-//		{
-//			// break if this is the last key - there are no more keys after this one, we need to use it
-//			if (posIndex + 1 >= channel->mNumPositionKeys)
-//				break;
-//			// break if the next key lies in the future - the current one is the correct one then
-//			if (channel->mPositionKeys[posIndex + 1].mTime > currentTime)
-//				break;
-//		}
-//		// maybe add a check here if the anim has any position keys at all
-//		curPosition = channel->mPositionKeys[posIndex].mValue;
-//		// same goes for rotation, but I shorten it now
-//		size_t rotIndex = 0;
-//		while (1)
-//		{
-//			if (rotIndex + 1 >= channel->mNumRotationKeys)
-//				break;
-//			if (channel->mRotationKeys[rotIndex + 1].mTime > currentTime)
-//				break;
-//		}
-//		curRotation = channel->mRotationKeys[posIndex].mValue;
-//		// now build a transformation matrix from it. First rotation, thenn push position in it as well. 
-//		aiMatrix4x4 trafo = curRotation.GetMatrix4x4();
-//		trafo.a4 = curPosition.x;
-//		trafo.b4 = curPosition.y;
-//		trafo.c4 = curPosition.z;
-//		// assign this transformation to the node
-//		//targetNode->mTransformation = trafo;
-//		//XMFLOAT4 finaltransform = 
-//	}
-//
-//
-//	KeyFrame keys;
-//
-//}
+void Model::ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelScene)
+{
+
+	vector<XMFLOAT4X4> boneOffets;
+	vector<int> boneToParentIndex;
+	map<string, AnimationClip> animations;
+
+	//LoadBoneToParentIndex;
+	//Load All Node And Give The Node A IndexNumber And Save The Node's ParentIndexNumber In  boneToParentIndex
+	//And Save the Node's offset Matrix
+
+	//Process All Node, Check if it has An Animation,if it has,Read The Animation message by ReadBoneKeyFrame(),
+	//if not , create a Non-Moving AnimationClip.BoneAnimations for it thus the BoneHirachy tree Wont be disrupt by it;
+
+
+
+	//LoadAnimationClip
+	for (size_t i = 0; i < modelScene->mNumAnimations; i++)
+	{
+		const aiAnimation* anim = modelScene->mAnimations[i];
+		
+
+		nameOfAnim = anim->mName.C_Str();
+		string clipName = nameOfAnim;
+		AnimationClip clip;
+		UINT numBones = anim->mNumChannels;
+		clip.BoneAnimations.resize(numBones);
+		for (UINT boneIndex = 0; boneIndex < numBones; ++boneIndex)
+		{
+
+			ReadBoneKeyFrame(anim->mChannels[boneIndex], numBones, clip.BoneAnimations[boneIndex],anim->mDuration);
+		}
+		animations[clipName] = clip;
+	}
+
+	skindata.SetAnimations(animations);
+
+}
+
+
+void  Model::ReadBoneKeyFrame(const aiNodeAnim* mSingleBone, UINT numBones, AssimpModel::BoneAnimation& boneAnimation, double Animduration)
+{
+	string ignore;
+	UINT numPosKeyframes = 0;
+	UINT numRotKeyframes = 0;
+	UINT numScaleKeyframes = 0;
+	const aiNodeAnim* channel = mSingleBone;
+	numPosKeyframes = channel->mNumPositionKeys;
+	numRotKeyframes = channel->mNumRotationKeys;
+	numScaleKeyframes = channel->mNumScalingKeys;
+
+	boneAnimation.TranslationKeyFrames.resize(numPosKeyframes);
+	boneAnimation.RotationQuatKeyFrames.resize(numRotKeyframes);
+	boneAnimation.ScaleKeyFrames.resize(numScaleKeyframes);
+
+	
+	for (UINT KeyFrameIndex = 0; KeyFrameIndex < numPosKeyframes; ++KeyFrameIndex) {
+		XMFLOAT4 Translation;
+
+
+		Translation.x = channel->mPositionKeys[KeyFrameIndex].mValue.x;
+		Translation.y = channel->mPositionKeys[KeyFrameIndex].mValue.y;
+		Translation.z = channel->mPositionKeys[KeyFrameIndex].mValue.z;
+		Translation.w = 1.0f;
+
+		boneAnimation.TranslationKeyFrames[KeyFrameIndex].TimePos = channel->mPositionKeys[KeyFrameIndex].mTime;
+		boneAnimation.TranslationKeyFrames[KeyFrameIndex].Value = Translation;
+	}
+
+	if (numPosKeyframes = 0) {
+		boneAnimation.TranslationKeyFrames.resize(2);
+		boneAnimation.TranslationKeyFrames[0].TimePos = 0.0f;
+		boneAnimation.TranslationKeyFrames[0].Value = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+		boneAnimation.TranslationKeyFrames[1].TimePos = 1.0f;
+		boneAnimation.TranslationKeyFrames[1].Value = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	}
+
+	for (UINT KeyFrameIndex = 0; KeyFrameIndex < numRotKeyframes; ++KeyFrameIndex) {
+		XMFLOAT4 Rotation;
+
+
+		Rotation.w = channel->mRotationKeys[KeyFrameIndex].mValue.w;
+		Rotation.x = channel->mRotationKeys[KeyFrameIndex].mValue.x;
+		Rotation.y = channel->mRotationKeys[KeyFrameIndex].mValue.y;
+		Rotation.z = channel->mRotationKeys[KeyFrameIndex].mValue.z;
+
+		boneAnimation.RotationQuatKeyFrames[KeyFrameIndex].TimePos = channel->mRotationKeys[KeyFrameIndex].mTime;
+		boneAnimation.RotationQuatKeyFrames[KeyFrameIndex].Value = Rotation;
+	}
+
+	if (numRotKeyframes = 0) {
+		boneAnimation.RotationQuatKeyFrames.resize(2);
+		boneAnimation.RotationQuatKeyFrames[0].TimePos = 0.0f;
+		boneAnimation.RotationQuatKeyFrames[0].Value = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+		boneAnimation.RotationQuatKeyFrames[1].TimePos = 1.0f;
+		boneAnimation.RotationQuatKeyFrames[1].Value = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	}
+
+	for (UINT KeyFrameIndex = 0; KeyFrameIndex < numScaleKeyframes; ++KeyFrameIndex) {
+		XMFLOAT4 Scale;
+
+
+		Scale.x = channel->mScalingKeys[KeyFrameIndex].mValue.x;
+		Scale.y = channel->mScalingKeys[KeyFrameIndex].mValue.y;
+		Scale.z = channel->mScalingKeys[KeyFrameIndex].mValue.z;
+		Scale.w = 1.0f;
+
+		boneAnimation.ScaleKeyFrames[KeyFrameIndex].TimePos = channel->mScalingKeys[KeyFrameIndex].mTime;
+		boneAnimation.ScaleKeyFrames[KeyFrameIndex].Value = Scale;
+	}
+
+	if (numScaleKeyframes = 0) {
+		boneAnimation.ScaleKeyFrames.resize(2);
+		boneAnimation.ScaleKeyFrames[0].TimePos = 0.0f;
+		boneAnimation.ScaleKeyFrames[0].Value = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		boneAnimation.ScaleKeyFrames[1].TimePos = 1.0f;
+		boneAnimation.ScaleKeyFrames[1].Value = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+}

@@ -309,6 +309,9 @@
     <ClCompile Include="DeferredBuffersClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="AssimpSkinnedData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProjectInfo.h">
@@ -575,6 +578,9 @@
     <ClInclude Include="DeferredBuffersClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="AssimpSkinnedData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader.dgsl">
@@ -701,6 +707,7 @@
       <Filter>リソース ファイル\Shader</Filter>
     </None>
     <None Include="Shader\ProjectionPixelShader.hlsl" />
+    <None Include="Shader\ProjectionVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="3DModel\Texture\hoge.tga">
@@ -769,8 +776,5 @@
     <Media Include="Resources\01.wav">
       <Filter>リソース ファイル</Filter>
     </Media>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shader\ProjectionVertexShader.hlsl" />
   </ItemGroup>
 </Project>

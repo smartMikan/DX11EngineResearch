@@ -48,6 +48,7 @@ public:
 
 	LightClass* m_Light;
 	SkinnedModelInstance mCharacterInstance2;
+	GameObjectClass* m_MeshModel;
 
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
@@ -66,7 +67,7 @@ private:
 	SkyCubeClass* m_NebulaSkyCube;
 	SkyCubeClass* m_PlanetSkyCube;
 	ModelClass* m_Model;
-	GameObjectClass* m_MeshModel;
+	
 
 
 	//M3d Character Model Data

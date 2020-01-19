@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationClass.cpp" />
+    <ClCompile Include="AssimpSkinnedData.cpp" />
     <ClCompile Include="AssimpSkinnedModel.cpp" />
     <ClCompile Include="bitmapclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
@@ -259,6 +260,7 @@
   <ItemGroup>
     <ClInclude Include="ApplicationClass.h" />
     <ClInclude Include="AssimpLoader.h" />
+    <ClInclude Include="AssimpSkinnedData.h" />
     <ClInclude Include="AssimpSkinnedModel.h" />
     <ClInclude Include="bitmapclass.h" />
     <ClInclude Include="cameraclass.h" />

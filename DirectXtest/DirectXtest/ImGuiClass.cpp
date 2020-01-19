@@ -106,6 +106,14 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::End();
 
 
+	ImGui::Begin("Assimp Model Instance");
+	ImGui::Text(to_string(zone->m_MeshModel->m_Model.numOfAnim).c_str());
+	ImGui::Text("Animation Clip: ");
+	ImGui::SameLine();
+	ImGui::Text(zone->m_MeshModel->m_Model.nameOfAnim.c_str());
+
+	ImGui::End();
+
 	//Assemble Together Draw Data
 	ImGui::Render();
 

@@ -19,10 +19,10 @@ public:
 	bool SetWorldMatrix(XMMATRIX world);
 
 	PositionClass* m_Position;
-	
+	Model m_Model;
 
 private:
 	XMMATRIX worldPosition = XMMatrixIdentity();
-	Model m_Model;
+	
 };
 

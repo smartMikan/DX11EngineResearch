@@ -4,9 +4,12 @@
 #include "ShaderManagerClass.h"
 #include <list>
 #include <stdint.h>
+#include "AssimpSkinnedData.h"
+
 
 using namespace DirectX;
 using namespace MyVertex;
+using namespace AssimpModel;
 
 class Model
 {
@@ -19,6 +22,11 @@ public:
 	void Draw(ShaderManagerClass * shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor);
 	bool LoadModel(const std::string& filePath);
 	//void BoneTransform(float TimeInSeconds, vector<XMMATRIX>& Transforms,Mesh* mesh);
+
+	int numOfAnim;
+	string nameOfAnim;
+
+	AssimpSkinnedData skinnedData;
 
 private:
 	void ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix);
@@ -41,8 +49,9 @@ private:
 */
 	//const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const string NodeName);
 	
-	//void ProcessAnimation(vector<AnimationClip>& animations, aiScene* modelScene);
-	//const aiNode* FindNodeRecursivelyByName(const aiNode* node, aiString nodeName);
+	void ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelScene);
+	void ReadBoneKeyFrame(const aiNodeAnim* mSingleBone, UINT numBones, AssimpModel::BoneAnimation& boneAnimation, double Animduration);
+	const aiNode* FindNodeRecursivelyByName(const aiNode* node, aiString nodeName);
 
 private:
 
