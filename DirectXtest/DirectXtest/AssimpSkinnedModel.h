@@ -25,7 +25,7 @@ public:
 	vector<MeshGeometryClass::Subset> Subsets;
 
 
-	SkinnedDataClass SkinnedData;
+	//SkinnedDataClass SkinnedData;
 	MeshGeometryClass ModelMesh;
 
 public:

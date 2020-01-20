@@ -552,8 +552,8 @@ void Model::ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelSce
 
 	int mNumNode = 0;
 
-	map<aiString, int> boneNameToNumberIndexMap;
-	map<int, aiString> boneNumberToNameIndexMap;
+	map<string, int> boneNameToNumberIndexMap;
+	map<int, string> boneNumberToNameIndexMap;
 
 	map<string, AnimationClip> animations;
 
@@ -562,7 +562,7 @@ void Model::ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelSce
 	//And Save the Node's offset Matrix
 
 
-	ProcessNodeMap(boneNameToNumberIndexMap, boneNumberToNameIndexMap, modelScene->mRootNode, mNumNode);
+	ProcessNodeMap(boneNameToNumberIndexMap, boneNumberToNameIndexMap, boneOffets, modelScene->mRootNode, mNumNode);
 
 	boneToParentIndex.clear();
 
@@ -577,7 +577,6 @@ void Model::ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelSce
 	//LoadAnimationClip
 	for (size_t i = 0; i < modelScene->mNumAnimations; i++)
 	{
-
 
 		const aiAnimation* anim = modelScene->mAnimations[i];
 		
@@ -594,7 +593,7 @@ void Model::ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelSce
 		for (UINT boneIndex = 0; boneIndex < numBones; boneIndex++)
 		{
 			//FindNode
-			const aiNode* targetnode = modelScene->mRootNode->FindNode(boneNumberToNameIndexMap[boneIndex]);
+			const aiNode* targetnode = modelScene->mRootNode->FindNode(aiString(boneNumberToNameIndexMap[boneIndex]));
 
 			//checkifNodeIsAnimNode
 			FindNodeAnim(targetnode,anim,clip);
@@ -605,6 +604,7 @@ void Model::ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelSce
 		animations[clipName] = clip;
 	}
 
+	skindata.SetBoneHierarchy(boneToParentIndex, boneOffets);
 	skindata.SetAnimations(animations);
 
 }
@@ -646,7 +646,6 @@ void Model::CreateBoneKeyFrame(AssimpModel::BoneAnimation&boneAnimation) {
 	boneAnimation.TranslationKeyFrames[0].Value = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	boneAnimation.TranslationKeyFrames[1].TimePos = 1.0f;
 	boneAnimation.TranslationKeyFrames[1].Value = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
 
 	boneAnimation.RotationQuatKeyFrames.resize(2);
 	boneAnimation.RotationQuatKeyFrames[0].TimePos = 0.0f;
@@ -746,21 +745,25 @@ void Model::ReadBoneKeyFrame(const aiNodeAnim* mSingleBone, AssimpModel::BoneAni
 
 }
 
-void Model::ProcessNodeMap(map<aiString,int> &boneNameToNumberIndexMap, map<int, aiString> &boneNumberToNameIndexMap,const aiNode* node,int &currentNodeNumber)
+void Model::ProcessNodeMap(map<string,int> &boneNameToNumberIndexMap, map<int, string> &boneNumberToNameIndexMap,vector<XMFLOAT4X4> &boneOffsets,const aiNode* node,int &currentNodeNumber)
 {
-	boneNameToNumberIndexMap[node->mName] = currentNodeNumber;
-	boneNumberToNameIndexMap[currentNodeNumber] = node->mName;
+	boneNameToNumberIndexMap[node->mName.C_Str()] = currentNodeNumber;
+	boneNumberToNameIndexMap[currentNodeNumber] = node->mName.C_Str();
+	XMMATRIX nodeTransformMatrix = XMMatrixTranspose(XMMATRIX(&node->mTransformation.a1));
+	XMFLOAT4X4 offset;
+	XMStoreFloat4x4(&offset,nodeTransformMatrix);
+	boneOffsets.push_back(offset);
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
 		currentNodeNumber++;
-		ProcessNodeMap(boneNameToNumberIndexMap, boneNumberToNameIndexMap ,node->mChildren[i], currentNodeNumber);
+		ProcessNodeMap(boneNameToNumberIndexMap, boneNumberToNameIndexMap, boneOffsets,node->mChildren[i], currentNodeNumber);
 	}
 }
 
-void Model::ProcessBoneToParentIndex(vector<int> &boneToParentIndex, map<aiString, int> boneNameToNumberIndexMap, const aiNode* node) {
+void Model::ProcessBoneToParentIndex(vector<int> &boneToParentIndex, map<string, int> boneNameToNumberIndexMap, const aiNode* node) {
 	
 	if (node->mParent != NULL) {
-		boneToParentIndex.push_back(boneNameToNumberIndexMap[node->mParent->mName]);
+		boneToParentIndex.push_back(boneNameToNumberIndexMap[node->mParent->mName.C_Str()]);
 	}
 	else
 	{

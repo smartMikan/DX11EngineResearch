@@ -1,4 +1,4 @@
-#include"MeshGeometryClass.h"
+ï»¿#include"MeshGeometryClass.h"
 
 
 MeshGeometryClass::MeshGeometryClass():mVertexBuffer(NULL),mIndexBuffer(NULL),mIndexBufferFormat(DXGI_FORMAT_R32_UINT),mVertexStride(0)
@@ -43,7 +43,7 @@ void MeshGeometryClass::Draw(ID3D11DeviceContext* deviceContext, UINT subsetId)
 {
 
 	UINT offset=0;
-	//ÉèÖÃÍØÆË·½Ê½
+	//è®¾ç½®æ‹“æ‰‘æ–¹å¼
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	deviceContext->IASetVertexBuffers(0, 1, &mVertexBuffer, &mVertexStride, &offset);
 	deviceContext->IASetIndexBuffer(mIndexBuffer, mIndexBufferFormat,0);

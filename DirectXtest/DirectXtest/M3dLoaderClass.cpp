@@ -1,4 +1,5 @@
-#include "M3dLoaderClass.h"
+﻿#include "M3dLoaderClass.h"
+using namespace M3d;
 
 //仅仅是读取相应的网格数据，并未有骨骼动画
 bool M3dLoaderClass::LoadM3d(const string& FileName, vector<PosNormalTexTanVertex>& vertices, vector<unsigned long>& indices, vector<MeshGeometryClass::Subset>& subsets, vector<M3dMaterial>& mats)

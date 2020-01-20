@@ -11,6 +11,8 @@
 #include<D3Dcommon.h>  
 //#include<D3DX11.h>
 #include <d3dcompiler.h>
+using namespace M3d;
+
 class SkinnedModelClass
 {
 

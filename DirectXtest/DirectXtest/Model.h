@@ -53,8 +53,8 @@ private:
 	void FindNodeAnim(const aiNode * node, const aiAnimation * anim, AssimpModel::AnimationClip & clip);
 	void CreateBoneKeyFrame(AssimpModel::BoneAnimation & boneAnimation);
 	void ReadBoneKeyFrame(const aiNodeAnim* mSingleBone, AssimpModel::BoneAnimation& boneAnimation, double Animduration);
-	void ProcessNodeMap(map<aiString, int>& boneNameToNumberIndexMap, map<int, aiString> &boneNumberToNameIndexMap, const aiNode * node,int &currentNodeNumber);
-	void ProcessBoneToParentIndex(vector<int>& boneToParentIndex, map<aiString, int> boneNameToNumberIndexMap, const aiNode * node);
+	void ProcessNodeMap(map<string, int>& boneNameToNumberIndexMap, map<int, string> &boneNumberToNameIndexMap, vector<XMFLOAT4X4> &boneOffsets,const aiNode * node,int &currentNodeNumber);
+	void ProcessBoneToParentIndex(vector<int>& boneToParentIndex, map<string, int> boneNameToNumberIndexMap, const aiNode * node);
 	const aiNode* FindNodeRecursivelyByName(const aiNode* node, aiString nodeName);
 
 private:
@@ -62,6 +62,9 @@ private:
 	std::vector<Mesh> m_meshes;
 	ID3D11Device* m_device;
 	ID3D11DeviceContext* m_deviceContext;
+
+
+
 
 	std::string directory = "";
 	//const aiScene* modelScene;
