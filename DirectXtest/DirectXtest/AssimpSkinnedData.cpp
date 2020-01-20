@@ -87,6 +87,7 @@ namespace AssimpModel {
 	{
 		XMVECTOR S, P, Q;
 
+
 		//Position
 		if (t < TranslationKeyFrames.front().TimePos) {
 			P = XMLoadFloat4(&TranslationKeyFrames.front().Value);
@@ -133,7 +134,7 @@ namespace AssimpModel {
 
 					//对相邻两个帧数的动画的相应变化量进行插值
 
-					//Translation进行插值
+					//Scale进行插值
 					S = XMVectorLerp(P0, P1, lerpPercent);
 				}
 			}
@@ -159,7 +160,7 @@ namespace AssimpModel {
 
 					//对相邻两个帧数的动画的相应变化量进行插值
 
-					//Translation进行插值
+					//RotationQuat进行插值
 					Q = XMVectorLerp(P0, P1, lerpPercent);
 				}
 			}
@@ -199,7 +200,7 @@ namespace AssimpModel {
 	//得到所有骨头在时间t的变换矩阵数组,boneTransform[i]代表第i根骨头在时间t的变换矩阵
 	void AnimationClip::Interpolate(float t, vector<XMFLOAT4X4>& boneTransform)const
 	{
-		for (UINT i = 0; i < BoneAnimations.size(); ++i)
+		for (UINT i = 0; i < BoneAnimations.size(); i++)
 		{
 			BoneAnimations[i].Interpolate(t, boneTransform[i]);
 		}

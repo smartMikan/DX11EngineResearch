@@ -50,7 +50,11 @@ private:
 	//const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const string NodeName);
 	
 	void ProcessAnimation(AssimpSkinnedData skindata, const aiScene* modelScene);
-	void ReadBoneKeyFrame(const aiNodeAnim* mSingleBone, UINT numBones, AssimpModel::BoneAnimation& boneAnimation, double Animduration);
+	void FindNodeAnim(const aiNode * node, const aiAnimation * anim, AssimpModel::AnimationClip & clip);
+	void CreateBoneKeyFrame(AssimpModel::BoneAnimation & boneAnimation);
+	void ReadBoneKeyFrame(const aiNodeAnim* mSingleBone, AssimpModel::BoneAnimation& boneAnimation, double Animduration);
+	void ProcessNodeMap(map<aiString, int>& boneNameToNumberIndexMap, map<int, aiString> &boneNumberToNameIndexMap, const aiNode * node,int &currentNodeNumber);
+	void ProcessBoneToParentIndex(vector<int>& boneToParentIndex, map<aiString, int> boneNameToNumberIndexMap, const aiNode * node);
 	const aiNode* FindNodeRecursivelyByName(const aiNode* node, aiString nodeName);
 
 private:
