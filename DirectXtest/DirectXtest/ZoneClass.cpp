@@ -223,7 +223,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	//Initialize the model object.
-	result = m_MeshModel->Initialize("./3DModel/mon_goblinWizard@Idle.FBX", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
+	result = m_MeshModel->Initialize("./3DModel/ogldev/boblampclean.md5mesh", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);

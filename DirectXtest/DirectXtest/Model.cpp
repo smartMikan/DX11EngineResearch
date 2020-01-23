@@ -79,7 +79,7 @@ bool Model::LoadModel(const std::string& filePath)
 	m_pScene = new aiScene;
 	m_pScene = m_Importer.ReadFile(filePath,
 		aiProcess_Triangulate |
-		aiProcess_ConvertToLeftHanded);
+		aiProcess_ConvertToLeftHanded/*|aiProcess_JoinIdenticalVertices*/);
 	if (m_pScene == nullptr)
 		return false;
 	/*const aiScene* pScene = m_Importer.ReadFile(filePath,
@@ -87,7 +87,7 @@ bool Model::LoadModel(const std::string& filePath)
 		aiProcess_ConvertToLeftHanded);
 	if (pScene == nullptr)
 		return false;*/
-
+	m_GlobalInverseTransform = XMMatrixTranspose(XMMATRIX(&m_pScene->mRootNode->mTransformation.a1));
 
 	bool hasAnim = m_pScene->HasAnimations();
 	if (hasAnim == true)
@@ -238,9 +238,11 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 			vertex.Tex.y = (float)mesh->mTextureCoords[0][i].y;
 		}
 
-		vertex.Normal.x = mesh->mNormals[i].x;
-		vertex.Normal.y = mesh->mNormals[i].y;
-		vertex.Normal.z = mesh->mNormals[i].z;
+		if (mesh->HasNormals()) {
+			vertex.Normal.x = mesh->mNormals[i].x;
+			vertex.Normal.y = mesh->mNormals[i].y;
+			vertex.Normal.z = mesh->mNormals[i].z;
+		}
 
 
 
@@ -548,7 +550,7 @@ void Model::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const XM
 
 	if (m_BoneMapping.find(NodeName) != m_BoneMapping.end()) {
 		UINT BoneIndex = m_BoneMapping[NodeName];
-		m_BoneInfo[BoneIndex].FinalTransformation = /*m_GlobalInverseTransform **/ GlobalTransformation *
+		m_BoneInfo[BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation *
 			m_BoneInfo[BoneIndex].BoneOffset;
 	}
 
