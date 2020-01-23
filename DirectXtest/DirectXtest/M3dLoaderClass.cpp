@@ -160,13 +160,13 @@ void M3dLoaderClass::ReadSkinnedVertices(ifstream& FileIn, UINT numVertices, vec
 		FileIn >> ignore >> vertices[i].TangentU.x >> vertices[i].TangentU.y >> vertices[i].TangentU.z >> vertices[i].TangentU.w;
 		FileIn >> ignore >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
 		FileIn >> ignore >> vertices[i].Tex.x >> vertices[i].Tex.y;
-		FileIn >> ignore >> vertices[i].Weights.x >> vertices[i].Weights.y >> vertices[i].Weights.z >> ignore;
+		FileIn >> ignore >> vertices[i].Weights[0] >> vertices[i].Weights[1] >> vertices[i].Weights[2] >> ignore;
 		FileIn >> ignore >> boneIndices[0] >> boneIndices[1] >> boneIndices[2] >> boneIndices[3];
 
-		vertices[i].BoneIndices[0] = (BYTE)boneIndices[0];
-		vertices[i].BoneIndices[1] = (BYTE)boneIndices[1];
-		vertices[i].BoneIndices[2] = (BYTE)boneIndices[2];
-		vertices[i].BoneIndices[3] = (BYTE)boneIndices[3];
+		vertices[i].BoneIndices[0] = boneIndices[0];
+		vertices[i].BoneIndices[1] = boneIndices[1];
+		vertices[i].BoneIndices[2] = boneIndices[2];
+		vertices[i].BoneIndices[3] = boneIndices[3];
 	}
 }
 

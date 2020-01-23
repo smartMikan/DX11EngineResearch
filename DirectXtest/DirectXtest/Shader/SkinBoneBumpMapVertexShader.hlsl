@@ -1,4 +1,4 @@
-cbuffer MatrixBuffer :register(b0)
+﻿cbuffer MatrixBuffer :register(b0)
 {
     matrix worldMatrix;
     matrix viewMatrix;
@@ -8,7 +8,7 @@ cbuffer MatrixBuffer :register(b0)
 
 cbuffer CBBoneTranform : register(b1)
 {
-    matrix BoneTranforms[80];
+    matrix BoneTranforms[150];
 }
 
 

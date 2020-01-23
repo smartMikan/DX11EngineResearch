@@ -120,7 +120,7 @@ bool SkeletalCharacterShaderClass::InitializeShader(ID3D11Device* d3dDevice, HWN
 		{ "TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT,0,24,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		{ "TANGENT",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,32,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		{ "WEIGHTS",0,DXGI_FORMAT_R32G32B32_FLOAT,0,48,D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{ "BONEINDICES",0,DXGI_FORMAT_R8G8B8A8_UINT,0,60,D3D11_INPUT_PER_VERTEX_DATA,0 },
+		{ "BONEINDICES",0,DXGI_FORMAT_R32G32B32A32_UINT,0,60,D3D11_INPUT_PER_VERTEX_DATA,0 },
 	};
 
 	unsigned int numElements = sizeof(VertexInputLayout) / sizeof(VertexInputLayout[0]);         //布局数量
@@ -290,7 +290,6 @@ bool SkeletalCharacterShaderClass::SetShaderParameter(ID3D11DeviceContext* d3dDe
 	CBSkeletal cbBoneTransform;
 	for (UINT i = 0; i < BoneNums; ++i)
 	{
-		
 		cbBoneTransform.BoneTransform[i] = XMMatrixTranspose(XMLoadFloat4x4(&BoneTransforms[i]));
 	}
 	d3dDeviceContext->UpdateSubresource(mCBBoneTransformBuffer, 0, NULL, &cbBoneTransform, 0, 0);

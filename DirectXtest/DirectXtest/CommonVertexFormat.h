@@ -33,8 +33,8 @@ struct PosNormalTexTanSkinnedVertex
 	XMFLOAT3 Normal;
 	XMFLOAT2 Tex;
 	XMFLOAT4 TangentU;
-	XMFLOAT3 Weights;
-	BYTE BoneIndices[4];
+	float Weights[3];
+	UINT BoneIndices[4];
 };
 
 struct Material

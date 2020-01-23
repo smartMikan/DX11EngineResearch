@@ -56,7 +56,7 @@ namespace M3d {
 		{
 			for (UINT i = 0; i < keyFrames.size() - 1; ++i)
 			{
-				if (t > keyFrames[i].TimePos&& t < keyFrames[i + 1].TimePos)
+				if (t >= keyFrames[i].TimePos&& t < keyFrames[i + 1].TimePos)
 				{
 					float lerpPercent = (t - keyFrames[i].TimePos) / (keyFrames[i + 1].TimePos - keyFrames[i].TimePos);
 

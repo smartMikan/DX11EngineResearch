@@ -16,7 +16,7 @@
 
 Mesh::Mesh(ID3D11Device* device,
 	ID3D11DeviceContext* deviceContext,
-	std::vector<VertexType>& vertices,
+	std::vector<PosNormalTexTanSkinnedVertex>& vertices,
 	std::vector<DWORD>& indices,
 	std::vector<Texture>& textures,
 	const DirectX::XMMATRIX& transformMatrix
@@ -26,6 +26,9 @@ Mesh::Mesh(ID3D11Device* device,
 	this->m_textures = textures;
 	this->transformMatrix = transformMatrix;
 	
+
+
+
 
 	HRESULT result = this->m_vertexBuffer.Initialize(device, vertices.data(), vertices.size());
 	if (FAILED(result)) {
@@ -72,7 +75,7 @@ void Mesh::Draw()
 			break;
 		}
 	}
-
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
 	m_deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddress(), m_vertexBuffer.StridePtr(), &offset);
 
@@ -98,36 +101,4 @@ const DirectX::XMMATRIX& Mesh::GetTransformMatrix()
 {
 	return this->transformMatrix;
 }
-
-//void Mesh::LoadBones(UINT MeshIndex, const aiMesh* pMesh, std::vector<VertexBoneData>& Bones)
-//{
-//	m_NumBones = 0;
-//	//Bones.reserve(pMesh->mNumBones);
-//	Bones.resize(pMesh->mNumVertices);
-//	for (UINT i = 0; i < pMesh->mNumBones; i++) {
-//		UINT BoneIndex = 0;
-//		std::string BoneName(pMesh->mBones[i]->mName.data);
-//
-//		if (m_BoneMapping.find(BoneName) == m_BoneMapping.end()) {
-//			// Allocate an index for a new bone
-//			BoneIndex = m_NumBones;
-//			m_NumBones += 1;
-//			BoneInfo bi;
-//			m_BoneInfo.push_back(bi);
-//			//m_BoneInfo[BoneIndex].BoneOffset = pMesh->mBones[i]->mOffsetMatrix;
-//			m_BoneInfo[BoneIndex].BoneOffset = XMMatrixTranspose(XMMATRIX(&pMesh->mBones[i]->mOffsetMatrix.a1));
-//			m_BoneMapping[BoneName] = BoneIndex;
-//		}
-//		else {
-//			BoneIndex = m_BoneMapping[BoneName];
-//		}
-//
-//		for (UINT j = 0; j < pMesh->mBones[i]->mNumWeights; j++) {
-//			//UINT VertexID = m_Entries[MeshIndex].BaseVertex + pMesh->mBones[i]->mWeights[j].mVertexId;
-//			UINT VertexID = pMesh->mBones[i]->mWeights[j].mVertexId;
-//			float Weight = pMesh->mBones[i]->mWeights[j].mWeight;
-//			Bones[VertexID].AddBoneData(BoneIndex, Weight);
-//		}
-//	}
-//}
 

@@ -111,6 +111,9 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::Text("Animation Clip: ");
 	ImGui::SameLine();
 	ImGui::Text(zone->m_MeshModel->m_Model.nameOfAnim.c_str());
+	ImGui::Text(to_string(zone->m_MeshModel->m_Model.numOfBones).c_str());
+	zone->m_MeshModel->m_Model.Update(timepos);
+
 
 	ImGui::End();
 

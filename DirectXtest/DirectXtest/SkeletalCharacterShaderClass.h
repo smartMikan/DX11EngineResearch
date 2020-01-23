@@ -44,7 +44,7 @@ private:
 
 	struct CBSkeletal
 	{
-		XMMATRIX BoneTransform[80];
+		XMMATRIX BoneTransform[150];
 	};
 
 

@@ -223,7 +223,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	//Initialize the model object.
-	result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
+	result = m_MeshModel->Initialize("./3DModel/mon_goblinWizard@Idle.FBX", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
@@ -775,6 +775,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//	return false;
 	//}
 
+
 	Direct3D->GetWorldMatrix(worldMatrix);
 	
 	modelPosition = worldMatrix;
@@ -791,7 +792,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
 	modelPosition = meshModelScale * modelPosition;
 
-	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
+	m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor(), 0.2f, mCharacterInstance1.Model->DiffuseMapSRV[0], mCharacterInstance1.Model->NormalMapSRV[0]);
 	
 
 
