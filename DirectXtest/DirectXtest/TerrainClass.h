@@ -106,11 +106,11 @@ private:
 	//void RenderBuffers(ID3D11DeviceContext*);
 
 private:
-	//ID3D11Buffer /** m_vertexBuffer,*/ *m_indexBuffer;
-	//IndexBuffer* m_indexBuffer;
-	//VertexBuffer<VertexType> *m_vertexBuffer;
-	int m_vertexCount;
-		//, m_indexCount;
+	//ID3D11Buffer /** m_vertexBuffer*/, *m_indexBuffer;
+	IndexBuffer* m_indexBuffer;
+	VertexBuffer<VertexType> *m_vertexBuffer;
+	int m_vertexCount
+		, m_indexCount;
 
 	int m_terrainHeight, m_terrainWidth;
 	float m_heightScale;

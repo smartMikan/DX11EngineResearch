@@ -1,15 +1,6 @@
 ﻿#pragma once
 
-////////////////////////////////////////////////////////////////////////////////
-// Filename: shadermanagerclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _SHADERMANAGERCLASS_H_
-#define _SHADERMANAGERCLASS_H_
 
-
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
 #include "d3dclass.h"
 #include "colorshaderclass.h"
 #include "textureshaderclass.h"
@@ -19,7 +10,9 @@
 #include "skydomeshaderclass.h"
 #include "skycubeshaderclass.h"
 #include "particleshaderclass.h"
-#include"SkeletalCharacterShaderClass.h"
+#include "SkeletalCharacterShaderClass.h"
+#include "shadowshaderclass.h"
+#include "depthshaderclass.h"
 
 #include "Shaders.h"
 #include "System/ConstantBuffer.h"
@@ -50,6 +43,13 @@ public:
 	bool RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
 		ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat);
 
+	bool RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
+		XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
+		ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* depthMapTexture, XMFLOAT3 lightDirection,
+		XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor);
+
+	bool RenderDepthShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX);
+	bool RenderDepthShader(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
 
 	void DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor);
 
@@ -63,6 +63,9 @@ private:
 	TerrainShaderClass* m_TerrainShader;
 	ParticleShaderClass* m_ParticleShader;
 	SkeletalCharacterShaderClass* m_SkeletalCharacterShader;
+	ShadowShaderClass* m_ShadowShader;
+	DepthShaderClass* m_DepthShader;
+
 
 	VertexShader m_vertexShader;
 	PixelShader m_pixelShader;
@@ -77,6 +80,3 @@ private:
 	//ConstantBuffer<CB_PS_SkinBoneBumpMapLightBuffer> m_BoneLightBuffer;
 
 };
-
-#endif
-

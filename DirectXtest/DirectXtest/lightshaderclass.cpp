@@ -578,12 +578,6 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, m_lightBuffer->GetAddress());
 
 
-
-
-
-	
-
-
 	return true;
 }
 

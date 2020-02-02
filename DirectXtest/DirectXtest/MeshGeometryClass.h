@@ -39,13 +39,14 @@ private:
 
 	DXGI_FORMAT mIndexBufferFormat; //32位 对应于unsigned long
 	UINT mVertexStride;  //顶点跨度
-	vector<Subset> mSubsetTable;
+
 	
 
 private:
 	MeshGeometryClass(const MeshGeometryClass& rhs);
 	//MeshGeometryClass& operator=(const MeshGeometryClass& rhs);
 
+	vector<Subset> mSubsetTable;
 
 public:
 
@@ -61,6 +62,7 @@ public:
 	void SetSubsetTable(vector<Subset>& SubsetTable);
 
 	void Draw(ID3D11DeviceContext* deviceContext, UINT subsetId);
+	
 };
 
 

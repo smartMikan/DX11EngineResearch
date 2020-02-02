@@ -1,14 +1,11 @@
 ﻿#pragma once
 
-/////////////////////////////////////////////////////////////////////////////////
-// Filename: zoneclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _ZONECLASS_H_
-#define _ZONECLASS_H_
+const int SHADOWMAP_WIDTH = 1024;
+const int SHADOWMAP_HEIGHT = 1024;
+const float SHADOWMAP_DEPTH = 50.0f;
+const float SHADOWMAP_NEAR = 1.0f;
 
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
+
 #include "d3dclass.h"
 #include "inputclass.h"
 #include "shadermanagerclass.h"
@@ -27,11 +24,8 @@
 #include "particlesystemclass.h"
 #include"SkinnedModelClass.h"
 
+#include "rendertextureclass.h"
 
-
-////////////////////////////////////////////////////////////////////////////////
-// Class name: ZoneClass
-////////////////////////////////////////////////////////////////////////////////
 class ZoneClass
 {
 public:
@@ -44,15 +38,19 @@ public:
 	void Shutdown();
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
-	float cubeTranslation[3] = {3.0f,3.0f,3.0f};
+	float cubeTranslation[3] = {12.0f,3.0f,12.0f};
 
 	LightClass* m_Light;
 	SkinnedModelInstance mCharacterInstance2;
-	GameObjectClass* m_MeshModel;
+	//GameObjectClass* m_MeshModel;
 
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
+	
+	bool RenderSceneToTexture(D3DClass* Direct3D, ShaderManagerClass*);
+	
 	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
+
 
 private:
 	UserInterfaceClass * m_UserInterface;
@@ -77,7 +75,11 @@ private:
 	SkinnedModelInstance mCharacterInstance1;
 	
 	ParticleSystemClass* m_ParticleSystem;
-	bool m_particleFollow = true;
+
+	RenderTextureClass* m_RenderTexture;
+
+
+	//bool m_particleFollow = true;
 
 	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;
 	int m_cubemapsky = 0;
@@ -85,5 +87,3 @@ private:
 	XMMATRIX modelPosition;
 
 };
-
-#endif

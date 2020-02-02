@@ -54,7 +54,38 @@ Terrain:
 													 |
 												TextureClass
 
-																																																														 
+														
+
+
+
+//予定:
+
+
+//			WinMain
+				|
+				|
+			Engine<----------------<Utility,StringHelper,ipch,Com,DebugHelper
+				|<-----ImGUI
+		________|______________________________________________________________________________________________________________________________________________________________
+		|				|				|					  |							|										|											ResourceManager
+	Graphic			 Input			  Sound	    			Timer					  Scene									Model<<<<<AssimpLoader
+		|<-----FrameRender()															|<------FrameUpdate()					|
+	____|____________________________________________________________					|				________________________|______________________________________________
+	|					|								|			Renderqueue			|		Mesh<<<<VertexType,VertexBuffer,IndexBUffer			Material		Bone	Animation	
+	D3D				BuiltInShader<<<ConstBufferType		Effects			|				|		Texture,Color			      |
+	|					|											MeshRenderer		|									  |
+	|				VertexShader,PixelShader(2D,3D)										|								      |
+	RenderState																			|									  |
+																						|									  |
+																						l									  |
+																					Object<<<<<<Transform<<<<<<Componet	      |
+																			____________|________________					  |
+																		Camera						GameObject<<Update()	  |
+																										|					  |
+																							____________|___________		  |
+																						2DObjct					3DObject<------
+
+																						
 */
 
 
