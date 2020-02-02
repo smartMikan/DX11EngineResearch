@@ -69,7 +69,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd,bool fullscreen
 	}
 
 	// Initialize the shader manager object.
-	result = m_ShaderManager->Initialize(m_Direct3D->GetDevice(), hwnd);
+	result = m_ShaderManager->Initialize(m_Direct3D->GetDevice(), hwnd, m_Direct3D->GetDeviceContext());
 	result = m_ShaderManager->InitializeMyShader(m_Direct3D->GetDevice(), L"./Shader/LightVertexShader.cso", L"./Shader/LightPixelShader.cso");
 	if (!result)
 	{

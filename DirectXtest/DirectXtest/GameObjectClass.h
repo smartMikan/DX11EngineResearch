@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "positionclass.h"
-#include "Model.h"
-
+#include "Graphic/Model.h"
+#include "Engine/Timer.h"
 
 class GameObjectClass
 {
@@ -10,11 +10,12 @@ public:
 	GameObjectClass(const GameObjectClass& other);
 	~GameObjectClass();
 
-	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
+		ConstantBuffer<CB_VS_MatrixBuffer>& wvpMatrix, ConstantBuffer<CB_PS_Material>& cb_ps_material, IVertexShader* pVertexShader);
+	bool InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBones);
 	void Shutdown();
 
-	void Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor, float timepos, ID3D11ShaderResourceView* DiffuseMap,
-		ID3D11ShaderResourceView* NormalMap);
+	void Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
 
 	XMMATRIX GetWorldMatrix();
 	bool SetWorldMatrix(XMMATRIX world);
@@ -24,6 +25,14 @@ public:
 
 private:
 	XMMATRIX worldPosition = XMMatrixIdentity();
-	
+	ID3D11DeviceContext* deviceContext;
+
+	Timer mAnimTimer;
+	float mAnimTimeScale = 1.0f;
+	bool mPlayAnimtion = false;
+	Animator mAnimator;
+	std::unique_ptr<AnimationComponent> mAnimComp;
+	//AnimationComponent* mAnimComp;
+
 };
 

@@ -38,7 +38,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 {
 	bool result;
 
-
+	this->device = Direct3D->GetDevice();
+	this->deviceContext = Direct3D->GetDeviceContext();
+	InitializeShaders();
 	// Create the user interface object.
 	m_UserInterface = new UserInterfaceClass;
 	if (!m_UserInterface)
@@ -217,18 +219,20 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	//m_MeshModel = new GameObjectClass;
-	//if (!m_MeshModel)
-	//{
-	//	return false;
-	//}
-	////Initialize the model object.
-	//result = m_MeshModel->Initialize("./3DModel/ogldev/boblampclean.md5mesh", Direct3D->GetDevice(), Direct3D->GetDeviceContext());
-	//if (!result)
-	//{
-	//	MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
-	//	return false;
-	//}
+	m_MeshModel = new GameObjectClass;
+	if (!m_MeshModel)
+	{
+		return false;
+	}
+	//Initialize the model object.
+	result = m_MeshModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_MeshModel->InitAnimation(cb_bones);
 
 	// Create the light object.
 	m_Light = new LightClass;
@@ -323,6 +327,40 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
 	mCharacterInstance1.position->SetPosition(0, 0, 0);
 	mCharacterInstance2.position->SetPosition(10, 0, 15);
+
+
+	HRESULT hr;
+	//initialize constant buffer
+	hr = this->cb_vs_wvpBuffer.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
+	cb_vs_wvpBuffer.SetDebugName("cb_vs_world");
+
+	hr = this->cb_ps_light.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
+	cb_ps_light.SetDebugName("cb_ps_light");
+
+
+	/*hr = this->cb_ps_shadowmat.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");*/
+
+
+	hr = this->cb_ps_camera.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
+	cb_ps_camera.SetDebugName("cb_ps_common");
+
+	hr = this->cb_ps_material.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
+	cb_ps_material.SetDebugName("ps_material");
+
+	hr = this->cb_bones.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
+	cb_bones.SetDebugName("vs_bone_transforms");
+	
+	this->cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	this->cb_ps_light.data.ambientLightStrength = 0.3f;
+
+
+	
 
 	return true;
 }
@@ -423,12 +461,12 @@ void ZoneClass::Shutdown()
 		m_Light = 0;
 	}
 
-	//// Release the Meshmodel object.
-	//if (m_MeshModel) {
-	//	m_MeshModel->Shutdown();
-	//	delete m_MeshModel;
-	//	m_MeshModel = 0;
-	//}
+	// Release the Meshmodel object.
+	if (m_MeshModel) {
+		m_MeshModel->Shutdown();
+		delete m_MeshModel;
+		m_MeshModel = 0;
+	}
 
 	// Release the model object.
 	if (m_Model) {
@@ -953,13 +991,19 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 	
 
-	//modelPosition = worldMatrix;
-	//modelPosition = XMMatrixTranslation(10.0f, 0.0f, 30.0f);
-	//XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	//modelPosition = meshModelScale * modelPosition;
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(10.0f, 0.0f, 30.0f);
+	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	modelPosition = meshModelScale * modelPosition;
 
 	//m_MeshModel->Draw(ShaderManager, modelPosition, viewMatrix, projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor(), 0.2f, mCharacterInstance1.Model->DiffuseMapSRV[0], mCharacterInstance1.Model->NormalMapSRV[0]);
 	//
+	deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
+	deviceContext->VSSetShader(d3dvertexshader_animation.get()->GetShader(device.Get()), NULL, 0);
+	deviceContext->IASetInputLayout(d3dvertexshader_animation.get()->GetLayout());
+	m_MeshModel->Draw(modelPosition, viewMatrix, projectionMatrix);
+
+
 
 
 	//float Deltatime = 0.01f;
@@ -1065,3 +1109,70 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	return true;
 }
 
+bool ZoneClass::InitializeShaders()
+{
+	std::wstring shaderfolder = L"";
+#pragma region DetermineShaderPath
+	if (IsDebuggerPresent())
+	{
+#ifdef _DEBUG // Debug Mode
+#ifdef _WIN64 // x64
+		shaderfolder = L"..\\x64\\Debug\\";
+#else	// x86
+		shaderfolder = L"..\\Debug\\";
+#endif
+#else	// Release Mode
+#ifdef _WIN64
+		shaderfolder = L"..\\x64\\Release\\";
+#else	// x86
+		shaderfolder = L"..\\Release\\";
+#endif
+#endif
+	}
+
+
+
+	d3dvertexshader = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "vertexShader.cso");
+	d3dvertexshader_animation = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VertexShaderAnim.cso");
+	d3dvertexshader_nolight = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_nolight.cso");
+	d3dvertexshader_shadowmap = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_shadowmap.cso");
+	d3dvertexshader_shadowmap_anim = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_shadowmap_anim.cso");
+	if (!pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso"))
+	{
+		return false;
+	}
+	if (!pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso"))
+	{
+		return false;
+	}
+	if (!pixelshader_tonemapping.Initialize(this->device, shaderfolder + L"pixelshader_tonemapping.cso"))
+	{
+		return false;
+	}
+	if (!pixelshader_heightmapping.Initialize(this->device, shaderfolder + L"PixelShader_HeightMapping.cso"))
+	{
+		return false;
+	}
+}
+
+IVertexShader* ZoneClass::CreateVertexShader(const std::string& filename)
+{
+	return new D3DVertexShader(device.Get(), filename);
+}
+
+void ZoneClass::SetLight()
+{
+	cb_ps_camera.data.cameraPosition = m_Camera->GetPosition();
+	cb_ps_camera.ApplyChanges();
+	deviceContext->PSSetConstantBuffers(1, 1, cb_ps_camera.GetAddress());
+
+	//cb_ps_light.data.dynamicLightColor = m_Light->GetDiffuseColor();
+	//cb_ps_light.data.dynamicLightStrength = light.lightStrenght;
+	//cb_ps_light.data.dynamicPosition = light.GetPositionFloat3();
+	//cb_ps_light.data.dynamicLightAttenuation_a = light.attenuation_a;
+	//cb_ps_light.data.dynamicLightAttenuation_b = light.attenuation_b;
+	//cb_ps_light.data.dynamicLightAttenuation_c = light.attenuation_c;
+
+	//cb_ps_light.ApplyChanges();
+	//deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddress());
+}

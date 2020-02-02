@@ -25,10 +25,14 @@ const float SHADOWMAP_NEAR = 1.0f;
 #include"SkinnedModelClass.h"
 
 #include "rendertextureclass.h"
+#include "Graphic/Shaders.h"
 
 class ZoneClass
 {
 public:
+	template<class T>
+	using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 
 	ZoneClass();
 	ZoneClass(const ZoneClass&);
@@ -40,10 +44,12 @@ public:
 
 	float cubeTranslation[3] = {12.0f,3.0f,12.0f};
 
+	IVertexShader* CreateVertexShader(const std::string& filename);
+
 	LightClass* m_Light;
 	SkinnedModelInstance mCharacterInstance2;
-	//GameObjectClass* m_MeshModel;
-
+	GameObjectClass* m_MeshModel;
+	
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
 	
@@ -51,8 +57,12 @@ private:
 	
 	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
 
-
+	bool InitializeShaders();
+	void SetLight();
 private:
+	ComPtr<ID3D11Device> device;
+	ComPtr <ID3D11DeviceContext> deviceContext;
+
 	UserInterfaceClass * m_UserInterface;
 	CameraClass* m_Camera;
 	PositionClass* m_Position;
@@ -85,5 +95,25 @@ private:
 	int m_cubemapsky = 0;
 
 	XMMATRIX modelPosition;
+
+	// shaders
+	std::unique_ptr<D3DVertexShader> d3dvertexshader;
+	std::unique_ptr<D3DVertexShader> d3dvertexshader_animation;
+	std::unique_ptr<D3DVertexShader> d3dvertexshader_nolight;
+	std::unique_ptr<D3DVertexShader> d3dvertexshader_shadowmap;
+	std::unique_ptr<D3DVertexShader> d3dvertexshader_shadowmap_anim;
+	PixelShader pixelshader;
+	PixelShader pixelshader_nolight;
+	PixelShader pixelshader_tonemapping;
+	PixelShader pixelshader_heightmapping;
+
+	bool enableToneshading = false;
+	// c_buffers
+	ConstantBuffer<CB_VS_MatrixBuffer> cb_vs_wvpBuffer;
+	ConstantBuffer<CB_PS_LightBuffer> cb_ps_light;
+	ConstantBuffer<CB_PS_CameraBuffer> cb_ps_camera;
+	ConstantBuffer<CB_PS_Material> cb_ps_material;
+	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
+
 
 };

@@ -20,7 +20,7 @@ DepthShaderClass::~DepthShaderClass()
 }
 
 
-bool DepthShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool DepthShaderClass::Initialize(ID3D11Device* device, HWND hwnd,ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 

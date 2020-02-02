@@ -3,7 +3,7 @@
 #include<directxmath.h>
 #include<d3dcompiler.h>
 #include <fstream>
-#include "System/ConstantBuffer.h"
+#include "Graphic/Buffers/ConstantBuffer.h"
 using namespace std;
 using namespace DirectX;
 
@@ -55,7 +55,7 @@ public:
 	LightShaderClass(const LightShaderClass&);
 	~LightShaderClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext* deviceContext, HWND);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, ID3D11ShaderResourceView ** textureArray, MatrixBufferType, CameraBufferType, LightBufferType);
 	bool Render(ID3D11DeviceContext*, int, ID3D11ShaderResourceView ** textureArray, XMMATRIX world, XMMATRIX view, XMMATRIX projection, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor);
@@ -65,7 +65,7 @@ public:
 	LightBufferType GenerateLightBuffer(XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, const WCHAR*, const WCHAR*);
+	bool InitializeShader(ID3D11Device*, ID3D11DeviceContext* deviceContext, HWND, const WCHAR*, const WCHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const WCHAR*);
 

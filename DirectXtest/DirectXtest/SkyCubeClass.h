@@ -3,8 +3,8 @@
 #include <directxmath.h>
 #include <fstream>
 #include "Utility/ErrorLoger.h"
-#include "System/VertexBuffer.h"
-#include "System/IndexBuffer.h"
+#include "Graphic/Buffers/VertexBuffer.h"
+#include "Graphic/Buffers/IndexBuffer.h"
 #include "Loader/WICTextureLoader.h"
 #include "Loader/DDSTextureLoader.h"
 #include <vector>

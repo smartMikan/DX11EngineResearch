@@ -15,8 +15,8 @@
 #include "textureclass.h"
 #include "ddstextureclass.h"
 #include "texturearrayclass.h"
-#include "System/VertexBuffer.h"
-#include "System/IndexBuffer.h"
+#include "Graphic/Buffers/VertexBuffer.h"
+#include "Graphic/Buffers/IndexBuffer.h"
 #include<wrl/client.h>
 
 using namespace std;

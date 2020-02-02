@@ -4,7 +4,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <fstream>
-#include "System/ConstantBuffer.h"
+#include "Graphic/Buffers/ConstantBuffer.h"
 using namespace DirectX;
 using namespace std;
 
@@ -33,12 +33,12 @@ public:
 	~TerrainShaderClass();
 
 
-	bool Initialize(ID3D11Device* device, HWND hwnd);
+	bool Initialize(ID3D11Device* device, HWND hwnd, ID3D11DeviceContext* deviceContext);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX projection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView * normalmap, XMFLOAT3 lightdir, XMFLOAT4 diffuseColor);
 
 private:
-	bool InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsfilename, const WCHAR* psfilename);
+	bool InitializeShader(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, const WCHAR* vsfilename, const WCHAR* psfilename);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob* message, HWND hwnd,const WCHAR* filename);
 

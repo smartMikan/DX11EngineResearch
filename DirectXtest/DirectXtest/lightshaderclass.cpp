@@ -29,14 +29,14 @@ LightShaderClass::~LightShaderClass()
 }
 
 
-bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool LightShaderClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext,HWND hwnd)
 {
 	bool result;
 	//The new light.vs and light.ps HLSL shader files are used as input to initialize the light shader.
 
 	// Initialize the vertex and pixel shaders.
 	
-	result = InitializeShader(device, hwnd, L"./Shader/SpecMapVertexShader.hlsl", L"./Shader/SpecMapPixelShader.hlsl");
+	result = InitializeShader(device, deviceContext, hwnd, L"./Shader/SpecMapVertexShader.hlsl", L"./Shader/SpecMapPixelShader.hlsl");
 	if (!result)
 	{
 		return false;
@@ -117,7 +117,7 @@ LightShaderClass::LightBufferType LightShaderClass::GenerateLightBuffer(XMFLOAT4
 }
 
 
-bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool LightShaderClass::InitializeShader(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -287,7 +287,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 
 	m_matrixBuffer = new ConstantBuffer<MatrixBufferType>();
 
-	result = m_matrixBuffer->Initialize(device);
+	result = m_matrixBuffer->Initialize(device,deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -310,7 +310,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 	
 	m_cameraBuffer = new ConstantBuffer<CameraBufferType>();
 
-	result = m_cameraBuffer->Initialize(device);
+	result = m_cameraBuffer->Initialize(device,deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -333,7 +333,7 @@ bool LightShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const W
 
 	m_lightBuffer = new ConstantBuffer<LightBufferType>();
 
-	result = m_lightBuffer->Initialize(device);
+	result = m_lightBuffer->Initialize(device,deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -475,7 +475,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	m_matrixBuffer->data.view = wvpMatrixBuffer.view;
 	m_matrixBuffer->data.projection = wvpMatrixBuffer.projection;
 
-    result = m_matrixBuffer->ApplyChanges(deviceContext);
+    result = m_matrixBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;
@@ -514,7 +514,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	m_cameraBuffer->data.cameraPosition = cameraBuffer.cameraPosition;
 	m_cameraBuffer->data.padding = 0.0f;
 
-	result = m_cameraBuffer->ApplyChanges(deviceContext);
+	result = m_cameraBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;
@@ -565,7 +565,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	m_lightBuffer->data.specularColor = lightBuffer.specularColor;
 	m_lightBuffer->data.specularPower = lightBuffer.specularPower;
 
-	result = m_lightBuffer->ApplyChanges(deviceContext);
+	result = m_lightBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;

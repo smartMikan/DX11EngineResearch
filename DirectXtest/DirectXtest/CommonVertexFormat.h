@@ -6,46 +6,50 @@
 
 #include<directxmath.h>
 using namespace DirectX;
-struct Vertex
-{
-	XMFLOAT3 pos;
-	XMFLOAT2 Tex;
-	XMFLOAT3 normal;
-	XMFLOAT4 color;
-};
 
-struct VertexPos
-{
-	float x, y, z;
-};
+namespace M3d {
+	struct Vertex
+	{
+		XMFLOAT3 pos;
+		XMFLOAT2 Tex;
+		XMFLOAT3 normal;
+		XMFLOAT4 color;
+	};
 
-struct PosNormalTexTanVertex
-{
-	XMFLOAT3 Pos;
-	XMFLOAT3 Normal;
-	XMFLOAT2 Tex;
-	XMFLOAT4 TangentU;
-};
+	struct VertexPos
+	{
+		float x, y, z;
+	};
 
-struct PosNormalTexTanSkinnedVertex
-{
-	XMFLOAT3 Pos;
-	XMFLOAT3 Normal;
-	XMFLOAT2 Tex;
-	XMFLOAT4 TangentU;
-	float Weights[3];
-	UINT BoneIndices[4];
-};
+	struct PosNormalTexTanVertex
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT3 Normal;
+		XMFLOAT2 Tex;
+		XMFLOAT4 TangentU;
+	};
 
-struct Material
-{
-	Material() { ZeroMemory(this, sizeof(this)); }
+	struct PosNormalTexTanSkinnedVertex
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT3 Normal;
+		XMFLOAT2 Tex;
+		XMFLOAT4 TangentU;
+		float Weights[3];
+		UINT BoneIndices[4];
+	};
 
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;
-	XMFLOAT4 Specular; // w = SpecPower
-	XMFLOAT4 Reflect;
-};
+	struct Material
+	{
+		Material() { ZeroMemory(this, sizeof(this)); }
+
+		XMFLOAT4 Ambient;
+		XMFLOAT4 Diffuse;
+		XMFLOAT4 Specular; // w = SpecPower
+		XMFLOAT4 Reflect;
+	};
+
+}
 
 
 #endif 

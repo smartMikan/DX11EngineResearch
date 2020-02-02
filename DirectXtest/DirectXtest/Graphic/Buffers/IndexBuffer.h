@@ -1,9 +1,8 @@
-﻿#pragma once
+#pragma once
 
 #include <d3d11.h>
-#include <iostream>
 #include<wrl/client.h>
-#include <memory>
+#include <vector>
 
 
 class IndexBuffer

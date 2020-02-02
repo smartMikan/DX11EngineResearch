@@ -23,7 +23,7 @@ SkeletalCharacterShaderClass::~SkeletalCharacterShaderClass()
 }
 
 
-bool SkeletalCharacterShaderClass::Initialize(ID3D11Device* d3dDevice, HWND hwnd)
+bool SkeletalCharacterShaderClass::Initialize(ID3D11Device* d3dDevice, HWND hwnd, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 	result = InitializeShader(d3dDevice, hwnd, L"Shader/SkeletalCharacterShader.fx", L"Shader/SkeletalCharacterShader.fx");
@@ -41,7 +41,7 @@ void SkeletalCharacterShaderClass::Shutdown()
 
 
 bool SkeletalCharacterShaderClass::Render(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix,  ID3D11ShaderResourceView* DiffuseMap,
-	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat)
+	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, M3d::Material mat)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
@@ -257,7 +257,7 @@ void SkeletalCharacterShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMes
 
 //, FXMVECTOR AmbientLight, FXMVECTOR diffuseLight, FXMVECTOR LightDirection, CXMVECTOR CameraPos, XMFLOAT4X4* BoneTransforms, Material mat
 bool SkeletalCharacterShaderClass::SetShaderParameter(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
-	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat)
+	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, M3d::Material mat)
 {
 	
 	//第一，更新变换矩阵常量缓存的值

@@ -24,7 +24,7 @@ public:
 	ParticleShaderClass(const ParticleShaderClass&);
 	~ParticleShaderClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, HWND, ID3D11DeviceContext* deviceContext);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 

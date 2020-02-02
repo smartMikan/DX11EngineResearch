@@ -12,8 +12,8 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
-#include "System/VertexBuffer.h"
-#include "System/IndexBuffer.h"
+#include "Graphic/Buffers/VertexBuffer.h"
+#include "Graphic/Buffers/IndexBuffer.h"
 using namespace DirectX;
 using namespace std;
 

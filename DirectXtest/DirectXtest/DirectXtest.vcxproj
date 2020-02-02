@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{F451ACD9-BB29-4EEA-BA76-9072C75F5D35}</ProjectGuid>
     <RootNamespace>DirectXtest</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -179,13 +179,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationClass.cpp" />
-    <ClCompile Include="AssimpSkinnedData.cpp" />
-    <ClCompile Include="AssimpSkinnedModel.cpp" />
+    <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Graphic\AssimpSkinnedData.cpp" />
     <ClCompile Include="bitmapclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="CharacterClass.cpp" />
     <ClCompile Include="ClipPlaneShaderClass.cpp" />
-    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Engine\MemoryStream.cpp" />
+    <ClCompile Include="Graphic\Color.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="Componet.cpp" />
     <ClCompile Include="cpuclass.cpp" />
@@ -215,10 +216,10 @@
     <ClCompile Include="Loader\WICTextureLoader.cpp" />
     <ClCompile Include="M3dLoaderClass.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Graphic\Mesh.cpp" />
     <ClCompile Include="MeshGeometryClass.cpp" />
     <ClCompile Include="MiniMapClass.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Graphic\Model.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="modellistclass.cpp" />
     <ClCompile Include="multitextureshaderclass.cpp" />
@@ -227,8 +228,9 @@
     <ClCompile Include="positionclass.cpp" />
     <ClCompile Include="reflectshaderclass.cpp" />
     <ClCompile Include="rendertextureclass.cpp" />
+    <ClCompile Include="Engine\ResourceManager.cpp" />
     <ClCompile Include="ShaderManagerClass.cpp" />
-    <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="Graphic\Shaders.cpp" />
     <ClCompile Include="shadowshaderclass.cpp" />
     <ClCompile Include="SkeletalCharacterShaderClass.cpp" />
     <ClCompile Include="SkinnedDataClass.cpp" />
@@ -238,12 +240,10 @@
     <ClCompile Include="SkyDomeClass.cpp" />
     <ClCompile Include="SkyDomeShaderClass.cpp" />
     <ClCompile Include="soundclass.cpp" />
-    <ClCompile Include="System\IndexBuffer.cpp" />
-    <ClCompile Include="System\Vertex.cpp" />
-    <ClCompile Include="System\VertexBuffer.cpp" />
+    <ClCompile Include="Graphic\Vertex.cpp" />
     <ClCompile Include="TerrainCellClass.cpp" />
     <ClCompile Include="TerrainShaderClass.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Graphic\Texture.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="systemclass.cpp" />
@@ -257,19 +257,18 @@
     <ClCompile Include="translateshaderclass.cpp" />
     <ClCompile Include="transparentshaderclass.cpp" />
     <ClCompile Include="UserInterfaceClass.cpp" />
-    <ClCompile Include="Utility\VertexTypes.cpp" />
     <ClCompile Include="ZoneClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApplicationClass.h" />
-    <ClInclude Include="AssimpLoader.h" />
-    <ClInclude Include="AssimpSkinnedData.h" />
-    <ClInclude Include="AssimpSkinnedModel.h" />
+    <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Graphic\AssimpSkinnedData.h" />
     <ClInclude Include="bitmapclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="CharacterClass.h" />
     <ClInclude Include="ClipPlaneShaderClass.h" />
-    <ClInclude Include="Color.h" />
+    <ClInclude Include="Engine\MemoryStream.h" />
+    <ClInclude Include="Graphic\Color.h" />
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="CommonVertexFormat.h" />
     <ClInclude Include="Componet.h" />
@@ -302,10 +301,10 @@
     <ClInclude Include="Loader\WICTextureLoader.h" />
     <ClInclude Include="M3dLoaderClass.h" />
     <ClInclude Include="Macro.h" />
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Graphic\Mesh.h" />
     <ClInclude Include="MeshGeometryClass.h" />
     <ClInclude Include="MiniMapClass.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="Graphic\Model.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="modellistclass.h" />
     <ClInclude Include="multitextureshaderclass.h" />
@@ -316,8 +315,9 @@
     <ClInclude Include="reflectshaderclass.h" />
     <ClInclude Include="rendertextureclass.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Engine\ResourceManager.h" />
     <ClInclude Include="ShaderManagerClass.h" />
-    <ClInclude Include="Shaders.h" />
+    <ClInclude Include="Graphic\Shaders.h" />
     <ClInclude Include="shadowshaderclass.h" />
     <ClInclude Include="SkeletalCharacterShaderClass.h" />
     <ClInclude Include="SkinnedDataClass.h" />
@@ -327,18 +327,19 @@
     <ClInclude Include="SkyDomeClass.h" />
     <ClInclude Include="SkyDomeShaderClass.h" />
     <ClInclude Include="soundclass.h" />
-    <ClInclude Include="System\ConstanBufferTypes.h" />
-    <ClInclude Include="System\ConstantBuffer.h" />
-    <ClInclude Include="System\IndexBuffer.h" />
-    <ClInclude Include="System\Vertex.h" />
-    <ClInclude Include="System\VertexBuffer.h" />
+    <ClInclude Include="Graphic\Buffers\ConstanBufferTypes.h" />
+    <ClInclude Include="Graphic\Buffers\ConstantBuffer.h" />
+    <ClInclude Include="Graphic\Buffers\IndexBuffer.h" />
+    <ClInclude Include="Graphic\Vertex.h" />
+    <ClInclude Include="Graphic\Buffers\VertexBuffer.h" />
     <ClInclude Include="TerrainCellClass.h" />
     <ClInclude Include="TerrainShaderClass.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Graphic\Texture.h" />
+    <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Utility\ErrorLoger.h" />
-    <ClInclude Include="Utility\Geometry.h" />
-    <ClInclude Include="Utility\Light.h" />
-    <ClInclude Include="Utility\Material.h" />
+    <ClInclude Include="Graphic\Light.h" />
+    <ClInclude Include="Graphic\Material.h" />
+    <ClInclude Include="Utility\GraphicDebug.h" />
     <ClInclude Include="Utility\StringHelper.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="TerrainClass.h" />
@@ -351,10 +352,11 @@
     <ClInclude Include="translateshaderclass.h" />
     <ClInclude Include="transparentshaderclass.h" />
     <ClInclude Include="UserInterfaceClass.h" />
-    <ClInclude Include="Utility\VertexTypes.h" />
     <ClInclude Include="ZoneClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Graphic\Shaders\PSCommon.hlsli" />
+    <None Include="Graphic\Shaders\VSCommon.hlsli" />
     <None Include="Scene.fbx" />
     <None Include="Shader.dgsl" />
   </ItemGroup>
@@ -859,6 +861,98 @@
     <None Include="Shader\ProjectionVertexShader.hlsl">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphic\Shaders\pixelshader.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\PixelShader_HeightMapping.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\pixelshader_nolight.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\pixelshader_tonemapping.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\vertexShader.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VertexShaderAnim.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VS_nolight.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VS_shadowmap.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VS_shadowmap_anim.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -24,11 +24,11 @@ SkyDomeShaderClass::~SkyDomeShaderClass()
 }
 
 
-bool SkyDomeShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool SkyDomeShaderClass::Initialize(ID3D11Device* device, HWND hwnd, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./Shader/SkyDomeVertexShader.hlsl", L"./Shader/SkyDomePixelShader.hlsl");
+	result = InitializeShader(device, deviceContext, hwnd, L"./Shader/SkyDomeVertexShader.hlsl", L"./Shader/SkyDomePixelShader.hlsl");
 	if (!result)
 	{
 		return false;
@@ -67,7 +67,7 @@ bool SkyDomeShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCou
 }
 
 
-bool SkyDomeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool SkyDomeShaderClass::InitializeShader(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -162,14 +162,14 @@ bool SkyDomeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 
 	m_matrixBuffer = new ConstantBuffer<MatrixBufferType>();
 
-	result = m_matrixBuffer->Initialize(device);
+	result = m_matrixBuffer->Initialize(device, deviceContext);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
 	m_colorBuffer = new ConstantBuffer<ColorBufferType>();
-	result = m_colorBuffer->Initialize(device);
+	result = m_colorBuffer->Initialize(device, deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -286,7 +286,7 @@ bool SkyDomeShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	m_matrixBuffer->data.view = viewMatrix;
 	m_matrixBuffer->data.projection = projectionMatrix;
 
-	result = m_matrixBuffer->ApplyChanges(deviceContext);
+	result = m_matrixBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;
@@ -301,7 +301,7 @@ bool SkyDomeShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	m_colorBuffer->data.apexColor = apexColor;
 	m_colorBuffer->data.centerColor = centerColor;
 
-	result = m_colorBuffer->ApplyChanges(deviceContext);
+	result = m_colorBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;

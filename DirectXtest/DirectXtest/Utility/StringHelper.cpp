@@ -1,9 +1,14 @@
-﻿#include "StringHelper.h"
+#include "StringHelper.h"
 
 std::wstring StringHelper::StringToWide(std::string str)
 {
-	std::wstring wide_string(str.begin(), str.end());
-	return wide_string;
+	return 	std::wstring(str.begin(), str.end());
+
+}
+
+std::string StringHelper::WideToString(std::wstring wstr)
+{
+	return std::string(wstr.begin(), wstr.end());
 }
 
 std::string StringHelper::GetDirectoryFromPath(const std::string& filepath)
@@ -23,6 +28,7 @@ std::string StringHelper::GetDirectoryFromPath(const std::string& filepath)
 		return filepath.substr(0, off1);
 	}
 
+	//use greater offset if both exist
 	return filepath.substr(0, std::max(off1,off2));
 }
 

@@ -21,11 +21,11 @@ SkyCubeShaderClass::~SkyCubeShaderClass()
 }
 
 
-bool SkyCubeShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool SkyCubeShaderClass::Initialize(ID3D11Device* device, HWND hwnd, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./Shader/SkyCubeVertexShader.hlsl", L"./Shader/SkyCubePixelShader.hlsl");
+	result = InitializeShader(device, deviceContext, hwnd, L"./Shader/SkyCubeVertexShader.hlsl", L"./Shader/SkyCubePixelShader.hlsl");
 	if (!result)
 	{
 		return false;
@@ -64,7 +64,7 @@ bool SkyCubeShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCou
 }
 
 
-bool SkyCubeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool SkyCubeShaderClass::InitializeShader(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -160,7 +160,7 @@ bool SkyCubeShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const
 
 	m_matrixBuffer = new ConstantBuffer<MatrixBufferType>();
 
-	result = m_matrixBuffer->Initialize(device);
+	result = m_matrixBuffer->Initialize(device, deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -280,7 +280,7 @@ bool SkyCubeShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	m_matrixBuffer->data.view = viewMatrix;
 	m_matrixBuffer->data.projection = projectionMatrix;
 
-	result = m_matrixBuffer->ApplyChanges(deviceContext);
+	result = m_matrixBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;

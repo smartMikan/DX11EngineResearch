@@ -13,11 +13,13 @@ GameObjectClass::~GameObjectClass()
 {
 }
 
-bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
+	ConstantBuffer<CB_VS_MatrixBuffer>& wvpMatrix, ConstantBuffer<CB_PS_Material>& cb_ps_material, IVertexShader* pVertexShader)
 {
 	bool result;
-	
-	result = m_Model.Initialize(filePath, device, deviceContext);
+	this->deviceContext = deviceContext;
+
+	result = m_Model.Initialize(filePath, device, deviceContext, wvpMatrix, cb_ps_material, pVertexShader);
 	if (result == false) {
 		return false;
 	}
@@ -35,6 +37,16 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 	return true;
 }
 
+bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBones)
+{
+	mAnimComp = std::make_unique<AnimationComponent>(&mAnimator);
+	//mAnimComp = new AnimationComponent();
+	mPlayAnimtion = true;
+	mAnimTimer.Start();
+	return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
+	//return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp);
+}
+
 void GameObjectClass::Shutdown()
 {
 	// Release the position object.
@@ -45,10 +57,27 @@ void GameObjectClass::Shutdown()
 	}
 }
 
-void GameObjectClass::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, float specularPower, XMFLOAT4 specularColor,float timepos, ID3D11ShaderResourceView* DiffuseMap,
-	ID3D11ShaderResourceView* NormalMap)
+void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
 {
-	m_Model.Draw(shaderManager, worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, specularPower, specularColor, timepos,DiffuseMap,NormalMap);
+	//static float time;
+	//time += 0.003f;
+	if (mPlayAnimtion)
+	{
+		if ((float)mAnimTimer.GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
+			mAnimTimer.Restart();
+		mAnimator.SetTimpPos((float)mAnimTimer.GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
+		/*if (time  >= mAnimator.GetCurrentAnimation().duration)
+			time=0.0f;
+		mAnimator.SetTimpPos(time);*/
+		const AnimationChannel* channel = mAnimComp->GetCurrentChannel();
+		if (channel)
+		{
+			mAnimator.Bind(deviceContext);
+		}
+	}
+
+
+	m_Model.Draw(worldMatrix, viewMatrix, projectionMatrix);
 }
 
 

@@ -30,7 +30,7 @@ ShaderManagerClass::~ShaderManagerClass()
 }
 
 
-bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 
@@ -71,7 +71,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Initialize the light shader object.
-	result = m_LightShader->Initialize(device, hwnd);
+	result = m_LightShader->Initialize(device, deviceContext, hwnd);
 	if (!result)
 	{
 		return false;
@@ -85,7 +85,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Initialize the font shader object.
-	result = m_FontShader->Initialize(device, hwnd);
+	result = m_FontShader->Initialize(device,hwnd);
 	if (!result)
 	{
 		return false;
@@ -100,7 +100,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Initialize the terrain shader object.
-	result = m_TerrainShader->Initialize(device, hwnd);
+	result = m_TerrainShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_TerrainShader", NULL, MB_OK);
@@ -116,7 +116,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Initialize the sky dome shader object.
-	result = m_SkyDomeShader->Initialize(device, hwnd);
+	result = m_SkyDomeShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_SkyDomeShader", NULL, MB_OK);
@@ -131,7 +131,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	}
 
 	// Initialize the sky dome shader object.
-	result = m_SkyCubeShader->Initialize(device, hwnd);
+	result = m_SkyCubeShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_SkyCubeShader", NULL, MB_OK);
@@ -147,7 +147,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 
 	// Initialize the particle shader object.
-	result = m_ParticleShader->Initialize(device, hwnd);
+	result = m_ParticleShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_ParticleShader", NULL, MB_OK);
@@ -160,7 +160,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	{
 		return false;
 	}
-	result = m_SkeletalCharacterShader->Initialize(device, hwnd);
+	result = m_SkeletalCharacterShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_SkeletalCharacterShader", NULL, MB_OK);
@@ -173,7 +173,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
-	result = m_ShadowShader->Initialize(device, hwnd);
+	result = m_ShadowShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_ShadowShader", NULL, MB_OK);
@@ -186,7 +186,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
-	result = m_DepthShader->Initialize(device, hwnd);
+	result = m_DepthShader->Initialize(device, hwnd, deviceContext);
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"failed to initialize m_DepthShader", NULL, MB_OK);
@@ -200,59 +200,59 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 bool ShaderManagerClass::InitializeMyShader(ID3D11Device *device, std::wstring vertexShaderCsoPath, std::wstring pixelShaderCsoPath)
 {
 
-	D3D11_INPUT_ELEMENT_DESC inputlayout[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0},
-		{"NORMAL", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0}
-		/*{ "Position",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",      0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",    0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BLENDINDICES",0, DXGI_FORMAT_R8G8B8A8_UINT,      0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R8G8B8A8_UNORM,     0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }*/
-	};
-	UINT elementCount = ARRAYSIZE(inputlayout);
+	//D3D11_INPUT_ELEMENT_DESC inputlayout[] =
+	//{
+	//	{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
+	//	{"TEXCOORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0},
+	//	{"NORMAL", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA,0}
+	//	/*{ "Position",    0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,							 D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "NORMAL",      0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "TANGENT",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "TEXCOORD",    0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "BLENDINDICES",0, DXGI_FORMAT_R8G8B8A8_UINT,      0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "BLENDWEIGHT", 0, DXGI_FORMAT_R8G8B8A8_UNORM,     0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }*/
+	//};
+	//UINT elementCount = ARRAYSIZE(inputlayout);
 
-	if (!m_vertexShader.Initialize(device, vertexShaderCsoPath, inputlayout, elementCount)) {
-		return false;
-	}
-	
+	//if (!m_vertexShader.Initialize(device, vertexShaderCsoPath, inputlayout, elementCount)) {
+	//	return false;
+	//}
+	//
 
-	D3D11_SAMPLER_DESC samplerDesc;
+	//D3D11_SAMPLER_DESC samplerDesc;
 
-	// Create a texture sampler state description.
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	//// Create a texture sampler state description.
+	//samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	//samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	//samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	//samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	//samplerDesc.MipLODBias = 0.0f;
+	//samplerDesc.MaxAnisotropy = 1;
+	//samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	//samplerDesc.BorderColor[0] = 0;
+	//samplerDesc.BorderColor[1] = 0;
+	//samplerDesc.BorderColor[2] = 0;
+	//samplerDesc.BorderColor[3] = 0;
+	//samplerDesc.MinLOD = 0;
+	//samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	if (!m_pixelShader.Initialize(device, pixelShaderCsoPath, &samplerDesc)) {
-		return false;
-	}
+	//if (!m_pixelShader.Initialize(device, pixelShaderCsoPath, &samplerDesc)) {
+	//	return false;
+	//}
 
-	//InnitiallizeMatrixBuffer
-	m_MatrixBuffer.Initialize(device);
+	////InnitiallizeMatrixBuffer
+	//m_MatrixBuffer.Initialize(device);
 
-	m_Light_CameraBuffer.Initialize(device);
+	//m_Light_CameraBuffer.Initialize(device);
 
-	m_LightBuffer.Initialize(device);
+	//m_LightBuffer.Initialize(device);
 
 
-	//m_BoneMatrixBuffer.Initialize(device);
-	//m_BoneTransformBuffer.Initialize(device);
-	//m_BoneMaterialBuffer.Initialize(device);
-	//m_BoneCameraBuffer.Initialize(device);
-	//m_BoneLightBuffer.Initialize(device);
+	////m_BoneMatrixBuffer.Initialize(device);
+	////m_BoneTransformBuffer.Initialize(device);
+	////m_BoneMaterialBuffer.Initialize(device);
+	////m_BoneCameraBuffer.Initialize(device);
+	////m_BoneLightBuffer.Initialize(device);
 
 	return true;
 }
@@ -415,7 +415,7 @@ bool ShaderManagerClass::RenderSkyCubeShader(ID3D11DeviceContext* deviceContext,
 	return m_SkyCubeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
 }
 bool ShaderManagerClass::RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
-	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat)
+	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, M3d::Material mat)
 {
 	return m_SkeletalCharacterShader->Render(d3dDeviceContext, BoneNums, WorldMatrix, ViewMatrix, ProjMatrix, DiffuseMap,
 		NormalMap, AmbientLight, diffuseLight, LightDirection, CameraPos, BoneTransforms, mat);
@@ -436,86 +436,86 @@ bool ShaderManagerClass::RenderDepthShader(ID3D11DeviceContext *deviceContext, X
 	return m_DepthShader->Render(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 }
 
-void ShaderManagerClass::DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor)
-{
-	//update ConstantBuffer
-
-	//update ConstantBuffer
-	worldMatrix = XMMatrixTranspose(worldMatrix);
-	viewMatrix = XMMatrixTranspose(viewMatrix);
-	projectionMatrix = XMMatrixTranspose(projectionMatrix);
-	m_MatrixBuffer.data.world = worldMatrix;
-	m_MatrixBuffer.data.view = viewMatrix;
-	m_MatrixBuffer.data.projection = projectionMatrix;
-	m_MatrixBuffer.ApplyChanges(deviceContext);
-
-	// Now set the matrix constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(0, 1, m_MatrixBuffer.GetAddress());
-
-	m_Light_CameraBuffer.data.cameraPosition = cameraPosition;
-	m_Light_CameraBuffer.data.padding = 0.0f;
-
-	m_Light_CameraBuffer.ApplyChanges(deviceContext);
-
-	// Now set the camera constant buffer in the vertex shader with the updated values.
-	deviceContext->VSSetConstantBuffers(1, 1, m_Light_CameraBuffer.GetAddress());
-
-	m_LightBuffer.data.ambientColor = ambientColor;
-	m_LightBuffer.data.diffuseColor = diffuseColor;
-	m_LightBuffer.data.lightDirection = lightDirection;
-	//m_LightBuffer->data.padding = 0.0f;
-	m_LightBuffer.data.specularColor = SpecularColor;
-	m_LightBuffer.data.specularPower = 32.0f;
-
-	m_LightBuffer.ApplyChanges(deviceContext);
-
-	deviceContext->PSSetConstantBuffers(0, 1, m_LightBuffer.GetAddress());
-
-	//Update BoneMatrixBuffer;
-	//m_BoneMatrixBuffer.data.worldInvTranspose = worldMatrix;
-	//worldMatrix = XMMatrixTranspose(worldMatrix);
-	//viewMatrix = XMMatrixTranspose(viewMatrix);
-	//projectionMatrix = XMMatrixTranspose(projectionMatrix);
-	//m_BoneMatrixBuffer.data.world = worldMatrix;
-	//m_BoneMatrixBuffer.data.view = viewMatrix;
-	//m_BoneMatrixBuffer.data.projection = projectionMatrix;
-	//// Now set the matrix constant buffer in the vertex shader with the updated values.
-	//deviceContext->VSSetConstantBuffers(0, 1, m_BoneMatrixBuffer.GetAddress());
-
-	////Update BoneTransformBuffer;
-	//m_BoneTransformBuffer.data.boneTranforms = boneTransformOffSet;
-	//m_BoneTransformBuffer.ApplyChanges(deviceContext);
-	//// Now set the camera constant buffer in the vertex shader with the updated values.
-	//deviceContext->VSSetConstantBuffers(1, 1, m_BoneTransformBuffer.GetAddress());
-
-
-	////Update BoneLightBuffer;
-	//m_BoneLightBuffer.data.ambientColor = ambientColor;
-	//m_BoneLightBuffer.data.diffuseColor = diffuseColor;
-	//m_BoneLightBuffer.data.lightDirection = lightDirection;
-	//m_BoneLightBuffer.ApplyChanges(deviceContext);
-	//deviceContext->PSSetConstantBuffers(0, 1, m_BoneLightBuffer.GetAddress());
-
-	////Update BoneMaterialBuffer;
-	//m_BoneMaterialBuffer.data.ambientColor = materialAmbientColor;
-	//m_BoneMaterialBuffer.data.diffuseColor = materialDiffuseColor;
-	//m_BoneMaterialBuffer.data.SpecularColor = SpecularColor;
-	//m_BoneMaterialBuffer.ApplyChanges(deviceContext);
-	//deviceContext->PSSetConstantBuffers(1, 1, m_BoneMaterialBuffer.GetAddress());
-
-
-	////Update BoneCameraBuffer;
-	//m_BoneCameraBuffer.data.cameraPosition = cameraPosition;
-	//m_BoneCameraBuffer.ApplyChanges(deviceContext);
-	//deviceContext->PSSetConstantBuffers(2, 1, m_BoneCameraBuffer.GetAddress());
-
-	deviceContext->IASetInputLayout(this->m_vertexShader.GetInputLayout());
-	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	deviceContext->VSSetShader(m_vertexShader.GetShder(), NULL, 0);
-	deviceContext->PSSetShader(m_pixelShader.GetShder(), NULL, 0);
-
-
-}
-
+//void ShaderManagerClass::DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor)
+//{
+//	//update ConstantBuffer
+//
+//	//update ConstantBuffer
+//	worldMatrix = XMMatrixTranspose(worldMatrix);
+//	viewMatrix = XMMatrixTranspose(viewMatrix);
+//	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+//	m_MatrixBuffer.data.world = worldMatrix;
+//	m_MatrixBuffer.data.view = viewMatrix;
+//	m_MatrixBuffer.data.projection = projectionMatrix;
+//	m_MatrixBuffer.ApplyChanges(deviceContext);
+//
+//	// Now set the matrix constant buffer in the vertex shader with the updated values.
+//	deviceContext->VSSetConstantBuffers(0, 1, m_MatrixBuffer.GetAddress());
+//
+//	m_Light_CameraBuffer.data.cameraPosition = cameraPosition;
+//	m_Light_CameraBuffer.data.padding = 0.0f;
+//
+//	m_Light_CameraBuffer.ApplyChanges(deviceContext);
+//
+//	// Now set the camera constant buffer in the vertex shader with the updated values.
+//	deviceContext->VSSetConstantBuffers(1, 1, m_Light_CameraBuffer.GetAddress());
+//
+//	m_LightBuffer.data.ambientColor = ambientColor;
+//	m_LightBuffer.data.diffuseColor = diffuseColor;
+//	m_LightBuffer.data.lightDirection = lightDirection;
+//	//m_LightBuffer->data.padding = 0.0f;
+//	m_LightBuffer.data.specularColor = SpecularColor;
+//	m_LightBuffer.data.specularPower = 32.0f;
+//
+//	m_LightBuffer.ApplyChanges(deviceContext);
+//
+//	deviceContext->PSSetConstantBuffers(0, 1, m_LightBuffer.GetAddress());
+//
+//	//Update BoneMatrixBuffer;
+//	//m_BoneMatrixBuffer.data.worldInvTranspose = worldMatrix;
+//	//worldMatrix = XMMatrixTranspose(worldMatrix);
+//	//viewMatrix = XMMatrixTranspose(viewMatrix);
+//	//projectionMatrix = XMMatrixTranspose(projectionMatrix);
+//	//m_BoneMatrixBuffer.data.world = worldMatrix;
+//	//m_BoneMatrixBuffer.data.view = viewMatrix;
+//	//m_BoneMatrixBuffer.data.projection = projectionMatrix;
+//	//// Now set the matrix constant buffer in the vertex shader with the updated values.
+//	//deviceContext->VSSetConstantBuffers(0, 1, m_BoneMatrixBuffer.GetAddress());
+//
+//	////Update BoneTransformBuffer;
+//	//m_BoneTransformBuffer.data.boneTranforms = boneTransformOffSet;
+//	//m_BoneTransformBuffer.ApplyChanges(deviceContext);
+//	//// Now set the camera constant buffer in the vertex shader with the updated values.
+//	//deviceContext->VSSetConstantBuffers(1, 1, m_BoneTransformBuffer.GetAddress());
+//
+//
+//	////Update BoneLightBuffer;
+//	//m_BoneLightBuffer.data.ambientColor = ambientColor;
+//	//m_BoneLightBuffer.data.diffuseColor = diffuseColor;
+//	//m_BoneLightBuffer.data.lightDirection = lightDirection;
+//	//m_BoneLightBuffer.ApplyChanges(deviceContext);
+//	//deviceContext->PSSetConstantBuffers(0, 1, m_BoneLightBuffer.GetAddress());
+//
+//	////Update BoneMaterialBuffer;
+//	//m_BoneMaterialBuffer.data.ambientColor = materialAmbientColor;
+//	//m_BoneMaterialBuffer.data.diffuseColor = materialDiffuseColor;
+//	//m_BoneMaterialBuffer.data.SpecularColor = SpecularColor;
+//	//m_BoneMaterialBuffer.ApplyChanges(deviceContext);
+//	//deviceContext->PSSetConstantBuffers(1, 1, m_BoneMaterialBuffer.GetAddress());
+//
+//
+//	////Update BoneCameraBuffer;
+//	//m_BoneCameraBuffer.data.cameraPosition = cameraPosition;
+//	//m_BoneCameraBuffer.ApplyChanges(deviceContext);
+//	//deviceContext->PSSetConstantBuffers(2, 1, m_BoneCameraBuffer.GetAddress());
+//
+//	deviceContext->IASetInputLayout(this->m_vertexShader.GetInputLayout());
+//	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+//	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//
+//	deviceContext->VSSetShader(m_vertexShader.GetShder(), NULL, 0);
+//	deviceContext->PSSetShader(m_pixelShader.GetShder(), NULL, 0);
+//
+//
+//}
+//

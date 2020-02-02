@@ -198,15 +198,6 @@
     <ClCompile Include="Utility\ErrorLoger.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="System\VertexBuffer.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\VertexTypes.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>ソース ファイル\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="TerrainShaderClass.cpp">
       <Filter>ソース ファイル\Shader</Filter>
     </ClCompile>
@@ -224,9 +215,6 @@
     </ClCompile>
     <ClCompile Include="textclass.cpp">
       <Filter>ソース ファイル\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="System\IndexBuffer.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="MiniMapClass.cpp">
       <Filter>ソース ファイル</Filter>
@@ -249,17 +237,8 @@
     <ClCompile Include="GameObjectClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>ソース ファイル\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>ソース ファイル\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\StringHelper.cpp">
       <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="System\Vertex.cpp">
-      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="ImGUI\imgui.cpp">
       <Filter>ソース ファイル\ImGUI</Filter>
@@ -297,19 +276,7 @@
     <ClCompile Include="SkeletalCharacterShaderClass.cpp">
       <Filter>ソース ファイル\Model\M3d</Filter>
     </ClCompile>
-    <ClCompile Include="AssimpSkinnedModel.cpp">
-      <Filter>ソース ファイル\Model\Assimp</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>ソース ファイル\Model\Assimp</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル\Model\Assimp</Filter>
-    </ClCompile>
     <ClCompile Include="DeferredBuffersClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="AssimpSkinnedData.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="shadowshaderclass.cpp">
@@ -319,6 +286,36 @@
       <Filter>ソース ファイル\Shader</Filter>
     </ClCompile>
     <ClCompile Include="Componet.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\Vertex.cpp">
+      <Filter>ソース ファイル\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\Mesh.cpp">
+      <Filter>ソース ファイル\Model\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\Model.cpp">
+      <Filter>ソース ファイル\Model\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\Texture.cpp">
+      <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\Color.cpp">
+      <Filter>ソース ファイル\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ResourceManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\Shaders.cpp">
+      <Filter>ソース ファイル\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\MemoryStream.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic\AssimpSkinnedData.cpp">
+      <Filter>ソース ファイル\Model\Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Timer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -440,27 +437,6 @@
     <ClInclude Include="Utility\ErrorLoger.h">
       <Filter>Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\Material.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\Light.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\Geometry.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\VertexTypes.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="System\VertexBuffer.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\IndexBuffer.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\ConstantBuffer.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="modelclass.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
@@ -478,9 +454,6 @@
     </ClInclude>
     <ClInclude Include="soundclass.h">
       <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
     <ClInclude Include="TerrainShaderClass.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
@@ -503,23 +476,11 @@
     <ClInclude Include="SkyCubeClass.h">
       <Filter>ヘッダー ファイル\Model</Filter>
     </ClInclude>
-    <ClInclude Include="System\Vertex.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="GameObjectClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>ヘッダー ファイル\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>ヘッダー ファイル\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="Utility\StringHelper.h">
       <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="System\ConstanBufferTypes.h">
-      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
     <ClInclude Include="SkyCubeShaderClass.h">
       <Filter>ヘッダー ファイル\Shader</Filter>
@@ -566,28 +527,13 @@
     <ClInclude Include="SkinnedModelClass.h">
       <Filter>ヘッダー ファイル\Model\M3d</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
-    </ClInclude>
     <ClInclude Include="SkeletalCharacterShaderClass.h">
       <Filter>ヘッダー ファイル\Model\M3d</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpLoader.h">
-      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpSkinnedModel.h">
-      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="CommonVertexFormat.h">
       <Filter>ヘッダー ファイル\Model\M3d</Filter>
     </ClInclude>
     <ClInclude Include="DeferredBuffersClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpSkinnedData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="shadowshaderclass.h">
@@ -597,6 +543,60 @@
       <Filter>ヘッダー ファイル\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Componet.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Vertex.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Mesh.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Model.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Buffers\IndexBuffer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Buffers\ConstantBuffer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Buffers\ConstanBufferTypes.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Buffers\VertexBuffer.h">
+      <Filter>ヘッダー ファイル\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Material.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Light.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\GraphicDebug.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Texture.h">
+      <Filter>ヘッダー ファイル\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\COMException.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Color.h">
+      <Filter>ヘッダー ファイル\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ResourceManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\Shaders.h">
+      <Filter>ヘッダー ファイル\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\MemoryStream.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic\AssimpSkinnedData.h">
+      <Filter>ヘッダー ファイル\Model\Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Timer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -726,6 +726,8 @@
     </None>
     <None Include="Shader\ProjectionPixelShader.hlsl" />
     <None Include="Shader\ProjectionVertexShader.hlsl" />
+    <None Include="Graphic\Shaders\PSCommon.hlsli" />
+    <None Include="Graphic\Shaders\VSCommon.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="3DModel\Texture\hoge.tga">
@@ -794,5 +796,16 @@
     <Media Include="Resources\01.wav">
       <Filter>リソース ファイル</Filter>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphic\Shaders\pixelshader.hlsl" />
+    <FxCompile Include="Graphic\Shaders\PixelShader_HeightMapping.hlsl" />
+    <FxCompile Include="Graphic\Shaders\pixelshader_nolight.hlsl" />
+    <FxCompile Include="Graphic\Shaders\pixelshader_tonemapping.hlsl" />
+    <FxCompile Include="Graphic\Shaders\vertexShader.hlsl" />
+    <FxCompile Include="Graphic\Shaders\VertexShaderAnim.hlsl" />
+    <FxCompile Include="Graphic\Shaders\VS_nolight.hlsl" />
+    <FxCompile Include="Graphic\Shaders\VS_shadowmap.hlsl" />
+    <FxCompile Include="Graphic\Shaders\VS_shadowmap_anim.hlsl" />
   </ItemGroup>
 </Project>

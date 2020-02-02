@@ -14,9 +14,9 @@
 #include "shadowshaderclass.h"
 #include "depthshaderclass.h"
 
-#include "Shaders.h"
-#include "System/ConstantBuffer.h"
-#include "System/ConstanBufferTypes.h"
+#include "Graphic/Shaders.h"
+#include "Graphic/Buffers/ConstantBuffer.h"
+#include "Graphic/Buffers/ConstanBufferTypes.h"
 
 class ShaderManagerClass
 {
@@ -25,7 +25,7 @@ public:
 	ShaderManagerClass(const ShaderManagerClass&);
 	~ShaderManagerClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, HWND, ID3D11DeviceContext*);
 	bool InitializeMyShader(ID3D11Device*, std::wstring vertexShaderCsoPath, std::wstring pixelShaderCsoPath);
 	void Shutdown();
 
@@ -41,7 +41,7 @@ public:
 	bool RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView * normalMap, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor);
 	bool RenderParticleShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
 	bool RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
-		ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, Material mat);
+		ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, M3d::Material mat);
 
 	bool RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 		XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
@@ -70,7 +70,7 @@ private:
 	VertexShader m_vertexShader;
 	PixelShader m_pixelShader;
 	ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
-	ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
+	//ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
 	ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;
 
 	//ConstantBuffer<CB_VS_SkinBoneBumpMapMatrixBuffer> m_BoneMatrixBuffer;

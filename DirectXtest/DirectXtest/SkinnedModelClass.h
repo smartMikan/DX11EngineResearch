@@ -18,12 +18,12 @@ class SkinnedModelClass
 
 public:
 	UINT SubsetCount;
-	vector<Material> Mat; //材质
+	vector<M3d::Material> Mat; //材质
 	vector<ID3D11ShaderResourceView*> DiffuseMapSRV; //漫反射
 	vector<ID3D11ShaderResourceView*> NormalMapSRV; //法线贴图
 
 	//骨骼顶点数据
-	vector<PosNormalTexTanSkinnedVertex> Vertices;
+	vector<M3d::PosNormalTexTanSkinnedVertex> Vertices;
 
 	vector<unsigned long> Indices;
 

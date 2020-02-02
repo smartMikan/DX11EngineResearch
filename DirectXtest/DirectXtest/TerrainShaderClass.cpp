@@ -22,13 +22,13 @@ TerrainShaderClass::~TerrainShaderClass()
 {
 }
 
-bool TerrainShaderClass::Initialize(ID3D11Device * device, HWND hwnd)
+bool TerrainShaderClass::Initialize(ID3D11Device * device, HWND hwnd, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./Shader/TerrainVertexShader.hlsl", L"./Shader/TerrainPixelShader.hlsl");
+	result = InitializeShader(device, deviceContext, hwnd, L"./Shader/TerrainVertexShader.hlsl", L"./Shader/TerrainPixelShader.hlsl");
 	if (!result)
 	{
 		return false;
@@ -63,7 +63,7 @@ bool TerrainShaderClass::Render(ID3D11DeviceContext * deviceContext, int indexCo
 	return true;
 }
 
-bool TerrainShaderClass::InitializeShader(ID3D11Device * device, HWND hwnd, const WCHAR * vsfilename, const WCHAR * psfilename)
+bool TerrainShaderClass::InitializeShader(ID3D11Device * device, ID3D11DeviceContext* deviceContext, HWND hwnd, const WCHAR * vsfilename, const WCHAR * psfilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -201,7 +201,7 @@ bool TerrainShaderClass::InitializeShader(ID3D11Device * device, HWND hwnd, cons
 	
 	m_matrixBuffer = new ConstantBuffer<MatrixBufferType>();
 
-	result = m_matrixBuffer->Initialize(device);
+	result = m_matrixBuffer->Initialize(device, deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -231,7 +231,7 @@ bool TerrainShaderClass::InitializeShader(ID3D11Device * device, HWND hwnd, cons
 
 
 	m_lightBuffer = new ConstantBuffer<LightBufferType>();
-	result = m_lightBuffer->Initialize(device);
+	result = m_lightBuffer->Initialize(device, deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -324,7 +324,7 @@ bool TerrainShaderClass::SetShaderParameters(ID3D11DeviceContext * deviceContext
 	m_matrixBuffer->data.view = viewMatrix;
 	m_matrixBuffer->data.projection = projectionMatrix;
 
-	result = m_matrixBuffer->ApplyChanges(deviceContext);
+	result = m_matrixBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;
@@ -343,7 +343,7 @@ bool TerrainShaderClass::SetShaderParameters(ID3D11DeviceContext * deviceContext
 	m_lightBuffer->data.lightDirection = lightdir;
 	m_lightBuffer->data.padding = 0.0f;
 
-	result = m_lightBuffer->ApplyChanges(deviceContext);
+	result = m_lightBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;

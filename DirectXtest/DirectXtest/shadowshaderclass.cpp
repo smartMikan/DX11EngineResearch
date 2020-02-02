@@ -23,13 +23,13 @@ ShadowShaderClass::~ShadowShaderClass()
 }
 
 
-bool ShadowShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool ShadowShaderClass::Initialize(ID3D11Device* device, HWND hwnd, ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./Shader/shadowVertexShader.hlsl", L"./Shader/shadowPixelShader.hlsl");
+	result = InitializeShader(device, deviceContext, hwnd, L"./Shader/shadowVertexShader.hlsl", L"./Shader/shadowPixelShader.hlsl");
 	if(!result)
 	{
 		return false;
@@ -71,7 +71,7 @@ bool ShadowShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCoun
 }
 
 
-bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
+bool ShadowShaderClass::InitializeShader(ID3D11Device* device, ID3D11DeviceContext* deviceContext, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -220,7 +220,7 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const 
 
 	m_matrixBuffer = new ConstantBuffer<MatrixBufferType>();
 
-	result = m_matrixBuffer->Initialize(device);
+	result = m_matrixBuffer->Initialize(device,deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -228,7 +228,7 @@ bool ShadowShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, const 
 
 	m_lightBuffer = new ConstantBuffer<LightBufferType>();
 
-	result = m_lightBuffer->Initialize(device);
+	result = m_lightBuffer->Initialize(device,deviceContext);
 	if (FAILED(result))
 	{
 		return false;
@@ -338,7 +338,7 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	m_matrixBuffer->data.lightView = lightViewMatrix;
 	m_matrixBuffer->data.lightProjection = lightProjectionMatrix;
 	// Lock the constant buffer so it can be written to.
-	result = m_matrixBuffer->ApplyChanges(deviceContext);
+	result = m_matrixBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;
@@ -361,7 +361,7 @@ bool ShadowShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, 
 	m_lightBuffer->data.lightDirection = lightDirection;
 	m_lightBuffer->data.padding = 0.0f;
 
-	result = m_lightBuffer->ApplyChanges(deviceContext);
+	result = m_lightBuffer->ApplyChanges();
 	if (FAILED(result))
 	{
 		return false;

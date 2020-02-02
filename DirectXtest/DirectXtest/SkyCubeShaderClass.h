@@ -4,7 +4,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <fstream>
-#include "System/ConstantBuffer.h"
+#include "Graphic/Buffers/ConstantBuffer.h"
 using namespace DirectX;
 using namespace std;
 
@@ -27,12 +27,12 @@ public:
 	SkyCubeShaderClass(const SkyCubeShaderClass&);
 	~SkyCubeShaderClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, HWND, ID3D11DeviceContext* deviceContext);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView* texture);
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, const WCHAR*, const WCHAR*);
+	bool InitializeShader(ID3D11Device*, ID3D11DeviceContext* deviceContext, HWND, const WCHAR*, const WCHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const WCHAR*);
 

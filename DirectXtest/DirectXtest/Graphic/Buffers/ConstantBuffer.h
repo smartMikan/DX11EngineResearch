@@ -1,10 +1,11 @@
-﻿#pragma once
+#pragma once
 
 #include <d3d11.h>
-#include <iostream>
-#include <memory>
+#include "ConstanBufferTypes.h"
 #include<wrl/client.h>
-#include "..//Utility/ErrorLoger.h"
+#include "../../Utility/ErrorLoger.h"
+#include "../../Utility/GraphicDebug.h"
+
 
 template<class T>
 class ConstantBuffer
@@ -34,12 +35,13 @@ public:
 
 
 
-	HRESULT Initialize(ID3D11Device* device)
+	HRESULT Initialize(ID3D11Device* device,ID3D11DeviceContext* deviceContext)
 	{
 		if (m_buffer.Get() != nullptr) {
 			m_buffer.Reset();
 		}
-		//this->deviceContext = deviceContext;
+		
+		this->deviceContext = deviceContext;
 
 		D3D11_BUFFER_DESC constantBufferDesc;
 		ZeroMemory(&constantBufferDesc, sizeof(constantBufferDesc));
@@ -56,7 +58,7 @@ public:
 		return hr;
 	}
 
-	HRESULT ApplyChanges(ID3D11DeviceContext* deviceContext)
+	HRESULT ApplyChanges()
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 		HRESULT hr = deviceContext->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -68,6 +70,13 @@ public:
 		deviceContext->Unmap(m_buffer.Get(), 0);
 		return hr;
 	}
+
+	template<UINT TNameLength>
+	void SetDebugName(const char(&name)[TNameLength]) 
+	{
+		D3D11SetDebugObjectName(m_buffer.Get(), name);
+	}
+
 };
 
 
