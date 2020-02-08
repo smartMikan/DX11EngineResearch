@@ -1,4 +1,4 @@
-﻿#include "ImGuiClass.h"
+#include "ImGuiClass.h"
 
 
 
@@ -36,16 +36,20 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 {
 
 	static int counter = 0;
-	float lightdir[3];
+	//float lightdir[3];
 	float lightvec[3];
 	float lightpos[3];
 	float lightlookat[3];
-	zone->m_Light->positionClass.GetRotation(lightdir[0], lightdir[1], lightdir[2]);
+	//zone->m_Light->positionClass.GetRotation(lightdir[0], lightdir[1], lightdir[2]);
 
 	lightvec[0] = zone->m_Light->GetDirection().x;
 	lightvec[1] = zone->m_Light->GetDirection().y;
 	lightvec[2] = zone->m_Light->GetDirection().z;
 
+	lightpos[0] = zone->m_Light->GetPosition().x;
+	lightpos[1] = zone->m_Light->GetPosition().y;
+	lightpos[2] = zone->m_Light->GetPosition().z;
+	
 
 	float ambientcolor[3];
 	ambientcolor[0] = zone->m_Light->GetAmbientColor().x;
@@ -91,15 +95,25 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	//Create ImGui Test Window
 	ImGui::Begin("Light");
 
-	ImGui::DragFloat3("Light Direction", lightdir, 0.1f);
-	ImGui::DragFloat3("Light Vec", lightvec, 0.1f);
-	//ImGui::DragFloat3("Light Pos", lightpos, 1.0f);
+	//ImGui::DragFloat3("Light Direction", lightdir, 0.1f);
+	ImGui::DragFloat3("Light Direction", lightvec, 0.01f,-1.0f,1.0f);
+	ImGui::DragFloat3("Light Pos", lightpos, 0.1f);
 	//ImGui::DragFloat3("Light LookAt", lightlookat, 1.0f);
 	ImGui::ColorEdit3("Light Ambient", ambientcolor);
 	ImGui::ColorEdit3("Light Diffuse", diffusecolor);
-	zone->m_Light->positionClass.SetRotation(lightdir[0], lightdir[1], lightdir[2]);
+	//zone->m_Light->positionClass.SetRotation(lightdir[0], lightdir[1], lightdir[2]);
+	zone->m_Light->SetPosition(lightpos[0],lightpos[1],lightpos[2]);
+	zone->m_Light->SetDirection(lightvec[0], lightvec[1], lightvec[2]);
 	zone->m_Light->SetAmbientColor(ambientcolor[0], ambientcolor[1], ambientcolor[2],1.0f);
 	zone->m_Light->SetDiffuseColor(diffusecolor[0],diffusecolor[1],diffusecolor[2],1.0f);
+	ImGui::DragFloat("AmbientStrength", &zone->m_Light->ambientLightStrength, 0.01, 0.0f, 1.0f);
+	ImGui::DragFloat("Dynamic Light Strength", &zone->m_Light->dynamicLightStrength, 0.01, 0.0f, 10.0f);
+	ImGui::DragFloat("Dynamic Light Attenuation A", &zone->m_Light->dynamicLightAttenuation_a, 0.001, 0.1f, 1.0f);
+	ImGui::DragFloat("Dynamic Light Attenuation B", &zone->m_Light->dynamicLightAttenuation_b, 0.001, 0.0f, 1.0f);
+	ImGui::DragFloat("Dynamic Light Attenuation C", &zone->m_Light->dynamicLightAttenuation_c, 0.001, 0.0f, 1.0f);
+	
+
+
 	//zone->m_Light->SetPosition(lightpos[0], lightpos[1], lightpos[2]);
 	//zone->m_Light->SetLookAt(lightlookat[0], lightlookat[1], lightlookat[2]);
 	ImGui::End();

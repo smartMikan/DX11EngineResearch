@@ -65,9 +65,13 @@ struct CB_PS_LightBuffer
 	DirectX::XMFLOAT3 lightPosition; //12
 	float dynamicLightAttenuation_a; //4
 
+
+	DirectX::XMFLOAT3 lightDirection; //12
 	float dynamicLightAttenuation_b; //4
 	float dynamicLightAttenuation_c; //4
-	float padding[2];				 //8
+
+	int LightType;				 //4
+	float padding[3];				 //4
 };
 
 

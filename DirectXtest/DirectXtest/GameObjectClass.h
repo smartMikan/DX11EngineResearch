@@ -26,11 +26,10 @@ public:
 	XMMATRIX GetWorldMatrix();
 	bool SetWorldMatrix(XMMATRIX world);
 
-	PositionClass* m_Position;
-	Model m_Model;
+	PositionClass m_Position;
+	Model* m_Model;
 
 private:
-	XMMATRIX worldPosition = XMMatrixIdentity();
 	ID3D11DeviceContext* deviceContext;
 
 	std::vector<Timer*>  mAnimTimers;

@@ -1,4 +1,4 @@
-TextureCube TexCube : register(t0);
+TextureCube TexCube : register(t7);
 SamplerState Sampler : register(s0);
 
 struct PixelInputType

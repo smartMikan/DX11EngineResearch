@@ -16,7 +16,7 @@ const float SHADOWMAP_NEAR = 1.0f;
 #include "positionclass.h"
 #include "GameObjectClass.h"
 #include "TerrainClass.h"
-#include "modelclass.h"
+//#include "modelclass.h"
 #include "frustumclass.h"
 #include "skydomeclass.h"
 #include "skycubeclass.h"
@@ -48,7 +48,8 @@ public:
 
 	LightClass* m_Light;
 	SkinnedModelInstance mCharacterInstance2;
-	GameObjectClass* m_MeshModel;
+	GameObjectClass* m_AnimModel;
+	GameObjectClass* m_UnMoveModel;
 	
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
@@ -74,7 +75,7 @@ private:
 	SkyCubeClass* m_DesertSkyCube;
 	SkyCubeClass* m_NebulaSkyCube;
 	SkyCubeClass* m_PlanetSkyCube;
-	ModelClass* m_Model;
+	//ModelClass* m_Model;
 	
 
 
@@ -116,5 +117,9 @@ private:
 	ConstantBuffer<CB_PS_ShadowMatrix> cb_ps_shadowMatrix;
 	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
 
+
+	ComPtr<ID3D11SamplerState> m_sampleStateWrap;
+	ComPtr<ID3D11SamplerState> m_sampleStateClamp;
+	ComPtr<ID3D11ShaderResourceView> shadowmap_resourceView;
 
 };

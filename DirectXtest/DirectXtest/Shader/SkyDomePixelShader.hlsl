@@ -6,7 +6,7 @@
 /////////////
 // GLOBALS //
 /////////////
-cbuffer ColorBuffer
+cbuffer ColorBuffer : register(b5)
 {
 	float4 apexColor;
 	float4 centerColor;

@@ -29,11 +29,6 @@ bool Model::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11
 	return true;
 }
 
-void Model::Update(float timepos)
-{
-	
-	
-}
 
 
 void Model::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
@@ -433,27 +428,27 @@ void Model::LoadMaterialTextures(Material& material, aiMaterial* aimaterial, aiT
 				}
 			}
 
-			switch (textureType)
-			{
-			case aiTextureType_AMBIENT:
-				material.SetAmbientTexture(std::move(materialTextures));
-				break;
-			case aiTextureType_DIFFUSE:
-				material.SetDiffuseTexture(std::move(materialTextures));
-				break;
-			case aiTextureType_SPECULAR:
-				material.SetSpecularTexture(std::move(materialTextures));
-				break;
-			case aiTextureType_EMISSIVE:
-				material.SetEmissiveTexture(std::move(materialTextures));
-				break;
-			case aiTextureType_NORMALS:
-			case aiTextureType_HEIGHT:
-				material.SetNormalTexture(std::move(materialTextures));
-				break;
-			default:
-				assert(false, "Unknown texture type");
-			}
+		}
+		switch (textureType)
+		{
+		case aiTextureType_AMBIENT:
+			material.SetAmbientTexture(std::move(materialTextures));
+			break;
+		case aiTextureType_DIFFUSE:
+			material.SetDiffuseTexture(std::move(materialTextures));
+			break;
+		case aiTextureType_SPECULAR:
+			material.SetSpecularTexture(std::move(materialTextures));
+			break;
+		case aiTextureType_EMISSIVE:
+			material.SetEmissiveTexture(std::move(materialTextures));
+			break;
+		case aiTextureType_NORMALS:
+		case aiTextureType_HEIGHT:
+			material.SetNormalTexture(std::move(materialTextures));
+			break;
+		default:
+			assert(false, "Unknown texture type");
 		}
 		
 	}

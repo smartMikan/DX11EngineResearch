@@ -32,7 +32,7 @@ public:
 	void SetDirection(float, float, float);
 	void SetDirectionYawPitchRoll(float, float, float);
 	void SetPosition(float, float, float);
-	void SetLookAt(float, float, float);
+	//void SetLookAt(float, float, float);
 	
 	XMFLOAT3 GetDirection();
 	XMFLOAT3 GetPosition();
@@ -43,7 +43,7 @@ public:
 	void GetOrthoMatrix(XMMATRIX&);
 
 
-	void SetStrength(float strength);
+	
 
 	void SetFrameTime(float time);
 
@@ -52,6 +52,13 @@ public:
 	//void TurnLeft(bool keydown);
 
 	void Frame();
+
+
+	float ambientLightStrength = 0.1f;
+	float dynamicLightStrength = 1.0f;
+	float dynamicLightAttenuation_a = 1.0f;
+	float dynamicLightAttenuation_b = 0.0f;
+	float dynamicLightAttenuation_c = 0.01f;
 
 private:
 	XMFLOAT4 m_diffuseColor;
@@ -63,12 +70,12 @@ private:
 
 	XMFLOAT3 m_direction;
 	XMFLOAT3 m_position;
-	XMFLOAT3 m_lookAt;
+	//XMFLOAT3 m_lookAt;
 	XMMATRIX m_viewMatrix;
 	XMMATRIX m_orthoMatrix;
 
 	//float m_rotationX, m_rotationY, m_rotationZ;
-	float lightStrength;
+	
 	float m_frameTime;
 };
 

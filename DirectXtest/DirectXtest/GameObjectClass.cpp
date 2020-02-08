@@ -2,7 +2,7 @@
 
 GameObjectClass::GameObjectClass()
 {
-	m_Position = 0;
+	m_Model = 0;
 }
 
 GameObjectClass::GameObjectClass(const GameObjectClass& other)
@@ -18,21 +18,20 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 {
 	bool result;
 	this->deviceContext = deviceContext;
+	m_Model = new Model;
+	if (!m_Model) {
+		return false;
+	}
 
-	result = m_Model.Initialize(filePath, device, deviceContext, wvpMatrix, cb_ps_material, pVertexShader);
+	result = m_Model->Initialize(filePath, device, deviceContext, wvpMatrix, cb_ps_material, pVertexShader);
 	if (result == false) {
 		return false;
 	}
-	// Create the position object.
-	m_Position = new PositionClass;
-	if (!m_Position)
-	{
-		return false;
-	}
+	
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(128.0f, 10.0f, 128.0f);
-	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
+	m_Position.SetPosition(10.0f, 0.0f, 10.0f);
+	m_Position.SetRotation(0.0f, 0.0f, 0.0f);
 	return true;
 }
 
@@ -44,7 +43,7 @@ bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBo
 	mAnimTimers.emplace_back(new Timer);
 	mAnimTimers[0]->Start();
 	//mAnimTimer.Start();
-	return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
+	return m_Model->InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
 	//return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp);
 }
 
@@ -52,7 +51,7 @@ bool GameObjectClass::AddAnimation(const std::string & filePath, ConstantBuffer<
 {
 	mAnimTimers.emplace_back(new Timer);
 	mAnimTimers[mAnimator.GetNumAnimations()]->Start();
-	return m_Model.AddAnimation(filePath, &cbufBone, &mAnimator, mAnimComp.get());
+	return m_Model->AddAnimation(filePath, &cbufBone, &mAnimator, mAnimComp.get());
 }
 
 
@@ -60,10 +59,10 @@ bool GameObjectClass::AddAnimation(const std::string & filePath, ConstantBuffer<
 void GameObjectClass::Shutdown()
 {
 	// Release the position object.
-	if (m_Position)
+	if (m_Model)
 	{
-		delete m_Position;
-		m_Position = 0;
+		delete m_Model;
+		m_Model = 0;
 	}
 }
 
@@ -88,7 +87,7 @@ void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMa
 	}
 
 
-	m_Model.Draw(worldMatrix, viewMatrix, projectionMatrix);
+	m_Model->Draw(worldMatrix, viewMatrix, projectionMatrix);
 }
 
 void GameObjectClass::SwitchAnim(int index)
@@ -100,14 +99,18 @@ void GameObjectClass::SwitchAnim(int index)
 
 XMMATRIX GameObjectClass::GetWorldMatrix()
 {
-	return worldPosition;
+	return XMMatrixTranslation(m_Position.GetPosition().x, m_Position.GetPosition().y, m_Position.GetPosition().z);
 }
 
 bool GameObjectClass::SetWorldMatrix(XMMATRIX world)
 {
-	worldPosition = world;
+	XMFLOAT4X4 pos;
+	XMStoreFloat4x4(&pos, world);
+	m_Position.SetPosition(pos._14,pos._24,pos._34);
 	return true;
 }
+
+
 
 
 

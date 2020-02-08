@@ -14,38 +14,6 @@ struct PS_INPUT
 
 
 
-
-float Shadow(float3 worldPos, float3 normal, float3 light_dir)
-{
-    float4 proj_coords = mul(float4(worldPos, 1.0f), ShadowMatrix);
-    proj_coords.xyz /= proj_coords.w;
-	
-    float2 shadow_uv = proj_coords.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
-    //float closest_depth = shadowTexture.Sample(shadowSamplerState, shadow_uv).r;
-    //float bias = max(0.005 * (1.0 - dot(normal, light_dir)), 0.0005f);
-    float bias = 0.005f;
-    float current_depth = proj_coords.z - bias;
-	
-    float shadow = 0.0f;
-    int range = 2;
-    float2 texelSize = 1.0 / 1024.0;
-    
-    for (int y = -range; y <= range; y++)
-    {
-        for (int x = -range; x <= range; x++)
-        {
-            float pcfDepth = shadowTexture.Sample(shadowSamplerState, shadow_uv + float2(x, y) * texelSize).r;
-            shadow += current_depth > pcfDepth ? 0.0f : 1.0f;
-
-        }
-    }
-    shadow /= (range * 2 + 1) * (range * 2 + 1);
-    //shadow = current_depth > closest_depth ? 0.0f : 1.0f;
-	
-    return shadow;
-}
-
-
 float4 main(PS_INPUT input) : SV_TARGET
 {
     Material material = Mat;
@@ -112,7 +80,19 @@ float4 main(PS_INPUT input) : SV_TARGET
     // light
     float3 ambientLight = ambientLightColor * ambientLightStrength;
     float3 appliedLight = ambientLight;
-    float3 vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
+    float3 vectorToLight;
+    if (LightType == 0)
+    {
+        vectorToLight = normalize(-dynamicLightDirection);
+    }
+    else if (LightType == 1)
+    {
+        vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
+    }
+    else
+    {
+        vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
+    }
     float3 diffuseLightIntensity = max(dot(vectorToLight, normal), 0);
     float distanceToLight = distance(dynamicLightPosition, input.inWorldPos);
     float attenuationFactor = 1 / (dynamicLightAttenuation_a + dynamicLightAttenuation_b * distanceToLight + dynamicLightAttenuation_c * pow(distanceToLight, 2));

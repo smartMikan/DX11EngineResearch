@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Filename: lightclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "lightclass.h"
@@ -85,19 +85,19 @@ void LightClass::SetDirectionYawPitchRoll(float, float, float)
 
 XMFLOAT3 LightClass::GetDirection()
 {
-	//XMMATRIX rotMATRIX = XMMatrixRotationRollPitchYaw(m_rotationX,m_rotationY,m_rotationZ);
-	float m_rotationX, m_rotationY, m_rotationZ;
-	float yaw, pitch, roll;
-	positionClass.GetRotation(m_rotationX, m_rotationY, m_rotationZ);
-	pitch = m_rotationX * 0.0174532925f;
-	yaw = m_rotationY * 0.0174532925f;
-	roll = m_rotationZ * 0.0174532925f;
-	XMVECTOR dir;
-	dir = XMQuaternionRotationRollPitchYaw(pitch, yaw, roll);
-	XMFLOAT3 rot;
-	XMStoreFloat3(&rot, dir);
-	return rot;
-	//return m_direction;
+	////XMMATRIX rotMATRIX = XMMatrixRotationRollPitchYaw(m_rotationX,m_rotationY,m_rotationZ);
+	//float m_rotationX, m_rotationY, m_rotationZ;
+	//float yaw, pitch, roll;
+	//positionClass.GetRotation(m_rotationX, m_rotationY, m_rotationZ);
+	//pitch = m_rotationX * 0.0174532925f;
+	//yaw = m_rotationY * 0.0174532925f;
+	//roll = m_rotationZ * 0.0174532925f;
+	//XMVECTOR dir;
+	//dir = XMQuaternionRotationRollPitchYaw(pitch, yaw, roll);
+	//XMFLOAT3 rot;
+	//XMStoreFloat3(&rot, dir);
+	//return rot;
+	return m_direction;
 }
 
 
@@ -107,13 +107,13 @@ void LightClass::SetPosition(float x, float y, float z)
 	return;
 }
 
-void LightClass::SetLookAt(float x, float y, float z)
-{
-	m_lookAt.x = x;
-	m_lookAt.y = y;
-	m_lookAt.z = z;
-	return;
-}
+//void LightClass::SetLookAt(float x, float y, float z)
+//{
+//	m_lookAt.x = x;
+//	m_lookAt.y = y;
+//	m_lookAt.z = z;
+//	return;
+//}
 
 XMFLOAT3 LightClass::GetPosition()
 {
@@ -131,7 +131,9 @@ void LightClass::GenerateViewMatrix()
 	up.z = 0.0f;
 	upVector = XMLoadFloat3(&up);
 	positionVector = XMLoadFloat3(&m_position);
-	lookAtVector = XMLoadFloat3(&m_lookAt);
+	lookAtVector = XMLoadFloat3(&m_direction);
+
+
 
 	// Create the view matrix from the three vectors.
 	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
@@ -170,37 +172,34 @@ void LightClass::Frame()
 {
 
 
-	static float lightAngle = 270.0f;
-	float radians;
-	static float lightPosX = 9.0f;
-	//Each frame we now rotate a directional light from 270 degrees to 90 degrees to simulate sun light movement.
-	// Update the position of the light each frame.
-	lightPosX -= 0.002f * m_frameTime;
+	//static float lightAngle = 270.0f;
+	//float radians;
+	//static float lightPosX = 9.0f;
+	////Each frame we now rotate a directional light from 270 degrees to 90 degrees to simulate sun light movement.
+	//// Update the position of the light each frame.
+	//lightPosX -= 0.002f * m_frameTime;
 
-	// Update the angle of the light each frame.
-	lightAngle -= 0.02f * m_frameTime;
-	if (lightAngle < 90.0f)
-	{
-		lightAngle = 270.0f;
+	//// Update the angle of the light each frame.
+	//lightAngle -= 0.02f * m_frameTime;
+	//if (lightAngle < 90.0f)
+	//{
+	//	lightAngle = 270.0f;
 
-		// Reset the light position also.
-		lightPosX = 9.0f;
-	}
-	radians = lightAngle * 0.0174532925f;
+	//	// Reset the light position also.
+	//	lightPosX = 9.0f;
+	//}
+	//radians = lightAngle * 0.0174532925f;
 
-	// Update the direction of the light.
-	SetDirection(sinf(radians), cosf(radians), 0.0f);
+	//// Update the direction of the light.
+	//SetDirection(sinf(radians), cosf(radians), 0.0f);
 
 
 	//Also each frame we now simulate a sun light rotation using the position and lookat. As a directional light has no position we have to just create a simulated version of it by polarizing the position and lookat X coordinate. 
 	//If your light needs to cover more distance then just increase the Y coordinate distance between the position and the lookat.
 
 	// Set the position and lookat for the light.
-	SetPosition(lightPosX, 18.0f, -0.1f);
-	SetLookAt(-lightPosX, 0.0f, 5.0f);
-
-
-
+	//SetPosition(lightPosX, 18.0f, -0.1f);
+	//SetLookAt(-lightPosX, 0.0f, 5.0f);
 }
 
 

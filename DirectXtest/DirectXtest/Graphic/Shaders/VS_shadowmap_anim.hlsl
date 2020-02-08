@@ -1,16 +1,15 @@
 
 #define MAX_BONES 256
-
-cbuffer SkeletalAnimationData : register(b1)
-{
-    float4x4 BoneTransforms[MAX_BONES];
-};
-
 cbuffer perObjectBuffer : register(b0)
 {
     float4x4 worldMatrix;
     float4x4 viewMatrix;
     float4x4 projMatrix;
+};
+
+cbuffer AvatorData : register(b1)
+{
+    float4x4 BoneTransforms[MAX_BONES];
 };
 
 

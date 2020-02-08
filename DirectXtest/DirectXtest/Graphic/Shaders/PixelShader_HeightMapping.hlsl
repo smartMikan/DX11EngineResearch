@@ -12,7 +12,7 @@ struct PS_INPUT
 };
 
 
-float Shadow(float3 worldPos, float3 normal, float3 light_dir)
+float HeightMapShadow(float3 worldPos, float3 normal, float3 light_dir)
 {
     float4 lightPorjCoord = mul(float4(worldPos, 1.0f), ShadowMatrix);
     lightPorjCoord.xyz /= lightPorjCoord.w;
@@ -69,7 +69,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 	specular = saturate(specular);
 	specular = pow(specular, 64);
     
-    diffuseLightIntensity = (diffuseLightIntensity + specular) * attenuationFactor * Shadow(worldPos, normal, vectorToLight);
+    diffuseLightIntensity = (diffuseLightIntensity + specular) * attenuationFactor * HeightMapShadow(worldPos, normal, vectorToLight);
 	float3 diffuseLight = diffuseLightIntensity * dynamicStrength * dynamicLight;
 	appliedLight += diffuseLight;
     

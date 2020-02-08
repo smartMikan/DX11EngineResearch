@@ -35,11 +35,15 @@ cbuffer lightBuffer : register(b0)
 
     float3 dynamicLight;
     float dynamicStrength;
+    
     float3 dynamicLightPosition;
-
     float dynamicLightAttenuation_a;
+    
+    float3 dynamicLightDirection;
     float dynamicLightAttenuation_b;
     float dynamicLightAttenuation_c;
+    int LightType;
+    
 }
 
 cbuffer cameraBuffer : register(b1)
@@ -81,3 +85,33 @@ SamplerState objSamplerState : SAMPLER : register(s0);
 SamplerState shadowSamplerState : SAMPLER : register(s1);
 
 
+float Shadow(float3 worldPos, float3 normal, float3 light_dir)
+{
+    float4 proj_coords = mul(float4(worldPos, 1.0f), ShadowMatrix);
+    proj_coords.xyz /= proj_coords.w;
+	
+    float2 shadow_uv = proj_coords.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
+    //float closest_depth = shadowTexture.Sample(shadowSamplerState, shadow_uv).r;
+    //float bias = max(0.005 * (1.0 - dot(normal, light_dir)), 0.0005f);
+    float bias = 0.00025f;
+    float current_depth = proj_coords.z - bias;
+	
+    float shadow = 0.0f;
+    //blur
+    int range = 2;
+    float2 texelSize = 1.0 / 1024.0;
+    
+    for (int y = -range; y <= range; y++)
+    {
+        for (int x = -range; x <= range; x++)
+        {
+            float pcfDepth = shadowTexture.Sample(shadowSamplerState, shadow_uv + float2(x, y) * texelSize).r;
+            shadow += current_depth > pcfDepth ? 0.0f : 1.0f;
+
+        }
+    }
+    shadow /= (range * 2 + 1) * (range * 2 + 1);
+    //shadow = current_depth > closest_depth ? 0.0f : 1.0f;
+	
+    return shadow;
+}

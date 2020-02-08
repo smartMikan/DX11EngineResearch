@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Filename: skydomeshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "skydomeshaderclass.h"
@@ -308,7 +308,7 @@ bool SkyDomeShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	}
 
 	// Set the position of the color constant buffer in the pixel shader.
-	bufferNumber = 0;
+	bufferNumber = 5;
 
 	// Now set the color constant buffer in the pixel shader with the updated color values.
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, m_colorBuffer->GetAddress());

@@ -5,6 +5,9 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <wrl/client.h>
+#include <memory>
+
 using namespace DirectX;
 
 class RenderTextureClass
@@ -17,21 +20,27 @@ public:
 	bool Initialize(ID3D11Device*, int, int, float, float);
 	void Shutdown();
 
+	void SetDVRenderTarget(ID3D11DeviceContext*);
 	void SetRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*);
+	void ClearDVRenderTarget(ID3D11DeviceContext*, float, float, float, float);
 	void ClearRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*, float, float, float, float);
 	ID3D11ShaderResourceView* GetShaderResourceView();
 	ID3D11ShaderResourceView* const * GetShaderResourceViewAddress();
+	ID3D11ShaderResourceView* const * GetShadowShaderResourceViewAddress();
 	void GetProjectionMatrix(XMMATRIX&);
 	void GetOrthoMatrix(XMMATRIX&);
 
-private:
-	ID3D11Texture2D* m_renderTargetTexture;
-	ID3D11RenderTargetView* m_renderTargetView;
-	ID3D11ShaderResourceView* m_shaderResourceView;
+public:
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_renderTargetTexture;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_shaderResourceView;
 
-	ID3D11Texture2D* m_depthStencilBuffer;
-	ID3D11DepthStencilView* m_depthStencilView;
-	D3D11_VIEWPORT m_viewport;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_depthStencilBuffer;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shadowmap_resourceView;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> shadowSampler;
+
+	std::unique_ptr<CD3D11_VIEWPORT> m_viewport;
 	XMMATRIX m_projectionMatrix;
 	XMMATRIX m_orthoMatrix;
 

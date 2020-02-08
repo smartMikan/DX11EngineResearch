@@ -92,11 +92,10 @@ struct AssimpSkinnedModelInstance
 	Model* Model;
 	float TimePos;
 	std::string ClipName;
+	int ClipIndex;
 	XMFLOAT4X4 World;
 	std::vector<XMFLOAT4X4> FinalTransforms;
 
-	void Update(float dt);
-	void DeUpdate(float dt);
 };
 
 

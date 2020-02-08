@@ -293,7 +293,7 @@ bool SkyCubeShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, m_matrixBuffer->GetAddress());
 
 	// Now set the color constant buffer in the pixel shader with the updated color values.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(7, 1, &texture);
 
 	return true;
 }
