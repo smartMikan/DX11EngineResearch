@@ -1,4 +1,4 @@
-﻿#include "depthshaderclass.h"
+#include "depthshaderclass.h"
 
 
 DepthShaderClass::DepthShaderClass()

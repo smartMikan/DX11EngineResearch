@@ -107,7 +107,7 @@ namespace AssimpModel
 			m_BoneConstantBuffer(boneConstantBuffer)
 		{}
 
-		void Bind(ID3D11DeviceContext* deviceContext);
+		void Bind(ID3D11DeviceContext* deviceContext, bool ignoreRootTrans = true);
 
 		size_t GetNumAnimations() const { return m_Animations.size(); }
 		const AnimationClip& GetAnimation(size_t index)const { return m_Animations[index]; }
@@ -117,11 +117,13 @@ namespace AssimpModel
 		void SetCurrentAnimationIndex(size_t index) { m_CurrentAnimationIndex = index; }
 		const AnimationClip& GetCurrentAnimation()const { return m_Animations[m_CurrentAnimationIndex]; }
 
+		void AddAnim(AnimationClip& anim);
+
 		float GetTimePos() const { return m_TimePos; }
 		void SetTimpPos(float timepos) { m_TimePos = timepos; }
 
 	private:
-		void GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timepos) const;
+		void GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos, bool ignoreRootTrans = true) const;
 
 	private:
 		std::vector<BoneData> m_Bones;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 const int SHADOWMAP_WIDTH = 1024;
 const int SHADOWMAP_HEIGHT = 1024;
@@ -113,6 +113,7 @@ private:
 	ConstantBuffer<CB_PS_LightBuffer> cb_ps_light;
 	ConstantBuffer<CB_PS_CameraBuffer> cb_ps_camera;
 	ConstantBuffer<CB_PS_Material> cb_ps_material;
+	ConstantBuffer<CB_PS_ShadowMatrix> cb_ps_shadowMatrix;
 	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
 
 

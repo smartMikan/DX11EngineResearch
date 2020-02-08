@@ -68,13 +68,13 @@ float4 main(PS_INPUT input) : SV_TARGET
     {
         material.DiffuseColor = diffuseTexture.Sample(objSamplerState, input.inTexCoord);
     }
-    //sampleColor = float3(1,1,1);
+    
     
     if (material.HasSpecularTexture)
     {
         material.SpecularColor = specularTexture.Sample(objSamplerState, input.inTexCoord);
     }
-    	// ambient
+    // ambient
     float3 ambient = material.AmbientColor.rgb;
     if (material.HasAmbientTexture)
     {

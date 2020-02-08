@@ -129,6 +129,7 @@ namespace AssimpModel {
 	{
 		last_pos_index = 0;
 		last_rot_index = 0;
+		last_scale_index = 0;
 	}
 
 	std::vector<DirectX::XMMATRIX> AnimationClip ::GetSample(float timePos, const std::vector<BoneNode>& avatar) const
@@ -149,7 +150,7 @@ namespace AssimpModel {
 		return new_transforms;
 	}
 
-	void Animator::Bind(ID3D11DeviceContext* deviceContext)
+	void Animator::Bind(ID3D11DeviceContext* deviceContext, bool ignoreRootTrans)
 	{
 		const AnimationClip& animation = GetAnimation(GetCurrentAnimationIndex());
 
@@ -169,11 +170,16 @@ namespace AssimpModel {
 		return nullptr;
 	}
 
-	void Animator::GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timestamp) const
+	void Animator::AddAnim(AnimationClip & anim)
+	{
+		m_Animations.push_back(anim);
+	}
+
+	void Animator::GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos, bool ignoreRootTrans) const
 	{
 		assert(m_Bones.size() <= MAX_BONES, "bone num out of limit");
 
-		std::vector<DirectX::XMMATRIX> transforms = animation.GetSample(timestamp, m_Avator);
+		std::vector<DirectX::XMMATRIX> transforms = animation.GetSample(timePos, m_Avator);
 
 		for (size_t i = 1; i < transforms.size(); i++)
 		{
@@ -183,6 +189,8 @@ namespace AssimpModel {
 		{
 			out[i] = XMMatrixTranspose(m_Bones[i].inverse_transform * transforms[m_Bones[i].index]);
 		}
+
+		
 	}
 
 }

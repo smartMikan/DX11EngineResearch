@@ -1,4 +1,4 @@
-﻿#include "rendertextureclass.h"
+#include "rendertextureclass.h"
 
 
 
@@ -220,6 +220,11 @@ void RenderTextureClass::ClearRenderTarget(ID3D11DeviceContext* deviceContext, I
 ID3D11ShaderResourceView* RenderTextureClass::GetShaderResourceView()
 {
 	return m_shaderResourceView;
+}
+
+ID3D11ShaderResourceView * const* RenderTextureClass::GetShaderResourceViewAddress()
+{
+	return &m_shaderResourceView;
 }
 
 

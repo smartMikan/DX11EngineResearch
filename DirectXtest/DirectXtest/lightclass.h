@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 #include <directxmath.h>
@@ -22,6 +22,7 @@ public:
 	void SetSpecularPower(float);
 
 	XMFLOAT4 GetAmbientColor();
+	
 	XMFLOAT4 GetDiffuseColor();
 
 
@@ -42,7 +43,7 @@ public:
 	void GetOrthoMatrix(XMMATRIX&);
 
 
-
+	void SetStrength(float strength);
 
 	void SetFrameTime(float time);
 
@@ -67,7 +68,7 @@ private:
 	XMMATRIX m_orthoMatrix;
 
 	//float m_rotationX, m_rotationY, m_rotationZ;
-
+	float lightStrength;
 	float m_frameTime;
 };
 

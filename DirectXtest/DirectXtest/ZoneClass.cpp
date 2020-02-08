@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Filename: zoneclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "zoneclass.h"
@@ -17,7 +17,7 @@ ZoneClass::ZoneClass()
 	m_NebulaSkyCube = 0;
 	m_PlanetSkyCube = 0;
 	m_Model = 0;
-	//m_MeshModel = 0;
+	m_MeshModel = 0;
 	m_Frustum = 0;
 	m_ParticleSystem = 0;
 
@@ -233,6 +233,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	m_MeshModel->InitAnimation(cb_bones);
+	m_MeshModel->AddAnimation("./3DModel/Bellydancing.fbx", cb_bones);
+	m_MeshModel->AddAnimation("./3DModel/Boxing.fbx", cb_bones);
+	m_MeshModel->AddAnimation("./3DModel/sheathsword1.fbx", cb_bones);
 
 	// Create the light object.
 	m_Light = new LightClass;
@@ -340,8 +343,8 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	cb_ps_light.SetDebugName("cb_ps_light");
 
 
-	/*hr = this->cb_ps_shadowmat.Initialize(this->device.Get(), this->deviceContext.Get());
-	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");*/
+	hr = this->cb_ps_shadowMatrix.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 
 
 	hr = this->cb_ps_camera.Initialize(this->device.Get(), this->deviceContext.Get());
@@ -710,7 +713,18 @@ bool ZoneClass::RenderSceneToTexture(D3DClass* Direct3D, ShaderManagerClass* Sha
 	m_Light->GetViewMatrix(lightViewMatrix);
 	m_Light->GetOrthoMatrix(lightOrthoMatrix);
 	
+	deviceContext->PSSetConstantBuffers(3, 1, cb_ps_shadowMatrix.GetAddress());
+
+	cb_ps_shadowMatrix.data.shadowMatrix = XMMatrixTranspose(lightViewMatrix * lightOrthoMatrix);
+	cb_ps_shadowMatrix.ApplyChanges();
 	
+	deviceContext->VSSetShader(d3dvertexshader_shadowmap_anim.get()->GetShader(device.Get()), NULL, 0);
+	deviceContext->IASetInputLayout(d3dvertexshader_shadowmap_anim.get()->GetLayout());
+	m_MeshModel->Draw(worldMatrix, lightViewMatrix, lightOrthoMatrix);
+
+
+	
+
 	//Direct3D->GetWorldMatrix(worldMatrix);
 
 	//// Render the terrain cells (and cell lines if needed).
@@ -819,11 +833,11 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	// Construct the frustum.
 	m_Frustum->ConstructFrustum(projectionMatrix, viewMatrix);
 
-	//result = RenderSceneToTexture(Direct3D, ShaderManager);
-	/*if (!result)
+	result = RenderSceneToTexture(Direct3D, ShaderManager);
+	if (!result)
 	{
 		return false;
-	}*/
+	}
 	// Clear the buffers to begin the scene.
 	Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -930,17 +944,6 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 	Direct3D->GetWorldMatrix(worldMatrix);
 
-	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
-
-	m_Model->Render(Direct3D->GetDeviceContext());
-	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
-		projectionMatrix,m_Camera->GetPosition(),m_Light->GetAmbientColor(),m_Light->GetDiffuseColor(),m_Light->GetDirection(),m_Light->GetSpecularPower(),m_Light->GetSpecularColor());
-
-	/*result = ShaderManager->RenderShadowShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), modelPosition, viewMatrix, projectionMatrix, lightViewMatrix,
-		lightOrthoMatrix, m_Model->GetTextureVector()[0], m_RenderTexture->GetShaderResourceView(), m_Light->GetDirection(),
-		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());*/
-
 
 	// Render the terrain cells (and cell lines if needed).
 	for (i = 0; i < m_Terrain->GetCellCount(); i++)
@@ -989,7 +992,18 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//}
 
 
-	
+
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
+
+	m_Model->Render(Direct3D->GetDeviceContext());
+	result = ShaderManager->RenderLightShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), m_Model->GetTextureVector(), modelPosition, viewMatrix,
+		projectionMatrix, m_Camera->GetPosition(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Light->GetSpecularPower(), m_Light->GetSpecularColor());
+
+	/*result = ShaderManager->RenderShadowShader(Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), modelPosition, viewMatrix, projectionMatrix, lightViewMatrix,
+		lightOrthoMatrix, m_Model->GetTextureVector()[0], m_RenderTexture->GetShaderResourceView(), m_Light->GetDirection(),
+		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());*/
+
 
 	modelPosition = worldMatrix;
 	modelPosition = XMMatrixTranslation(10.0f, 0.0f, 30.0f);
@@ -1001,11 +1015,47 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 	deviceContext->VSSetShader(d3dvertexshader_animation.get()->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(d3dvertexshader_animation.get()->GetLayout());
+
+	cb_ps_light.data.ambientLightColor = XMFLOAT3(m_Light->GetAmbientColor().x, m_Light->GetAmbientColor().y, m_Light->GetAmbientColor().z);
+	cb_ps_light.data.ambientLightStrength = 1.0f;
+	cb_ps_light.data.dynamicLightColor = XMFLOAT3(m_Light->GetDiffuseColor().x, m_Light->GetDiffuseColor().y, m_Light->GetDiffuseColor().z);
+	cb_ps_light.data.dynamicLightStrength = 1.0f;
+	cb_ps_light.data.lightPosition = m_Light->GetPosition();
+	cb_ps_light.data.dynamicLightAttenuation_a = 1.0f;
+	cb_ps_light.data.dynamicLightAttenuation_b = 1.0f;
+	cb_ps_light.data.dynamicLightAttenuation_c = 1.0f;
+	cb_ps_light.ApplyChanges();
+
+	deviceContext->PSSetShaderResources(4, 1, m_RenderTexture->GetShaderResourceViewAddress());
+
+	m_MeshModel->SwitchAnim(0);
 	m_MeshModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 
 
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(15.0f, 0.0f, 30.0f);
+	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	modelPosition = meshModelScale * modelPosition;
+	
+	m_MeshModel->SwitchAnim(1);
+	m_MeshModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(20.0f, 0.0f, 30.0f);
+	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	modelPosition = meshModelScale * modelPosition;
 
+	m_MeshModel->SwitchAnim(2);
+	m_MeshModel->Draw(modelPosition, viewMatrix, projectionMatrix);
+	
+	
+	modelPosition = worldMatrix;
+	modelPosition = XMMatrixTranslation(25.0f, 0.0f, 30.0f);
+	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	modelPosition = meshModelScale * modelPosition;
+
+	m_MeshModel->SwitchAnim(3);
+	m_MeshModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 	//float Deltatime = 0.01f;
 	
 	XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);

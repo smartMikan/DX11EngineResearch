@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef _RENDERTEXTURECLASS_H_
 #define _RENDERTEXTURECLASS_H_
@@ -20,6 +20,7 @@ public:
 	void SetRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*);
 	void ClearRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*, float, float, float, float);
 	ID3D11ShaderResourceView* GetShaderResourceView();
+	ID3D11ShaderResourceView* const * GetShaderResourceViewAddress();
 	void GetProjectionMatrix(XMMATRIX&);
 	void GetOrthoMatrix(XMMATRIX&);
 

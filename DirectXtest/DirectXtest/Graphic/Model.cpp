@@ -1,4 +1,4 @@
-﻿#include "Model.h"
+#include "Model.h"
 
 static DirectX::XMMATRIX AiToDxMatrix(const aiMatrix4x4 aimatrix) 
 {
@@ -54,6 +54,102 @@ void Model::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, cons
 bool Model::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator* animator_out, AnimationComponent* animComp)
 {
 	ProcessAnimation(animator_out, cbufBone, animComp);
+	return true;
+}
+
+bool Model::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator * animator_out, AnimationComponent * animComp)
+{
+	this->directory = StringHelper::GetDirectoryFromPath(filePath);
+
+	m_pScene = m_Importer.ReadFile(filePath,
+		aiProcessPreset_TargetRealtime_Fast |
+		aiProcess_ConvertToLeftHanded | aiProcess_TransformUVCoords/*|aiProcess_JoinIdenticalVertices*/);
+	if (m_pScene == nullptr)
+		return false;
+
+	for (unsigned int anim_index = 0; anim_index < m_pScene->mNumAnimations; anim_index++)
+	{
+		aiAnimation* pAnimation = m_pScene->mAnimations[anim_index];
+
+		float ticks_per_second = (float)pAnimation->mTicksPerSecond;
+		if (directory.find(".gltf") != std::string::npos || directory.find(".glb") != std::string::npos)
+		{
+			ticks_per_second = 1000.0f;
+		}
+		if (ticks_per_second == 0.0f)
+		{
+			ticks_per_second = 1.0f;
+		}
+
+		AnimationClip animation;
+		animation.name = pAnimation->mName.C_Str();
+		animation.channels.resize(pAnimation->mNumChannels);
+		animation.duration = (float)pAnimation->mDuration / ticks_per_second;
+
+		for (unsigned int channel_index = 0; channel_index < pAnimation->mNumChannels; channel_index++)
+		{
+			aiNodeAnim* pNodeAnim = pAnimation->mChannels[channel_index];
+			int node_index = FindNodeByName(pNodeAnim->mNodeName.C_Str());
+			if (node_index == -1)
+			{
+				COM_ERROR_IF_FAILED(-1, "Missing animated node.");
+				continue;
+			}
+
+			AnimationChannel& channel = animation.channels[channel_index];
+			channel.node_index = node_index;
+
+			channel.position_keyframes.reserve(pNodeAnim->mNumPositionKeys);
+			for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumPositionKeys; keyframe_index++)
+			{
+				const aiVectorKey& ai_key = pNodeAnim->mPositionKeys[keyframe_index];
+
+				PositionKeyFrame keyframe;
+				keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
+				keyframe.value.x = ai_key.mValue.x;
+				keyframe.value.y = ai_key.mValue.y;
+				keyframe.value.z = ai_key.mValue.z;
+
+				channel.position_keyframes.push_back(keyframe);
+			}
+
+			channel.rotation_keyframes.reserve(pNodeAnim->mNumRotationKeys);
+			for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumRotationKeys; keyframe_index++)
+			{
+				const aiQuatKey& ai_key = pNodeAnim->mRotationKeys[keyframe_index];
+
+				RotationKeyFrame keyframe;
+				keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
+				keyframe.value.x = ai_key.mValue.x;
+				keyframe.value.y = ai_key.mValue.y;
+				keyframe.value.z = ai_key.mValue.z;
+				keyframe.value.w = ai_key.mValue.w;
+
+				channel.rotation_keyframes.push_back(keyframe);
+			}
+
+			channel.scale_keyframes.reserve(pNodeAnim->mNumScalingKeys);
+			for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumScalingKeys; keyframe_index++)
+			{
+				const aiVectorKey& ai_key = pNodeAnim->mScalingKeys[keyframe_index];
+
+				ScaleKeyFrame keyframe;
+				keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
+				keyframe.value.x = ai_key.mValue.x;
+				keyframe.value.y = ai_key.mValue.y;
+				keyframe.value.z = ai_key.mValue.z;
+
+				channel.scale_keyframes.push_back(keyframe);
+			}
+
+
+			animComp->AddChannel(animation.name, channel_index);
+		}
+		m_Animations.push_back(animation);
+		animator_out->AddAnim(animation);
+	}
+
+
 	return true;
 }
 

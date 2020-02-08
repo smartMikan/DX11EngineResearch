@@ -1,4 +1,4 @@
-﻿#include "GameObjectClass.h"
+#include "GameObjectClass.h"
 
 GameObjectClass::GameObjectClass()
 {
@@ -33,7 +33,6 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 	// Set the initial position and rotation.
 	m_Position->SetPosition(128.0f, 10.0f, 128.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
-
 	return true;
 }
 
@@ -42,10 +41,21 @@ bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBo
 	mAnimComp = std::make_unique<AnimationComponent>(&mAnimator);
 	//mAnimComp = new AnimationComponent();
 	mPlayAnimtion = true;
-	mAnimTimer.Start();
+	mAnimTimers.emplace_back(new Timer);
+	mAnimTimers[0]->Start();
+	//mAnimTimer.Start();
 	return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
 	//return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp);
 }
+
+bool GameObjectClass::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBuffer_Bones>& cbufBone)
+{
+	mAnimTimers.emplace_back(new Timer);
+	mAnimTimers[mAnimator.GetNumAnimations()]->Start();
+	return m_Model.AddAnimation(filePath, &cbufBone, &mAnimator, mAnimComp.get());
+}
+
+
 
 void GameObjectClass::Shutdown()
 {
@@ -61,11 +71,12 @@ void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMa
 {
 	//static float time;
 	//time += 0.003f;
+	int index = mAnimator.GetCurrentAnimationIndex();
 	if (mPlayAnimtion)
 	{
-		if ((float)mAnimTimer.GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
-			mAnimTimer.Restart();
-		mAnimator.SetTimpPos((float)mAnimTimer.GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
+		if ((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
+			mAnimTimers[index]->Restart();
+		mAnimator.SetTimpPos((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
 		/*if (time  >= mAnimator.GetCurrentAnimation().duration)
 			time=0.0f;
 		mAnimator.SetTimpPos(time);*/
@@ -78,6 +89,11 @@ void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMa
 
 
 	m_Model.Draw(worldMatrix, viewMatrix, projectionMatrix);
+}
+
+void GameObjectClass::SwitchAnim(int index)
+{
+	mAnimator.SetCurrentAnimationIndex(index);
 }
 
 
