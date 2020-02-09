@@ -23,6 +23,7 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 outPosition : SV_POSITION;
+    float4 depthPosition : TEXTURE0;
 };
 
 VS_OUTPUT main(VS_INPUT input)
@@ -40,5 +41,8 @@ VS_OUTPUT main(VS_INPUT input)
     float3 worldPos = mul(float4(input.inPos, 1.0f), world).xyz;
     output.outPosition = mul(float4(worldPos, 1.0f), viewMatrix);
     output.outPosition = mul(output.outPosition, projMatrix);
+    
+    output.depthPosition = output.outPosition;
+    
     return output;
 }

@@ -14,7 +14,7 @@ public:
 	LightClass(const LightClass&);
 	~LightClass();
 
-	PositionClass positionClass;
+	PositionClass position;
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
@@ -29,27 +29,16 @@ public:
 	XMFLOAT4 GetSpecularColor();
 	float GetSpecularPower();
 
-	void SetDirection(float, float, float);
-	void SetDirectionYawPitchRoll(float, float, float);
-	void SetPosition(float, float, float);
-	//void SetLookAt(float, float, float);
-	
 	XMFLOAT3 GetDirection();
-	XMFLOAT3 GetPosition();
-	void GenerateViewMatrix();
 	void GetViewMatrix(XMMATRIX&);
 	
 	void GenerateOrthoMatrix(float, float, float);
 	void GetOrthoMatrix(XMMATRIX&);
 
-
-	
+	void GenerateProjectionMatrix(float screenDepth, float screenNear);
+	void GetProjectionMatrix(XMMATRIX& projectionMatrix);
 
 	void SetFrameTime(float time);
-
-	//void TurnRight(bool keydown);
-
-	//void TurnLeft(bool keydown);
 
 	void Frame();
 
@@ -67,14 +56,9 @@ private:
 	XMFLOAT4 m_specularColor;
 	float m_specularPower;
 
-
-	XMFLOAT3 m_direction;
-	XMFLOAT3 m_position;
-	//XMFLOAT3 m_lookAt;
 	XMMATRIX m_viewMatrix;
 	XMMATRIX m_orthoMatrix;
-
-	//float m_rotationX, m_rotationY, m_rotationZ;
+	XMMATRIX m_projMatrix;
 	
 	float m_frameTime;
 };

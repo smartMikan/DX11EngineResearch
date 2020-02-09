@@ -1,16 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: lightclass.cpp
-////////////////////////////////////////////////////////////////////////////////
 #include "lightclass.h"
 
 
 LightClass::LightClass()
 {
-	//m_rotationZ = 270.0f;
-	//m_leftTurnSpeed = 0.0f;
-	//m_rightTurnSpeed = 0.0f;
-	positionClass.SetRotation(0.0f, -180.0f, 0.0f);
-	SetDirection(0.0f, -1.0f, 0.0f);
+	
+	position.SetRotation(0.0f, 0.0f, 0.0f);
 	m_frameTime = 0.0f;
 }
 
@@ -70,76 +64,70 @@ float LightClass::GetSpecularPower()
 }
 
 
-void LightClass::SetDirection(float x, float y, float z)
-{
-	m_direction = XMFLOAT3(x, y, z);
-	return;
-}
-
-void LightClass::SetDirectionYawPitchRoll(float, float, float)
-{
+//void LightClass::SetDirection(float x, float y, float z)
+//{
+//	//m_direction = XMFLOAT3(x, y, z);
+//	
+//	return;
+//}
 
 
-}
 
 
 XMFLOAT3 LightClass::GetDirection()
 {
-	////XMMATRIX rotMATRIX = XMMatrixRotationRollPitchYaw(m_rotationX,m_rotationY,m_rotationZ);
-	//float m_rotationX, m_rotationY, m_rotationZ;
-	//float yaw, pitch, roll;
-	//positionClass.GetRotation(m_rotationX, m_rotationY, m_rotationZ);
-	//pitch = m_rotationX * 0.0174532925f;
-	//yaw = m_rotationY * 0.0174532925f;
-	//roll = m_rotationZ * 0.0174532925f;
-	//XMVECTOR dir;
-	//dir = XMQuaternionRotationRollPitchYaw(pitch, yaw, roll);
-	//XMFLOAT3 rot;
-	//XMStoreFloat3(&rot, dir);
-	//return rot;
-	return m_direction;
+	float m_rotationX, m_rotationY, m_rotationZ;
+	float yaw, pitch, roll;
+	XMFLOAT3 up, lookAt;
+	XMVECTOR lookatvec;
+
+	
+	lookAt.x = 0.0f;
+	lookAt.y = 0.0f;
+	lookAt.z = 1.0f;
+
+
+	position.GetRotation(m_rotationX, m_rotationY, m_rotationZ);
+	pitch = m_rotationX * 0.0174532925f;
+	yaw = m_rotationY * 0.0174532925f;
+	roll = m_rotationZ * 0.0174532925f;
+
+	lookatvec = XMLoadFloat3(&lookAt);
+
+
+	XMMATRIX rotMATRIX = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+	lookatvec = XMVector3TransformCoord(lookatvec, rotMATRIX);
+
+	XMStoreFloat3(&lookAt, lookatvec);
+	return lookAt;
 }
 
 
-void LightClass::SetPosition(float x, float y, float z)
-{
-	m_position = XMFLOAT3(x, y, z);
-	return;
-}
 
-//void LightClass::SetLookAt(float x, float y, float z)
+
+
+
+//void LightClass::GenerateViewMatrix()
 //{
-//	m_lookAt.x = x;
-//	m_lookAt.y = y;
-//	m_lookAt.z = z;
+//	XMFLOAT3 up;
+//	XMVECTOR upVector, positionVector, lookAtVector;
+//
+//	// Setup the vector that points upwards.
+//	up.x = 0.0f;
+//	up.y = 1.0f;
+//	up.z = 0.0f;
+//	upVector = XMLoadFloat3(&up);
+//	positionVector = XMLoadFloat3(&position.GetPosition());
+//	lookAtVector = XMLoadFloat3(&m_direction);
+//
+//	// Translate the rotated camera position to the location of the viewer.
+//	lookAtVector = XMVectorAdd(positionVector, lookAtVector);
+//
+//	// Create the view matrix from the three vectors.
+//	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
+//
 //	return;
 //}
-
-XMFLOAT3 LightClass::GetPosition()
-{
-	return m_position;
-}
-
-void LightClass::GenerateViewMatrix()
-{
-	XMFLOAT3 up;
-	XMVECTOR upVector, positionVector, lookAtVector;
-
-	// Setup the vector that points upwards.
-	up.x = 0.0f;
-	up.y = 1.0f;
-	up.z = 0.0f;
-	upVector = XMLoadFloat3(&up);
-	positionVector = XMLoadFloat3(&m_position);
-	lookAtVector = XMLoadFloat3(&m_direction);
-
-
-
-	// Create the view matrix from the three vectors.
-	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
-
-	return;
-}
 
 void LightClass::GetViewMatrix(XMMATRIX& viewMatrix)
 {
@@ -163,6 +151,27 @@ void LightClass::GetOrthoMatrix(XMMATRIX& orthoMatrix)
 }
 
 
+void LightClass::GenerateProjectionMatrix(float screenDepth, float screenNear)
+{
+	float fieldOfView, screenAspect;
+
+
+	// Setup field of view and screen aspect for a square light source.
+	fieldOfView = (float)XM_PI / 2.0f;
+	screenAspect = 1.0f;
+
+	// Create the projection matrix for the light.
+	m_projMatrix = XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+
+	return;
+}
+
+void LightClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
+{
+	projectionMatrix = m_projMatrix;
+	return;
+}
+
 void LightClass::SetFrameTime(float time)
 {
 	m_frameTime = time;
@@ -171,35 +180,49 @@ void LightClass::SetFrameTime(float time)
 void LightClass::Frame()
 {
 
-
-	//static float lightAngle = 270.0f;
-	//float radians;
-	//static float lightPosX = 9.0f;
-	////Each frame we now rotate a directional light from 270 degrees to 90 degrees to simulate sun light movement.
-	//// Update the position of the light each frame.
-	//lightPosX -= 0.002f * m_frameTime;
-
-	//// Update the angle of the light each frame.
-	//lightAngle -= 0.02f * m_frameTime;
-	//if (lightAngle < 90.0f)
-	//{
-	//	lightAngle = 270.0f;
-
-	//	// Reset the light position also.
-	//	lightPosX = 9.0f;
-	//}
-	//radians = lightAngle * 0.0174532925f;
-
-	//// Update the direction of the light.
-	//SetDirection(sinf(radians), cosf(radians), 0.0f);
+	XMFLOAT3 up, lookAt;
+	XMVECTOR upVector, positionVector, lookAtVector;
+	float yaw, pitch, roll;
+	XMMATRIX rotationMatrix;
 
 
-	//Also each frame we now simulate a sun light rotation using the position and lookat. As a directional light has no position we have to just create a simulated version of it by polarizing the position and lookat X coordinate. 
-	//If your light needs to cover more distance then just increase the Y coordinate distance between the position and the lookat.
+	// Setup the vector that points upwards.
+	up.x = 0.0f;
+	up.y = 1.0f;
+	up.z = 0.0f;
 
-	// Set the position and lookat for the light.
-	//SetPosition(lightPosX, 18.0f, -0.1f);
-	//SetLookAt(-lightPosX, 0.0f, 5.0f);
+	// Load it into a XMVECTOR structure.
+	upVector = XMLoadFloat3(&up);
+
+	// Load it into a XMVECTOR structure.
+	positionVector = XMLoadFloat3(&position.GetPosition());
+
+	// Setup where the camera is looking by default.
+	lookAt.x = 0.0f;
+	lookAt.y = 0.0f;
+	lookAt.z = 1.0f;
+
+	// Load it into a XMVECTOR structure.
+	lookAtVector = XMLoadFloat3(&lookAt);
+	position.GetRotation(pitch, yaw, roll);
+	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
+	pitch *= 0.0174532925f;
+	yaw *= 0.0174532925f;
+	roll *=  0.0174532925f;
+
+	// Create the rotation matrix from the yaw, pitch, and roll values.
+	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+
+	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
+	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
+	upVector = XMVector3TransformCoord(upVector, rotationMatrix);
+
+	// Translate the rotated camera position to the location of the viewer.
+	lookAtVector = XMVectorAdd(positionVector, lookAtVector);
+
+	// Finally create the view matrix from the three updated vectors.
+	m_viewMatrix = XMMatrixLookAtLH(positionVector, lookAtVector, upVector);
+
 }
 
 

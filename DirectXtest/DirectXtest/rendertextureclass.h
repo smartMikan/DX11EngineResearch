@@ -25,10 +25,13 @@ public:
 	void ClearDVRenderTarget(ID3D11DeviceContext*, float, float, float, float);
 	void ClearRenderTarget(ID3D11DeviceContext*, ID3D11DepthStencilView*, float, float, float, float);
 	ID3D11ShaderResourceView* GetShaderResourceView();
+	ID3D11ShaderResourceView* GetShadowShaderResourceView();
 	ID3D11ShaderResourceView* const * GetShaderResourceViewAddress();
 	ID3D11ShaderResourceView* const * GetShadowShaderResourceViewAddress();
 	void GetProjectionMatrix(XMMATRIX&);
 	void GetOrthoMatrix(XMMATRIX&);
+
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> shadowSampler;
 
 public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_renderTargetTexture;
@@ -38,7 +41,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_depthStencilBuffer;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shadowmap_resourceView;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> shadowSampler;
+
 
 	std::unique_ptr<CD3D11_VIEWPORT> m_viewport;
 	XMMATRIX m_projectionMatrix;

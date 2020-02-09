@@ -89,7 +89,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     
     if (LightType == 0)
     {
-        vectorToLight = normalize(-dynamicLightDirection);
+        vectorToLight = normalize(dynamicLightDirection);
         attenuationFactor = 1 / (dynamicLightAttenuation_a);
 
     }

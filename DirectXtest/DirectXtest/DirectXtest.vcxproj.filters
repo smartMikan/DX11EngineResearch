@@ -807,5 +807,6 @@
     <FxCompile Include="Graphic\Shaders\VS_nolight.hlsl" />
     <FxCompile Include="Graphic\Shaders\VS_shadowmap.hlsl" />
     <FxCompile Include="Graphic\Shaders\VS_shadowmap_anim.hlsl" />
+    <FxCompile Include="Graphic\Shaders\PixelShader_Depth.hlsl" />
   </ItemGroup>
 </Project>

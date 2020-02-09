@@ -11,11 +11,21 @@ ApplicationClass::ApplicationClass()
 	m_TextureManager = 0;
 	m_Zone = 0;
 	m_Sound = 0;
-	m_ImGui - 0;
+	m_ImGui = 0;
 }
 
 ApplicationClass::ApplicationClass(const ApplicationClass& other)
 {
+	m_Input = other.m_Input;
+	m_Direct3D = other.m_Direct3D;
+	m_Timer = other.m_Timer;
+	m_Fps = other.m_Fps;
+	m_Cpu = other.m_Cpu;
+	m_ShaderManager = other.m_ShaderManager;
+	m_TextureManager = other.m_TextureManager;
+	m_Zone = other.m_Zone;
+	m_Sound = other.m_Sound;
+	m_ImGui = other.m_ImGui;
 }
 
 

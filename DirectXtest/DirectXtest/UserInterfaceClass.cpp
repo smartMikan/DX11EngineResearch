@@ -13,6 +13,7 @@ UserInterfaceClass::UserInterfaceClass()
 	m_PositionStrings = 0;
 	m_RenderCountStrings = 0;
 	m_MiniMap = 0;
+	//m_DebugWindow = 0;
 }
 
 
@@ -220,6 +221,13 @@ bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int sc
 	return true;
 }
 
+bool UserInterfaceClass::Initialize(D3DClass* Direct3D, int screenHeight, int screenWidth, ID3D11ShaderResourceView* renderTexture)
+{
+
+	//m_DebugWindow->Initialize(Direct3D->GetDevice(), screenWidth, screenHeight, 100, 100);
+	return Initialize(Direct3D,screenHeight,screenWidth);
+}
+
 
 void UserInterfaceClass::Shutdown()
 {
@@ -373,6 +381,7 @@ bool UserInterfaceClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	{
 		return false;
 	}
+
 
 	// Turn the Z buffer back on now that the 2D rendering has completed.
 	Direct3D->TurnZBufferOn();

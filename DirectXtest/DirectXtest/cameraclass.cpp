@@ -1,6 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: cameraclass.cpp
-////////////////////////////////////////////////////////////////////////////////
 #include "cameraclass.h"
 //The class constructor will initialize the position and rotation of the camera to be at the origin of the scene.
 
@@ -13,11 +10,21 @@ CameraClass::CameraClass()
 	m_rotationX = 0.0f;
 	m_rotationY = 0.0f;
 	m_rotationZ = 0.0f;
+
+	
 }
 
 
 CameraClass::CameraClass(const CameraClass& other)
 {
+	m_positionX = other.m_positionX;
+	m_positionY = other.m_positionY;
+	m_positionZ = other.m_positionZ;
+
+	m_rotationX = other.m_rotationX;
+	m_rotationY = other.m_rotationY;
+	m_rotationZ = other.m_rotationZ;
+
 }
 
 
@@ -90,9 +97,9 @@ void CameraClass::Render()
 	lookAtVector = XMLoadFloat3(&lookAt);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * 0.0174532925f;
-	yaw = m_rotationY * 0.0174532925f;
-	roll = m_rotationZ * 0.0174532925f;
+	pitch = XMConvertToRadians(m_rotationX);
+	yaw = XMConvertToRadians(m_rotationY);
+	roll = XMConvertToRadians(m_rotationZ);
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
@@ -150,7 +157,7 @@ void CameraClass::RenderReflection(float height)
 	positionVector = XMLoadFloat3(&position);
 
 	// Calculate the rotation in radians.
-	radians = m_rotationY * 0.0174532925f;
+	radians = XMConvertToRadians(m_rotationY);
 
 	// Setup where the camera is looking.
 	lookAt.x = sinf(radians) + m_positionX;

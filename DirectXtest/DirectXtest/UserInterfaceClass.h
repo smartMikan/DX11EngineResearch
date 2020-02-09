@@ -11,6 +11,7 @@
 ///////////////////////
 #include "textclass.h"
 #include "minimapclass.h"
+//#include "debugwindowclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: UserInterfaceClass
@@ -23,6 +24,7 @@ public:
 	~UserInterfaceClass();
 
 	bool Initialize(D3DClass* Direct3D, int screenHeight, int screenWidth);
+	bool Initialize(D3DClass* Direct3D, int screenHeight, int screenWidth,ID3D11ShaderResourceView* renderTexture);
 	void Shutdown();
 
 	bool Frame(ID3D11DeviceContext* deviceContext, int fps,int cpu, float posX, float posY, float posZ,
@@ -45,6 +47,7 @@ private:
 	int m_previousPosition[6];
 	TextClass* m_RenderCountStrings;
 	MiniMapClass* m_MiniMap;
+	//DebugWindowClass* m_DebugWindow;
 };
 
 #endif

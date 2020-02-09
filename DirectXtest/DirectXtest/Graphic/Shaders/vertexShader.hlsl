@@ -37,7 +37,7 @@ VS_OUTPUT main(VS_INPUT input)
     
     output.outWorldPos = mul(pos, worldMatrix);
     output.outPosition = mul(output.outWorldPos, viewMatrix);
-    output.outPosition = mul(output.outWorldPos, projMatrix);
+    output.outPosition = mul(output.outPosition, projMatrix);
     output.outNormal = normalize(mul(normal, worldMatrix)).xyz;
     output.outTangent = normalize(mul(tangent, worldMatrix)).xyz;
     output.outBitangent = normalize(mul(bitangent, worldMatrix)).xyz;

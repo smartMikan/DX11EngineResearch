@@ -83,7 +83,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 vectorToLight;
     if (LightType == 0)
     {
-        vectorToLight = normalize(-dynamicLightDirection);
+        vectorToLight = normalize(dynamicLightDirection);
     }
     else if (LightType == 1)
     {

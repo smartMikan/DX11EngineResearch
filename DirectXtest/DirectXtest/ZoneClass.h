@@ -5,6 +5,7 @@ const int SHADOWMAP_HEIGHT = 1024;
 const float SHADOWMAP_DEPTH = 50.0f;
 const float SHADOWMAP_NEAR = 1.0f;
 
+#include<memory>
 
 #include "d3dclass.h"
 #include "inputclass.h"
@@ -22,6 +23,7 @@ const float SHADOWMAP_NEAR = 1.0f;
 #include "skycubeclass.h"
 #include "lightclass.h"
 #include "particlesystemclass.h"
+
 #include"SkinnedModelClass.h"
 
 #include "rendertextureclass.h"
@@ -42,7 +44,7 @@ public:
 	void Shutdown();
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
-	float cubeTranslation[3] = {12.0f,3.0f,12.0f};
+	float cubeTranslation[3] = {12.0f,0.1f,33.0f};
 
 	IVertexShader* CreateVertexShader(const std::string& filename);
 
@@ -54,7 +56,7 @@ public:
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
 	
-	bool RenderSceneToTexture(D3DClass* Direct3D, ShaderManagerClass*);
+	bool RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass*);
 	
 	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
 
@@ -92,7 +94,7 @@ private:
 
 	//bool m_particleFollow = true;
 
-	bool m_displayUI, m_wireFrame, m_cellLines, m_heightLocked;
+	bool m_displayUI = false, m_wireFrame = false, m_cellLines = false, m_heightLocked = false;
 	int m_cubemapsky = 0;
 
 	XMMATRIX modelPosition;
@@ -107,6 +109,7 @@ private:
 	PixelShader pixelshader_nolight;
 	PixelShader pixelshader_tonemapping;
 	PixelShader pixelshader_heightmapping;
+	PixelShader pixelshader_depthColor;
 
 	bool enableToneshading = false;
 	// c_buffers
@@ -116,10 +119,5 @@ private:
 	ConstantBuffer<CB_PS_Material> cb_ps_material;
 	ConstantBuffer<CB_PS_ShadowMatrix> cb_ps_shadowMatrix;
 	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
-
-
-	ComPtr<ID3D11SamplerState> m_sampleStateWrap;
-	ComPtr<ID3D11SamplerState> m_sampleStateClamp;
-	ComPtr<ID3D11ShaderResourceView> shadowmap_resourceView;
 
 };

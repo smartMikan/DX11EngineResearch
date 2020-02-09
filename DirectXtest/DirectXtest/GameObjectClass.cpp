@@ -38,13 +38,12 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBones)
 {
 	mAnimComp = std::make_unique<AnimationComponent>(&mAnimator);
-	//mAnimComp = new AnimationComponent();
+	
 	mPlayAnimtion = true;
 	mAnimTimers.emplace_back(new Timer);
 	mAnimTimers[0]->Start();
 	//mAnimTimer.Start();
 	return m_Model->InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
-	//return m_Model.InitAnimation(&cbufBones, &mAnimator, mAnimComp);
 }
 
 bool GameObjectClass::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBuffer_Bones>& cbufBone)
@@ -68,25 +67,19 @@ void GameObjectClass::Shutdown()
 
 void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
 {
-	//static float time;
-	//time += 0.003f;
 	int index = mAnimator.GetCurrentAnimationIndex();
 	if (mPlayAnimtion)
 	{
 		if ((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
 			mAnimTimers[index]->Restart();
 		mAnimator.SetTimpPos((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
-		/*if (time  >= mAnimator.GetCurrentAnimation().duration)
-			time=0.0f;
-		mAnimator.SetTimpPos(time);*/
+		
 		const AnimationChannel* channel = mAnimComp->GetCurrentChannel();
 		if (channel)
 		{
 			mAnimator.Bind(deviceContext);
 		}
 	}
-
-
 	m_Model->Draw(worldMatrix, viewMatrix, projectionMatrix);
 }
 
