@@ -157,7 +157,7 @@ void LightClass::GenerateProjectionMatrix(float screenDepth, float screenNear)
 
 
 	// Setup field of view and screen aspect for a square light source.
-	fieldOfView = (float)XM_PI / 2.0f;
+	fieldOfView = (float)XM_PI * 0.5f;
 	screenAspect = 1.0f;
 
 	// Create the projection matrix for the light.

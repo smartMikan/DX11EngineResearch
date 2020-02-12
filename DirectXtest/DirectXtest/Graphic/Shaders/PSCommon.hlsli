@@ -85,26 +85,45 @@ SamplerState objSamplerState : SAMPLER : register(s0);
 SamplerState shadowSamplerState : SAMPLER : register(s1);
 
 
+#define MAX_PCFRANGE 2
+
 float Shadow(float3 worldPos, float3 normal, float3 light_dir)
 {
+	//pxiel position in shadow viewprojection matrix
     float4 proj_coords = mul(float4(worldPos, 1.0f), ShadowMatrix);
-    proj_coords.xyz /= proj_coords.w;
+    
+	//back to unnormalized value
+	proj_coords.xyz /= proj_coords.w;
 	
+	
+	
+
+
+	//x from (-1,1) to (0,1) y from(-1,1) to (1,0)
     float2 shadow_uv = proj_coords.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
     //float closest_depth = shadowTexture.Sample(shadowSamplerState, shadow_uv).r;
     //float bias = max(0.005 * (1.0 - dot(normal, light_dir)), 0.0005f);
     float bias = 0.00025f;
+	
+	//currentdepth of this pixel in shadow map
     float current_depth = proj_coords.z - bias;
 	
+	if (current_depth < 0.0f)
+	{
+		return 0.0f;
+	}
+
     float shadow = 0.0f;
-    //blur
-    int range = 2;
+    
+	//Percentage-Closer Filtering Blur
+    int range = MAX_PCFRANGE;
     float2 texelSize = 1.0 / 1024.0;
     
     for (int y = -range; y <= range; y++)
     {
         for (int x = -range; x <= range; x++)
         {
+
             float pcfDepth = shadowTexture.Sample(shadowSamplerState, shadow_uv + float2(x, y) * texelSize).r;
             shadow += current_depth > pcfDepth ? 0.0f : 1.0f;
 

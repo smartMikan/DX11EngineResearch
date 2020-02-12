@@ -1,40 +1,18 @@
-﻿#pragma once
-///
-//To keep the projects simple I used the windows input for the time being until I do a project on DirectInput (which is far superior). 
-//The input class handles the user input from the keyboard. 
-//This class is given input from the SystemClass::MessageHandler function.
-//The input object will store the state of each key in a keyboard array. 
-//When queried it will tell the calling functions if a certain key is pressed.
+#pragma once
 
 
-
-//////////////////////////
-// Filename: inputclass.h
-//////////////////////////
-#ifndef _INPUTCLASS_H_
-#define _INPUTCLASS_H_
 
 //You need to define the version of Direct Input you are using in the header or the compiler will generate annoying messages that it is defaulting to version 8.
-///////////////////////////////
-// PRE-PROCESSING DIRECTIVES //
-///////////////////////////////
+
 #define DIRECTINPUT_VERSION 0x0800
 
 
-//The following two libraries need to be linked for Direct Input to work.
-
-/////////////
-// LINKING //
-/////////////
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
 #include <dinput.h>
 
 
-//////////////////////////
-// Class name: InputClass
-//////////////////////////
 class InputClass
 {
 public:
@@ -48,6 +26,7 @@ public:
 
 	struct Key
 	{
+
 		bool isPressed;
 		bool isReleased;
 	};
@@ -55,7 +34,150 @@ public:
 
 	enum KeyCode
 	{
-
+		ESCAPE = 0x01,
+		Num1 = 0x02,
+		Num2 = 0x03,
+		Num3 = 0x04,
+		Num4 = 0x05,
+		Num5 = 0x06,
+		Num6 = 0x07,
+		Num7 = 0x08,
+		Num8 = 0x09,
+		Num9 = 0x0A,
+		Num0 = 0x0B,
+		MINUS = 0x0C,    /* - on main keyboard */
+		EQUALS = 0x0D,
+		BACK = 0x0E,  /* backspace */
+		TAB = 0x0F,
+		Q = 0x10,
+		W = 0x11,
+		E = 0x12,
+		R = 0x13,
+		T = 0x14,
+		Y = 0x15,
+		U = 0x16,
+		I = 0x17,
+		O = 0x18,
+		P = 0x19,
+		LBRACKET = 0x1A,
+		RBRACKET = 0x1B,
+		RETURN = 0x1C,  /* Enter on main keyboard */
+		LCONTROL = 0x1D,
+		A = 0x1E,
+		S = 0x1F,
+		D = 0x20,
+		F = 0x21,
+		G = 0x22,
+		H = 0x23,
+		J = 0x24,
+		K = 0x25,
+		L = 0x26,
+		SEMICOLON = 0x27,
+		APOSTROPHE = 0x28,
+		GRAVE = 0x29,   /* accent grave */
+		LSHIFT = 0x2A,
+		BACKSLASH = 0x2B,
+		Z = 0x2C,
+		X = 0x2D,
+		C = 0x2E,
+		V = 0x2F,
+		B = 0x30,
+		N = 0x31,
+		M = 0x32,
+		COMMA = 0x33,
+		PERIOD = 0x34,    /* . on main keyboard */
+		SLASH = 0x35,   /* / on main keyboard */
+		RSHIFT = 0x36,
+		MULTIPLY = 0x37,    /* * on numeric keypad */
+		LMENU = 0x38,    /* left Alt */
+		SPACE = 0x39,
+		CAPITAL = 0x3A,
+		F1 = 0x3B,
+		F2 = 0x3C,
+		F3 = 0x3D,
+		F4 = 0x3E,
+		F5 = 0x3F,
+		F6 = 0x40,
+		F7 = 0x41,
+		F8 = 0x42,
+		F9 = 0x43,
+		F10 = 0x44,
+		NUMLOCK = 0x45,
+		SCROLL = 0x46,    /* Scroll Lock */
+		NUMPAD7 = 0x47,
+		NUMPAD8 = 0x48,
+		NUMPAD9 = 0x49,
+		SUBTRACT = 0x4A,   /* - on numeric keypad */
+		NUMPAD4 = 0x4B,
+		NUMPAD5 = 0x4C,
+		NUMPAD6 = 0x4D,
+		ADD = 0x4E,    /* + on numeric keypad */
+		NUMPAD1 = 0x4F,
+		NUMPAD2 = 0x50,
+		NUMPAD3 = 0x51,
+		NUMPAD0 = 0x52,
+		DECIMAL = 0x53,    /* . on numeric keypad */
+		OEM_102 = 0x56,    /* <> or \| on RT 102-key keyboard (Non-U.S.) */
+		F11 = 0x57,
+		F12 = 0x58,
+		F13 = 0x64,    /*                     (NEC PC98) */
+		F14 = 0x65,    /*                     (NEC PC98) */
+		F15 = 0x66,    /*                     (NEC PC98) */
+		KANA = 0x70,    /* (Japanese keyboard)            */
+		ABNT_C1 = 0x73,    /* /? on Brazilian keyboard */
+		CONVERT = 0x79,    /* (Japanese keyboard)            */
+		NOCONVERT = 0x7B,    /* (Japanese keyboard)            */
+		YEN = 0x7D,    /* (Japanese keyboard)            */
+		ABNT_C2 = 0x7E,    /* Numpad . on Brazilian keyboard */
+		NUMPADEQUALS = 0x8D,    /* = on numeric keypad (NEC PC98) */
+		PREVTRACK = 0x90,    /* Previous Track (CIRCUMFLEX on Japanese keyboard) */
+		AT = 0x91,    /*                     (NEC PC98) */
+		COLON = 0x92,    /*                     (NEC PC98) */
+		UNDERLINE = 0x93,    /*                     (NEC PC98) */
+		KANJI = 0x94,    /* (Japanese keyboard)            */
+		STOP = 0x95,    /*                     (NEC PC98) */
+		AX = 0x96,    /*                     (Japan AX) */
+		UNLABELED = 0x97,    /*                        (J3100) */
+		NEXTTRACK = 0x99,    /* Next Track */
+		NUMPADENTER = 0x9C,    /* Enter on numeric keypad */
+		RCONTROL = 0x9D,
+		MUTE = 0xA0,    /* Mute */
+		CALCULATOR = 0xA1,    /* Calculator */
+		PLAYPAUSE = 0xA2,    /* Play / Pause */
+		MEDIASTOP = 0xA4,    /* Media Stop */
+		VOLUMEDOWN = 0xAE,    /* Volume - */
+		VOLUMEUP = 0xB0,    /* Volume + */
+		WEBHOME = 0xB2,    /* Web home */
+		NUMPADCOMMA = 0xB3,    /* , on numeric keypad (NEC PC98) */
+		DIVIDE = 0xB5,    /* / on numeric keypad */
+		SYSRQ = 0xB7,
+		RMENU = 0xB8,    /* right Alt */
+		PAUSE = 0xC5,    /* Pause */
+		HOME = 0xC7,    /* Home on arrow keypad */
+		UP = 0xC8,    /* UpArrow on arrow keypad */
+		PRIOR = 0xC9,    /* PgUp on arrow keypad */
+		LEFT = 0xCB,    /* LeftArrow on arrow keypad */
+		RIGHT = 0xCD,    /* RightArrow on arrow keypad */
+		END = 0xCF,    /* End on arrow keypad */
+		DOWN = 0xD0,    /* DownArrow on arrow keypad */
+		NEXT = 0xD1,    /* PgDn on arrow keypad */
+		INSERT = 0xD2,    /* Insert on arrow keypad */
+		DEL = 0xD3,    /* Delete on arrow keypad */
+		LWIN = 0xDB,    /* Left Windows key */
+		RWIN = 0xDC,    /* Right Windows key */
+		APPS = 0xDD,    /* AppMenu key */
+		POWER = 0xDE,    /* System Power */
+		SLEEP = 0xDF,    /* System Sleep */
+		WAKE = 0xE3,   /* System Wake */
+		WEBSEARCH = 0xE5,    /* Web Search */
+		WEBFAVORITES = 0xE6,    /* Web Favorites */
+		WEBREFRESH = 0xE7,    /* Web Refresh */
+		WEBSTOP = 0xE8,    /* Web Stop */
+		WEBFORWARD = 0xE9,    /* Web Forward */
+		WEBBACK = 0xEA,    /* Web Back */
+		MYCOMPUTER = 0xEB,    /* My Computer */
+		MAIL = 0xEC,    /* Mail */
+		MEDIASELECT = 0xED    /* Media Select */
 	};
 
 
@@ -69,38 +191,22 @@ public:
 	bool Frame();
 
 	bool IsEscapePressed();
-	bool IsSpacePressed();
-	bool IsLeftCtrlPressed();
 	void GetMouseLocation(int&, int&);
 	
-	bool IsLeftPressed();
-	bool IsRightPressed();
-	bool IsUpPressed();
-	bool IsDownPressed();
-	bool IsAPressed();
-	bool IsDPressed();
-	bool IsZPressed();
-	bool IsQPressed();
-	bool IsWPressed();
-	bool IsSPressed();
-	bool IsPgUpPressed();
-	bool IsPgDownPressed();
-
-	bool IsF1Toggled();
-	bool IsF2Toggled();
-
-	bool IsF3Toggled();
-	bool IsF4Toggled();
 	
-	bool IsF5Toggled();
-	bool IsF6Toggled();
 
 	
 	float GetHorizontal();
 	float GetVertical();
 
-	KeyCode keylist;
+	KeyCode KeyList;
 	bool IsKeyPressed(KeyCode key);
+	bool IsKeyPressed(int keyCode);
+	bool IsKeyToggled(KeyCode key);
+	bool IsKeyToggled(int keyCode);
+
+	bool GetMouseButtonDown(int mouseButtonNum);
+	bool GetMouseButton(int mouseButtonNum);
 
 	/*void KeyDown(unsigned int);
 	void KeyUp(unsigned int);
@@ -118,26 +224,16 @@ private:
 	IDirectInputDevice8* m_keyboard;
 	IDirectInputDevice8* m_mouse;
 	unsigned char m_keyboardState[256];
+	Key  m_keys[256];
+
+	Key m_mousebuttons[4];
 	DIMOUSESTATE m_mouseState;
+	DIMOUSESTATE m_mouseLastFrameState;
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
 	
 	Axis* m_horizontal,* m_vertical;
 
-	bool m_F1_released;
-	bool m_F2_released;
-	bool m_F3_released;
-	bool m_F4_released;
-	bool m_F5_released;
-	bool m_F6_released;
-
-
-	
-	Key  m_keys[256];
-	//
 	//bool m_keys[256];	//Down:True //Up:False
 };
-
-#endif
-

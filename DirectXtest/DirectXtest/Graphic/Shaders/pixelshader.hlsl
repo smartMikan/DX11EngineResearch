@@ -103,6 +103,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     else
     {
         vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
+		float distanceToLight = distance(dynamicLightPosition, input.inWorldPos);
         attenuationFactor = 1 / (dynamicLightAttenuation_a);
     }
     

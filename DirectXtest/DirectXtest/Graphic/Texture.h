@@ -4,7 +4,7 @@
 #include "Color.h"
 #include <assimp/material.h>
 #include "../../Utility/StringHelper.h"
-
+#include<memory>
 
 
 enum TexFormat

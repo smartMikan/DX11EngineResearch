@@ -1,4 +1,4 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // Filename: userinterfaceclass.cpp
 ///////////////////////////////////////////////////////////////////////////////
 #include "userinterfaceclass.h"
@@ -303,8 +303,7 @@ void UserInterfaceClass::Shutdown()
 }
 
 
-bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps,int cpu, float posX, float posY, float posZ,
-	float rotX, float rotY, float rotZ)
+bool UserInterfaceClass::Frame(ID3D11DeviceContext* deviceContext, int fps,int cpu, float posX, float posY, float posZ,float rotX, float rotY, float rotZ)
 {
 	bool result;
 

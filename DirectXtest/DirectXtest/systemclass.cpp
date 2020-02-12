@@ -1,4 +1,4 @@
-﻿/////////////////////////////
+/////////////////////////////
 // Filename: SystemClass.cpp
 /////////////////////////////
 #include "systemclass.h"
@@ -33,9 +33,6 @@ SystemClass::~SystemClass()
 {
 }
 
-///
-///イニシャライザー
-///
 //The following Initialize function does all the setup for the application. 
 //It first calls InitializeWindows which will create the window for our application to use. 
 //It also creates and initializes both the input and graphics objects that the application will use for handling user input and rendering graphics to the screen.

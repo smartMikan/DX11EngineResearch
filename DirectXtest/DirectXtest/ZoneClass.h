@@ -24,7 +24,7 @@ const float SHADOWMAP_NEAR = 1.0f;
 #include "lightclass.h"
 #include "particlesystemclass.h"
 
-#include"SkinnedModelClass.h"
+//#include"SkinnedModelClass.h"
 
 #include "rendertextureclass.h"
 #include "Graphic/Shaders.h"
@@ -49,9 +49,10 @@ public:
 	IVertexShader* CreateVertexShader(const std::string& filename);
 
 	LightClass* m_Light;
-	SkinnedModelInstance mCharacterInstance2;
+	//SkinnedModelInstance mCharacterInstance2;
 	GameObjectClass* m_AnimModel;
 	GameObjectClass* m_UnMoveModel;
+	GameObjectClass* m_Player;
 	
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
@@ -82,10 +83,10 @@ private:
 
 
 	//M3d Character Model Data
-	SkinnedModelClass* mCharacterModel;
+	//SkinnedModelClass* mCharacterModel;
 
 	//Character Instance
-	SkinnedModelInstance mCharacterInstance1;
+	//SkinnedModelInstance mCharacterInstance1;
 	
 	ParticleSystemClass* m_ParticleSystem;
 

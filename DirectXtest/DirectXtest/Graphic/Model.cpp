@@ -52,7 +52,7 @@ bool Model::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animat
 	return true;
 }
 
-bool Model::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator * animator_out, AnimationComponent * animComp)
+bool Model::AddAnimation(const std::string & filePath, Animator * animator_out, AnimationComponent * animComp, bool disablerootTrans = false, bool disablerootRot = false, bool disablerootScale = false)
 {
 	this->directory = StringHelper::GetDirectoryFromPath(filePath);
 
@@ -91,42 +91,79 @@ bool Model::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBu
 				continue;
 			}
 
+			
+
 			AnimationChannel& channel = animation.channels[channel_index];
 			channel.node_index = node_index;
+			channel.channel_name = pNodeAnim->mNodeName.C_Str();
 
-			channel.position_keyframes.reserve(pNodeAnim->mNumPositionKeys);
-			for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumPositionKeys; keyframe_index++)
+
+			if (disablerootTrans && channel.channel_name == m_Bones[0].name)
 			{
-				const aiVectorKey& ai_key = pNodeAnim->mPositionKeys[keyframe_index];
-
+				//XMFLOAT4X4 temp;
+				//XMStoreFloat4x4(&temp, m_Avator[node_index].local_transform);
+				channel.position_keyframes.reserve(1);
+				const aiVectorKey& ai_key = pNodeAnim->mPositionKeys[0];
 				PositionKeyFrame keyframe;
 				keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
 				keyframe.value.x = ai_key.mValue.x;
 				keyframe.value.y = ai_key.mValue.y;
 				keyframe.value.z = ai_key.mValue.z;
-
 				channel.position_keyframes.push_back(keyframe);
+				animation.rootChannel = channel;
 			}
-
-			channel.rotation_keyframes.reserve(pNodeAnim->mNumRotationKeys);
-			for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumRotationKeys; keyframe_index++)
+			else
 			{
-				const aiQuatKey& ai_key = pNodeAnim->mRotationKeys[keyframe_index];
+				channel.position_keyframes.reserve(pNodeAnim->mNumPositionKeys);
+				for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumPositionKeys; keyframe_index++)
+				{
+					const aiVectorKey& ai_key = pNodeAnim->mPositionKeys[keyframe_index];
 
-				RotationKeyFrame keyframe;
-				keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
-				keyframe.value.x = ai_key.mValue.x;
-				keyframe.value.y = ai_key.mValue.y;
-				keyframe.value.z = ai_key.mValue.z;
-				keyframe.value.w = ai_key.mValue.w;
+					PositionKeyFrame keyframe;
+					keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
+					keyframe.value.x = ai_key.mValue.x;
+					keyframe.value.y = ai_key.mValue.y;
+					keyframe.value.z = ai_key.mValue.z;
 
-				channel.rotation_keyframes.push_back(keyframe);
+					channel.position_keyframes.push_back(keyframe);
+				}
 			}
+			if (disablerootRot && channel.channel_name == m_Bones[0].name) {
+				channel.rotation_keyframes.reserve(1);
 
-			channel.scale_keyframes.reserve(pNodeAnim->mNumScalingKeys);
-			for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumScalingKeys; keyframe_index++)
+				const aiQuatKey& ai_quatkey = pNodeAnim->mRotationKeys[0];
+
+				RotationKeyFrame quatkeyframe;
+				quatkeyframe.timePos = (float)ai_quatkey.mTime / ticks_per_second;
+				quatkeyframe.value.x = ai_quatkey.mValue.x;
+				quatkeyframe.value.y = ai_quatkey.mValue.y;
+				quatkeyframe.value.z = ai_quatkey.mValue.z;
+				quatkeyframe.value.w = ai_quatkey.mValue.w;
+				channel.rotation_keyframes.push_back(quatkeyframe);
+				}
+			else 
 			{
-				const aiVectorKey& ai_key = pNodeAnim->mScalingKeys[keyframe_index];
+				channel.rotation_keyframes.reserve(pNodeAnim->mNumRotationKeys);
+				for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumRotationKeys; keyframe_index++)
+				{
+					const aiQuatKey& ai_key = pNodeAnim->mRotationKeys[keyframe_index];
+
+					RotationKeyFrame keyframe;
+					keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
+					keyframe.value.x = ai_key.mValue.x;
+					keyframe.value.y = ai_key.mValue.y;
+					keyframe.value.z = ai_key.mValue.z;
+					keyframe.value.w = ai_key.mValue.w;
+
+					channel.rotation_keyframes.push_back(keyframe);
+				}
+			}
+				
+			if (disablerootScale && channel.channel_name == m_Bones[0].name) 
+			{
+				channel.scale_keyframes.reserve(1);
+				
+				const aiVectorKey& ai_key = pNodeAnim->mScalingKeys[0];
 
 				ScaleKeyFrame keyframe;
 				keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
@@ -135,11 +172,30 @@ bool Model::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBu
 				keyframe.value.z = ai_key.mValue.z;
 
 				channel.scale_keyframes.push_back(keyframe);
+				
 			}
+			else
+			{
+				channel.scale_keyframes.reserve(pNodeAnim->mNumScalingKeys);
+				for (unsigned int keyframe_index = 0; keyframe_index < pNodeAnim->mNumScalingKeys; keyframe_index++)
+				{
+					const aiVectorKey& ai_key = pNodeAnim->mScalingKeys[keyframe_index];
 
+					ScaleKeyFrame keyframe;
+					keyframe.timePos = (float)ai_key.mTime / ticks_per_second;
+					keyframe.value.x = ai_key.mValue.x;
+					keyframe.value.y = ai_key.mValue.y;
+					keyframe.value.z = ai_key.mValue.z;
 
-			animComp->AddChannel(animation.name, channel_index);
+					channel.scale_keyframes.push_back(keyframe);
+				}
+			}
+			
+			animComp->AddChannel(channel.channel_name, channel_index);
 		}
+		
+
+
 		m_Animations.push_back(animation);
 		animator_out->AddAnim(animation);
 	}
@@ -735,5 +791,5 @@ void Model::ProcessAnimation(Animator* animator_out, ConstantBuffer<ConstantBuff
 		}
 		m_Animations.push_back(animation);
 	}
-	*animator_out = Animator(std::move(m_Avator), std::move(m_Bones), std::move(m_Animations), cbufBone);
+	*animator_out = Animator(m_Avator, m_Bones, std::move(m_Animations), cbufBone);
 }

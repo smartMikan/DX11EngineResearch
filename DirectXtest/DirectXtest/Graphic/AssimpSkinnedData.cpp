@@ -99,7 +99,7 @@ namespace AssimpModel {
 		size_t next_key_frame;
 		GetPrevAndNextKeyFrame(keyframes, timePos, *last_pos_index, &prev_key_frame, &next_key_frame);
 		*last_pos_index = prev_key_frame;
-		return InterpolatePosKeyFrame(keyframes[prev_key_frame], keyframes[next_key_frame], timePos);
+		return InterpolateScaleKeyFrame(keyframes[prev_key_frame], keyframes[next_key_frame], timePos);
 	}
 
 	DirectX::XMMATRIX AnimationChannel::GetSample(float timePos) const

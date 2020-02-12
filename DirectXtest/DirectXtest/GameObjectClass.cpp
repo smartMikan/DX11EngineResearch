@@ -46,11 +46,12 @@ bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBo
 	return m_Model->InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
 }
 
-bool GameObjectClass::AddAnimation(const std::string & filePath, ConstantBuffer<ConstantBuffer_Bones>& cbufBone)
+bool GameObjectClass::AddAnimation(const std::string & filePath, bool disablerootTrans, bool disablerootRot, bool disablerootScale)
 {
+	assert(mAnimComp.get() != nullptr);
 	mAnimTimers.emplace_back(new Timer);
 	mAnimTimers[mAnimator.GetNumAnimations()]->Start();
-	return m_Model->AddAnimation(filePath, &cbufBone, &mAnimator, mAnimComp.get());
+	return m_Model->AddAnimation(filePath, &mAnimator, mAnimComp.get(),disablerootTrans, disablerootRot, disablerootScale);
 }
 
 
@@ -63,6 +64,12 @@ void GameObjectClass::Shutdown()
 		delete m_Model;
 		m_Model = 0;
 	}
+}
+
+void GameObjectClass::Frame(InputClass* input)
+{
+
+
 }
 
 void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
@@ -85,7 +92,19 @@ void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMa
 
 void GameObjectClass::SwitchAnim(int index)
 {
-	mAnimator.SetCurrentAnimationIndex(index);
+	if (mAnimator.GetCurrentAnimationIndex() == index) {
+		return;
+	}
+	else
+	{
+		mAnimator.SetCurrentAnimationIndex(index);
+	}
+}
+
+void GameObjectClass::StartAnim(int index)
+{
+	SwitchAnim(index);
+	mAnimTimers[index]->Restart();
 }
 
 
@@ -101,6 +120,29 @@ bool GameObjectClass::SetWorldMatrix(XMMATRIX world)
 	XMStoreFloat4x4(&pos, world);
 	m_Position.SetPosition(pos._14,pos._24,pos._34);
 	return true;
+}
+
+float GameObjectClass::GetJumpHeight()
+{
+	float t = (float)m_jumpTimer.GetMiliseceondsElapsed() / (1000.0f);
+	float s = m_jumpSpeed * t - 0.5f * m_jumpAcce * t * t;
+	if (s < 0) {
+		s = 0;
+		isJump = false;
+		m_jumpAcce = 0;
+		m_jumpSpeed = 0;
+		m_jumpTimer.Stop();
+	}
+	return  s;
+}
+
+float GameObjectClass::Jump(float startSpeed,float acce)
+{
+	m_jumpAcce = acce;
+	m_jumpSpeed = startSpeed;
+	m_jumpTimer.Restart();
+	isJump = true;
+	return 0.0f;
 }
 
 

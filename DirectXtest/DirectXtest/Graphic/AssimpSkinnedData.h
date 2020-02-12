@@ -73,6 +73,7 @@ namespace AssimpModel
 		std::vector<RotationKeyFrame> rotation_keyframes;
 		std::vector<ScaleKeyFrame> scale_keyframes;
 		int node_index;
+		std::string channel_name;
 
 	private:
 		void ResetCache() const;
@@ -89,6 +90,7 @@ namespace AssimpModel
 	{
 		std::string name;
 		std::vector<AnimationChannel> channels;
+		AnimationChannel rootChannel;
 		float duration;
 
 		//Get all bone trans at specific timepos
@@ -156,9 +158,9 @@ namespace AssimpModel
 			m_Animator(animator)
 		{}
 
-		void AddChannel(const std::string& animName, size_t channelIndex) 
+		void AddChannel(const std::string& nodeName, size_t channelIndex) 
 		{
-			m_Channels.emplace_back(animName, channelIndex);
+			m_Channels.emplace_back(nodeName, channelIndex);
 		}
 
 
@@ -179,7 +181,7 @@ namespace AssimpModel
 		const AnimationChannel* GetCurrentChannel() 
 		{
 			const AnimationClip& currentAnim = m_Animator->GetCurrentAnimation();
-			return GetChannel(currentAnim.name);
+			return GetChannel(currentAnim.channels[0].channel_name);
 		}
 
 

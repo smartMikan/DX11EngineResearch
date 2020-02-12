@@ -14,9 +14,10 @@ ZoneClass::ZoneClass()
 	m_NebulaSkyCube = 0;
 	m_PlanetSkyCube = 0;
 	//m_Model = 0;
-	mCharacterModel = 0;
+	//mCharacterModel = 0;
 	m_AnimModel = 0;
 	m_UnMoveModel = 0;
+	m_Player = 0;
 	m_Frustum = 0;
 	m_ParticleSystem = 0;
 
@@ -38,9 +39,10 @@ ZoneClass::ZoneClass(const ZoneClass& other)
 	this->m_DesertSkyCube = other.m_DesertSkyCube;
 	this->m_NebulaSkyCube = other.m_NebulaSkyCube;
 	this->m_PlanetSkyCube = other.m_PlanetSkyCube;
-	this->mCharacterModel = other.mCharacterModel;
+	//this->mCharacterModel = other.mCharacterModel;
 	this->m_AnimModel = other.m_AnimModel;
 	this->m_UnMoveModel = other.m_UnMoveModel;
+	this->m_Player = other.m_Player;
 	this->m_Frustum = other.m_Frustum;
 	this->m_ParticleSystem = other.m_ParticleSystem;
 	this->m_RenderTexture = other.m_RenderTexture;
@@ -249,10 +251,31 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	m_AnimModel->InitAnimation(cb_bones);
-	m_AnimModel->AddAnimation("./3DModel/Bellydancing.fbx", cb_bones);
-	m_AnimModel->AddAnimation("./3DModel/Boxing.fbx", cb_bones);
-	m_AnimModel->AddAnimation("./3DModel/sheathsword1.fbx", cb_bones);
+	m_AnimModel->InitAnimation(cb_bones); 
+	m_AnimModel->AddAnimation("./3DModel/Bellydancing.fbx");
+	m_AnimModel->AddAnimation("./3DModel/Boxing.fbx");
+	m_AnimModel->AddAnimation("./3DModel/Hip_Hop_Dancing.fbx");
+	
+	m_Player = new GameObjectClass;
+	if (!m_Player)
+	{
+		return false;
+	}
+	result = m_Player->Initialize("./3DModel/SwordPack/xbot.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_Player->InitAnimation(cb_bones);
+	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldidle.fbx");
+	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldrun.fbx",true);
+	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldslash.fbx",true);
+	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldjump.fbx",true);
+	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield run (2).fbx",true);
+	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield 180 turn.fbx",false,true);
+	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield 180 turn (2).fbx", false, true);
 
 
 	m_UnMoveModel = new GameObjectClass;
@@ -266,8 +289,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
 		return false;
 	}
-
-
+	
 	// Create the light object.
 	m_Light = new LightClass;
 	if (!m_Light)
@@ -282,8 +304,11 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	m_Light->position.SetPosition(12.0, 8.0f, 12.0f);
 
+	m_Light->ambientLightStrength = 0.4f;
+	m_Light->dynamicLightStrength = 3.8f;
+
 	m_Light->GenerateOrthoMatrix(100.0f, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
-	m_Light->GenerateProjectionMatrix(screenDepth,0.1f);
+	m_Light->GenerateProjectionMatrix(screenDepth,1.0f);
 	m_Light->Frame();
 
 
@@ -335,10 +360,10 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 
 	//create SkinModelClass
-	mCharacterModel = new SkinnedModelClass(Direct3D->GetDevice(), string("./3DModel/AnimationFile/soldier.m3d"), wstring(L"./3DModel/AnimationFile/"));
+	//mCharacterModel = new SkinnedModelClass(Direct3D->GetDevice(), string("./3DModel/AnimationFile/soldier.m3d"), wstring(L"./3DModel/AnimationFile/"));
 
 	//create SkinModel Instance
-	mCharacterInstance1.Model = mCharacterModel;
+	/*mCharacterInstance1.Model = mCharacterModel;
 	mCharacterInstance2.Model = mCharacterModel;
 	mCharacterInstance1.TimePos = 0.0f;
 	mCharacterInstance2.TimePos = 0.0f;
@@ -348,9 +373,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	mCharacterInstance2.FinalTransforms.resize(mCharacterModel->SkinnedData.BoneCount());
 
 	mCharacterInstance1.position = new PositionClass();
-	mCharacterInstance2.position = new PositionClass();
+	mCharacterInstance2.position = new PositionClass();*/
 
-	XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
+	/*XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
 	XMMATRIX modelRot = XMMatrixRotationY(0);
 	XMMATRIX modelOffset = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	XMStoreFloat4x4(&mCharacterInstance1.World, modelScale * modelRot * modelOffset);
@@ -362,7 +387,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
 	mCharacterInstance1.position->SetPosition(0, 0, 0);
-	mCharacterInstance2.position->SetPosition(10, 0, 15);
+	mCharacterInstance2.position->SetPosition(10, 0, 15);*/
 
 
 	HRESULT hr;
@@ -401,7 +426,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 void ZoneClass::Shutdown()
 {
-	if (mCharacterInstance1.position) {
+	/*if (mCharacterInstance1.position) {
 		delete mCharacterInstance1.position;
 		mCharacterInstance1.position = 0;
 	}
@@ -414,7 +439,7 @@ void ZoneClass::Shutdown()
 	if (mCharacterModel) {
 		delete mCharacterModel;
 		mCharacterModel = 0;
-	}
+	}*/
 
 	// Release the particle system object.
 	if (m_ParticleSystem)
@@ -503,6 +528,18 @@ void ZoneClass::Shutdown()
 		delete m_AnimModel;
 		m_AnimModel = 0;
 	}
+	// Release the Meshmodel object.
+	if (m_UnMoveModel) {
+		m_UnMoveModel->Shutdown();
+		delete m_UnMoveModel;
+		m_UnMoveModel = 0;
+	}
+	// Release the Meshmodel object.
+	if (m_Player) {
+		m_Player->Shutdown();
+		delete m_Player;
+		m_Player = 0;
+	}
 
 	//// Release the model object.
 	//if (m_Model) {
@@ -549,11 +586,11 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 	m_Light->Frame();
 	// Get the view point position/rotation.
-	mCharacterInstance1.position->GetPosition(posX, posY, posZ);
+	//mCharacterInstance1.position->GetPosition(posX, posY, posZ);
 
 	//mCharacterInstance2.position->GetPosition(posX, posY, posZ);
 
-	//m_Position->GetPosition(posX, posY, posZ);
+	m_Player->m_Position.GetPosition(posX, posY, posZ);
 	m_Position->GetRotation(rotX, rotY, rotZ);
 
 	// Do the frame processing for the user interface.
@@ -569,6 +606,9 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 	// Run the frame processing for the particle system.
 	m_ParticleSystem->Frame(frameTime, Direct3D->GetDeviceContext());
 
+	
+
+
 	// If the height is locked to the terrain then position the camera on top of it.
 	if (m_heightLocked)
 	{
@@ -578,8 +618,11 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 		{
 			// If there was a triangle under the camera then position the camera just above it by one meter.
 			//m_Position->SetPosition(posX, height + 5.0f, posZ);
-			mCharacterInstance1.position->SetPosition(posX, height, posZ);
+			//mCharacterInstance1.position->SetPosition(posX, height, posZ);
 			//m_Camera->SetPosition(posX, height, posZ);
+			
+			m_Player->m_Position.SetPosition(posX, height + m_Player->GetJumpHeight(), posZ);
+			
 		}
 	}
 
@@ -600,110 +643,29 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 }
 void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps)
 {
-	bool keyDown;
-	float posX, posY, posZ, rotX, rotY, rotZ;
-	XMFLOAT3 orbitposition = mCharacterInstance1.position->GetPosition();
-		/*XMFLOAT3(1, 1, 1);*/
-	//XMVECTOR a = XMLoadFloat3(&orbitposition);
-	//a = XMVector3TransformCoord(a, modelPosition);
-	//XMStoreFloat3(&orbitposition, a);
-
-	// Set the frame time for calculating the updated position.
-	mCharacterInstance1.position->SetFrameTime(frameTime);
-	m_Position->SetFrameTime(frameTime);
-	m_Light->SetFrameTime(frameTime);
-
-	float Deltatime = 1 / fps;
-
-	//limit the range of delta time
-	if (Deltatime > 1.0f)
-	{
-		Deltatime = 0.0f;
-	}
-
-	// Handle the input.
-	keyDown = Input->IsLeftPressed() || Input->IsAPressed();
-	//m_Position->TurnLeft(keyDown);
-	mCharacterInstance1.position->TurnLeft(keyDown);
-	m_Position->Orbit(keyDown,true,orbitposition);
-
-	keyDown = Input->IsRightPressed() || Input->IsDPressed();
-	//m_Position->TurnRight(keyDown);
-	mCharacterInstance1.position->TurnRight(keyDown);
-	m_Position->Orbit(keyDown, false, orbitposition);
-
-	keyDown = Input->IsUpPressed() || Input->IsWPressed();
-	//m_Position->MoveForward(keyDown);
-	mCharacterInstance1.position->MoveForward(keyDown);
-
-	if (keyDown) {
-		//update the model animation
-		mCharacterInstance1.Update(Deltatime);
-	}
-
-	keyDown = Input->IsDownPressed() || Input->IsSPressed();
-	//m_Position->MoveBackward(keyDown);
-	mCharacterInstance1.position->MoveBackward(keyDown);
-
-	if (keyDown) {
-		//update the model animation
-		mCharacterInstance1.Update(-Deltatime);
-	}
-
-
-	keyDown = Input->IsSpacePressed();
-	//m_Position->MoveUpward(keyDown);
-	mCharacterInstance1.position ->MoveUpward(keyDown);
-
-	keyDown = Input->IsLeftCtrlPressed();
-	//m_Position->MoveDownward(keyDown);
-	mCharacterInstance1.position->MoveDownward(keyDown);
-
-	keyDown = Input->IsPgUpPressed() /*|| Input->GetVertical() < 0*/;
-	m_Position->LookUpward(keyDown);
-
-	keyDown = Input->IsPgDownPressed() /*|| Input->GetVertical() > 0*/;
-	m_Position->LookDownward(keyDown);
-
-	// Get the view point position/rotation.
-	m_Position->GetPosition(posX, posY, posZ);
-	m_Position->GetRotation(rotX, rotY, rotZ);
-
-	mCharacterInstance1.position->SetRotation(0, rotY, 0);
-	// Set the position of the camera.
-	m_Camera->SetPosition(posX, posY, posZ);
-	m_Camera->SetRotation(rotX, rotY, rotZ);
-
-	//// Set the rotation of the light.
-	//keyDown = Input->IsQPressed();
-	//m_Light->TurnLeft(keyDown);
-
-	//keyDown = Input->IsWPressed();
-	//m_Light->TurnRight(keyDown);
-
 	// Determine if the user interface should be displayed or not.
-	if (Input->IsF1Toggled())
+	if (Input->IsKeyToggled(DIK_F1))
 	{
 		m_displayUI = !m_displayUI;
 	}
 
 	// Determine if the terrain should be rendered in wireframe or not.
-	if (Input->IsF2Toggled())
+	if (Input->IsKeyToggled(DIK_F2))
 	{
 		m_wireFrame = !m_wireFrame;
 	}
-	
+
 	// Determine if we should render the lines around each terrain cell.
-	if (Input->IsF3Toggled())
+	if (Input->IsKeyToggled(DIK_F3))
 	{
 		m_cellLines = !m_cellLines;
 	}
 
-	// Determine if we should be locked to the terrain height when we move around or not.
-	if (Input->IsF4Toggled())
-	{
-		m_heightLocked = !m_heightLocked;
-	}
+	//// Determine if we should be locked to the terrain height when we move around or not.
+	//if (Input->IsKeyToggled(DIK_F4))
+	//{
+	//	m_heightLocked = !m_heightLocked;
+	//}
 
 	/*if (Input->IsF5Toggled())
 	{
@@ -715,13 +677,159 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps
 		{
 			m_ParticleSystem->SetParticleProperty(500, 10, 500, -3, 1, 0.2, 1000);
 		}
-		
+
 	}*/
 
-	if (Input->IsF6Toggled())
+	//Switch Sky Cube
+	if (Input->IsKeyToggled(DIK_F6))
 	{
 		m_cubemapsky = (m_cubemapsky + 1) % 6;
 	}
+
+
+	//PlayerInput
+	bool keyDown;
+	float posX, posY, posZ, rotX, rotY, rotZ;
+	//XMFLOAT3 orbitposition = mCharacterInstance1.position->GetPosition();
+	XMFLOAT3 orbitposition = m_Player->m_Position.GetPosition();
+		/*XMFLOAT3(1, 1, 1);*/
+	//XMVECTOR a = XMLoadFloat3(&orbitposition);
+	//a = XMVector3TransformCoord(a, modelPosition);
+	//XMStoreFloat3(&orbitposition, a);
+
+	// Set the frame time for calculating the updated position.
+	//mCharacterInstance1.position->SetFrameTime(frameTime);
+	m_Player->m_Position.SetFrameTime(frameTime);
+
+	if (!m_Player->isAttack && !m_Player->isJump) {
+		m_Player->SwitchAnim(1);
+	}
+	
+	m_Position->SetFrameTime(frameTime);
+	m_Light->SetFrameTime(frameTime);
+	
+
+	float Deltatime = 1 / fps;
+
+	//limit the range of delta time
+	if (Deltatime > 1.0f)
+	{
+		Deltatime = 0.0f;
+	}
+
+	// Handle the input.
+	keyDown = Input->IsKeyPressed(DIK_LEFT) || Input->IsKeyPressed(DIK_A);
+	//m_Position->TurnLeft(keyDown);
+	//mCharacterInstance1.position->TurnLeft(keyDown);
+	m_Player->m_Position.TurnLeft(keyDown);
+	m_Position->Orbit(keyDown,true,orbitposition);
+
+	if (keyDown&&!m_Player->isJump) {
+		//update the model animation
+		//mCharacterInstance1.Update(Deltatime);
+		m_Player->StartAnim(1);
+		m_Player->SwitchAnim(6);
+		m_Player->isAttack = false;
+	}
+
+	keyDown = Input->IsKeyPressed(DIK_RIGHT) || Input->IsKeyPressed(DIK_D);
+	//m_Position->TurnRight(keyDown);
+	//mCharacterInstance1.position->TurnRight(keyDown);
+	m_Player->m_Position.TurnRight(keyDown);
+	m_Position->Orbit(keyDown, false, orbitposition);
+
+	if (keyDown && !m_Player->isJump) {
+		//update the model animation
+		//mCharacterInstance1.Update(Deltatime);
+		m_Player->StartAnim(1);
+		m_Player->SwitchAnim(6);
+		m_Player->isAttack = false;
+	}
+
+	keyDown = Input->IsKeyPressed(DIK_UP) || Input->IsKeyPressed(DIK_W);
+	//m_Position->MoveForward(keyDown);
+	m_Player->m_Position.MoveForward(keyDown);
+
+	if (keyDown && !m_Player->isJump) {
+		//update the model animation
+		//mCharacterInstance1.Update(Deltatime);
+		m_Player->StartAnim(1);
+		m_Player->SwitchAnim(2);
+		m_Player->isAttack = false;
+	}
+
+	keyDown = Input->IsKeyPressed(DIK_DOWN) || Input->IsKeyPressed(DIK_S);
+	//m_Position->MoveBackward(keyDown);
+	//mCharacterInstance1.position->MoveBackward(keyDown);
+	m_Player->m_Position.MoveBackward(keyDown);
+
+	if (keyDown && !m_Player->isJump) {
+		//update the model animation
+		//mCharacterInstance1.Update(-Deltatime);
+		m_Player->StartAnim(1);
+		m_Player->SwitchAnim(5);
+		m_Player->isAttack = false;
+	}
+
+	keyDown = Input->IsKeyPressed(DIK_SPACE);
+	if (keyDown) {
+		
+	}
+	//m_Position->MoveUpward(keyDown);
+	//mCharacterInstance1.position ->MoveUpward(keyDown);
+	//m_Player->Jump(keyDown);
+	if (Input->IsKeyToggled(DIK_SPACE) && !m_Player->isJump)
+	{
+		//update the model animation
+		//mCharacterInstance1.Update(-Deltatime);
+		m_Player->StartAnim(1);
+		m_Player->SwitchAnim(4);
+		m_Player->isAttack = false;
+		m_Player->Jump(10,25);
+	}
+
+	keyDown = Input->GetMouseButtonDown(0);
+	if (keyDown) {
+		//update the model animation
+		//mCharacterInstance1.Update(-Deltatime);
+		m_Player->StartAnim(1);
+		if (m_Player->isAttack) {
+			m_Player->SwitchAnim(3);
+		}
+		else
+		{
+			m_Player->StartAnim(3);
+			m_Player->isAttack = true;
+		}
+		
+
+	}
+
+	keyDown = Input->IsKeyPressed(DIK_LCONTROL);
+	//m_Position->MoveDownward(keyDown);
+	//mCharacterInstance1.position->MoveDownward(keyDown);
+
+	keyDown = Input->IsKeyPressed(DIK_PGUP) /*|| Input->GetVertical() < 0*/;
+	m_Position->LookUpward(keyDown);
+
+	keyDown = Input->IsKeyPressed(DIK_PGDN) /*|| Input->GetVertical() > 0*/;
+	m_Position->LookDownward(keyDown);
+
+	// Get the view point position/rotation.
+	m_Position->GetPosition(posX, posY, posZ);
+	m_Position->GetRotation(rotX, rotY, rotZ);
+
+	// Set the position of the camera.
+	m_Camera->SetPosition(posX, posY, posZ);
+	m_Camera->SetRotation(rotX, rotY, rotZ);
+
+	//Sync the model rotation with camera
+	//mCharacterInstance1.position->SetRotation(0, rotY, 0);
+	m_Player->m_Position.SetRotation(0, rotY, 0);
+
+	m_Light->position.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
+	//m_Light->position.SetRotation(rotX, rotY, rotZ);
+	
 
 	return;
 }
@@ -747,6 +855,7 @@ bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 
 
 	deviceContext->PSSetConstantBuffers(3, 1, cb_ps_shadowMatrix.GetAddress());
+	//animModels
 	deviceContext->VSSetShader(d3dvertexshader_shadowmap_anim.get()->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(d3dvertexshader_shadowmap_anim.get()->GetLayout());
 	deviceContext->PSSetShader(NULL, NULL, 0);
@@ -755,9 +864,8 @@ bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
 	modelPosition = meshModelScale * modelPosition;
 
-	m_AnimModel->SwitchAnim(0);
+	m_AnimModel->SwitchAnim(3);
 	m_AnimModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
 
 	
 	modelPosition = XMMatrixTranslation(15.0f, 0.0f, 30.0f);
@@ -776,13 +884,22 @@ bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	m_AnimModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
 
 
+
+	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	XMMATRIX meshModelRot = m_Player->m_Position.GetRotationMatrix();
+	modelPosition = m_Player->m_Position.GetPositionMatrix();
+	modelPosition = meshModelScale * meshModelRot * modelPosition;
+	m_Player->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
+
+
+	//noanimModels
 	deviceContext->VSSetShader(d3dvertexshader_shadowmap.get()->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(d3dvertexshader_shadowmap.get()->GetLayout());
 	
 
-	XMMATRIX meshModelRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+	meshModelRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
 	meshModelScale = XMMatrixScaling(50.0f, 50.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(12.0f, 0.1f, 30.0f);
+	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(50.0f, 0.1f, 50.0f);
 	m_UnMoveModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
 
 	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
@@ -790,14 +907,12 @@ bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass* ShaderMa
 	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
 	m_UnMoveModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
 
+	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PI, 0.0f);
+	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
+	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2] + 0.001f);
+	m_UnMoveModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
+	
 
-	/*modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-
-	m_AnimModel->SwitchAnim(3);
-	m_AnimModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);*/
 
 	// Reset the render target back to the original back buffer and not the render to texture anymore.
 	Direct3D->SetBackBufferRenderTarget();
@@ -994,6 +1109,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());*/
 
 
+	//WithAnim
 	deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 	deviceContext->VSSetShader(d3dvertexshader_animation.get()->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(d3dvertexshader_animation.get()->GetLayout());
@@ -1010,7 +1126,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
 	modelPosition = meshModelScale * modelPosition;
 
-	m_AnimModel->SwitchAnim(0);
+	m_AnimModel->SwitchAnim(3);
 	m_AnimModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 
 
@@ -1038,16 +1154,23 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 	//m_AnimModel->SwitchAnim(3);
 	//m_AnimModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-	//float Deltatime = 0.01f;
-	
-	deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
+
+	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
+	XMMATRIX meshModelRot = m_Player->m_Position.GetRotationMatrix();
+	modelPosition = m_Player->m_Position.GetPositionMatrix();
+	modelPosition = meshModelScale * meshModelRot * modelPosition;
+	m_Player->Draw(modelPosition, viewMatrix, projectionMatrix);
+
+
+	//NoAnim
+	//deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 	deviceContext->VSSetShader(d3dvertexshader.get()->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(d3dvertexshader.get()->GetLayout());
 	modelPosition = worldMatrix;
 	
-	XMMATRIX meshModelRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	meshModelScale = XMMatrixScaling(200.0f, 200.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(12.0f, 0.1f, 30.0f);
+	meshModelRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+	meshModelScale = XMMatrixScaling(50.0f, 50.0f, 1.0f);
+	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(50.0f, 0.1f, 50.0f);
 	m_UnMoveModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 
 
@@ -1055,44 +1178,52 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
 	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
 	m_UnMoveModel->Draw(modelPosition, viewMatrix, projectionMatrix);
+	
+	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PI, 0.0f);
+	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
+	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]+0.001f);
+	m_UnMoveModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 
 	
 
-	XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
-	XMMATRIX modelRot = XMMatrixRotationY(mCharacterInstance1.position->GetRotationY() * 0.0174532925f);
-	XMFLOAT3 position = mCharacterInstance1.position->GetPosition();
-	XMMATRIX modelOffset = XMMatrixTranslation(position.x, position.y, position.z);
-	//get model world matrix
-	//modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
-	modelPosition = modelScale * modelRot * modelOffset;
-	
-	//render model for each subset
-	for (UINT subset = 0; subset < mCharacterInstance1.Model->SubsetCount; ++subset)
-	{
-		
-		ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance1.FinalTransforms.size(), modelPosition, viewMatrix, projectionMatrix,
-			mCharacterInstance1.Model->DiffuseMapSRV[subset], mCharacterInstance1.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance1.FinalTransforms[0], mCharacterInstance1.Model->Mat[subset]);
-
-		//DrawCall
-		mCharacterInstance1.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
-	}
 
 
+	//float Deltatime = 0.01f;
+	//XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
+	//XMMATRIX modelRot = XMMatrixRotationY(mCharacterInstance1.position->GetRotationY() * 0.0174532925f);
+	//XMFLOAT3 position = mCharacterInstance1.position->GetPosition();
+	//XMMATRIX modelOffset = XMMatrixTranslation(position.x, position.y, position.z);
+	////get model world matrix
+	////modelPosition = XMLoadFloat4x4(&mCharacterInstance1.World);
+	//modelPosition = modelScale * modelRot * modelOffset;
+	//
+	////render model for each subset
+	//for (UINT subset = 0; subset < mCharacterInstance1.Model->SubsetCount; ++subset)
+	//{
+	//	
+	//	ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance1.FinalTransforms.size(), modelPosition, viewMatrix, projectionMatrix,
+	//		mCharacterInstance1.Model->DiffuseMapSRV[subset], mCharacterInstance1.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance1.FinalTransforms[0], mCharacterInstance1.Model->Mat[subset]);
 
-	position = mCharacterInstance2.position->GetPosition();
-	modelOffset = XMMatrixTranslation(position.x, position.y, position.z);
-	modelPosition = modelScale * modelOffset;
+	//	//DrawCall
+	//	mCharacterInstance1.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
+	//}
 
-	//render model for each subset
-	for (UINT subset = 0; subset < mCharacterInstance2.Model->SubsetCount; ++subset)
-	{
 
-		ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance2.FinalTransforms.size(), modelPosition, viewMatrix, projectionMatrix,
-			mCharacterInstance2.Model->DiffuseMapSRV[subset], mCharacterInstance2.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance2.FinalTransforms[0], mCharacterInstance2.Model->Mat[subset]);
 
-		//DrawCall
-		mCharacterInstance2.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
-	}
+	//position = mCharacterInstance2.position->GetPosition();
+	//modelOffset = XMMatrixTranslation(position.x, position.y, position.z);
+	//modelPosition = modelScale * modelOffset;
+
+	////render model for each subset
+	//for (UINT subset = 0; subset < mCharacterInstance2.Model->SubsetCount; ++subset)
+	//{
+
+	//	ShaderManager->RenderSkeletalCharacterShader(Direct3D->GetDeviceContext(), mCharacterInstance2.FinalTransforms.size(), modelPosition, viewMatrix, projectionMatrix,
+	//		mCharacterInstance2.Model->DiffuseMapSRV[subset], mCharacterInstance2.Model->NormalMapSRV[subset], m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetDirection(), m_Camera->GetPosition(), &mCharacterInstance2.FinalTransforms[0], mCharacterInstance2.Model->Mat[subset]);
+
+	//	//DrawCall
+	//	mCharacterInstance2.Model->ModelMesh.Draw(Direct3D->GetDeviceContext(), subset);
+	//}
 
 
 
@@ -1103,13 +1234,14 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	
 	Direct3D->GetWorldMatrix(worldMatrix);
 	XMMATRIX particlePosition;
-	position = mCharacterInstance1.position->GetPosition();
+	//position = mCharacterInstance1.position->GetPosition();
 
-	double angle = atan2(position.x - cameraPosition.x, position.z - cameraPosition.z) * (180.0 / XM_PI);
-	float rotation = (float)angle * 0.0174532925f;
+	//double angle = atan2(position.x - cameraPosition.x, position.z - cameraPosition.z) * (180.0 / XM_PI);
+	//float rotation = (float)angle * 0.0174532925f;
+	float camrotation = m_Camera->GetRotation().y;
 
 	particlePosition = worldMatrix;
-	//particlePosition *= XMMatrixRotationY(rotation);
+	particlePosition *= XMMatrixRotationY(camrotation);
 	particlePosition = XMMatrixTranslation(255.0f, 3.0f, 255.0f);
 	//particlePosition *= XMMatrixTranslation(position.x, position.y + 2.0f, position.z);
 
@@ -1202,6 +1334,7 @@ bool ZoneClass::InitializeShaders()
 	{
 		return false;
 	}
+	return true;
 }
 
 IVertexShader* ZoneClass::CreateVertexShader(const std::string& filename)

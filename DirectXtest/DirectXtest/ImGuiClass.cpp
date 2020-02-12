@@ -55,8 +55,8 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	diffusecolor[1] = zone->m_Light->GetDiffuseColor().y;
 	diffusecolor[2] = zone->m_Light->GetDiffuseColor().z;
 
-	float timepos;
-	timepos = zone->mCharacterInstance2.TimePos;
+	/*float timepos;
+	timepos = zone->mCharacterInstance2.TimePos;*/
 
 
 
@@ -83,7 +83,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::ColorEdit3("Light Ambient", ambientcolor);
 	ImGui::ColorEdit3("Light Diffuse", diffusecolor);
 	zone->m_Light->position.SetRotation(lightRot[0], lightRot[1], lightRot[2]);
-	zone->m_Light->position.SetPosition(lightpos[0],lightpos[1],lightpos[2]);
+	//zone->m_Light->position.SetPosition(lightpos[0],lightpos[1],lightpos[2]);
 	zone->m_Light->SetAmbientColor(ambientcolor[0], ambientcolor[1], ambientcolor[2],1.0f);
 	zone->m_Light->SetDiffuseColor(diffusecolor[0],diffusecolor[1],diffusecolor[2],1.0f);
 	ImGui::DragFloat("AmbientStrength", &zone->m_Light->ambientLightStrength, 0.01, 0.0f, 1.0f);
@@ -95,14 +95,14 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::End();
 
 
-	ImGui::Begin("Anim Model Instance");
-	ImGui::Text("Animation Clip: ");
-	ImGui::SameLine();
-	ImGui::Text(zone->mCharacterInstance2.ClipName.c_str());
-	ImGui::SliderFloat("AnimClipTime", &timepos, 0.0f, zone->mCharacterInstance2.Model->SkinnedData.GetClipEndTime(zone->mCharacterInstance2.ClipName));
-	zone->mCharacterInstance2.Update(timepos - zone->mCharacterInstance2.TimePos);
+	//ImGui::Begin("Anim Model Instance");
+	//ImGui::Text("Animation Clip: ");
+	//ImGui::SameLine();
+	//ImGui::Text(zone->mCharacterInstance2.ClipName.c_str());
+	//ImGui::SliderFloat("AnimClipTime", &timepos, 0.0f, zone->mCharacterInstance2.Model->SkinnedData.GetClipEndTime(zone->mCharacterInstance2.ClipName));
+	//zone->mCharacterInstance2.Update(timepos - zone->mCharacterInstance2.TimePos);
 
-	ImGui::End();
+	//ImGui::End();
 
 
 

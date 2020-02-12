@@ -33,11 +33,11 @@ public:
 	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<CB_VS_MatrixBuffer>& wvpMatrix, ConstantBuffer<CB_PS_Material>& cb_ps_material, IVertexShader* pVertexShader);
 	
-	void Update(float timepos);
+	//void Update(float timepos);
 
 	void Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
 	bool InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator* animator_out, AnimationComponent* animComp);
-	bool AddAnimation(const std::string& filePath, ConstantBuffer<ConstantBuffer_Bones>* cbufBone,Animator* animator_out, AnimationComponent* animComp);
+	bool AddAnimation(const std::string& filePath,Animator* animator_out, AnimationComponent* animComp, bool disablerootTrans,bool disablerootRot, bool disablerootScale);
 
 
 private:
@@ -81,22 +81,12 @@ private:
 	std::unordered_map<std::string, aiBone*> m_mapBoneNameToAiBone;
 	std::unordered_map<std::string, int> m_mapBoneNameToIndex;
 	std::unordered_map<std::string, int> m_mapNodeNameToIndex;
+	std::string RootBoneName;
 
 	std::vector<AssimpModel::AnimationClip> m_Animations;
 };
 
 
-struct AssimpSkinnedModelInstance
-{
-	PositionClass* position;
-	Model* Model;
-	float TimePos;
-	std::string ClipName;
-	int ClipIndex;
-	XMFLOAT4X4 World;
-	std::vector<XMFLOAT4X4> FinalTransforms;
-
-};
 
 
 //https://sourceforge.net/p/assimp/discussion/817654/thread/5462cbf5/

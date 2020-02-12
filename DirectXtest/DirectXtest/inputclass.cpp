@@ -1,4 +1,4 @@
-﻿////////////////////////////
+////////////////////////////
 // Filename: inputclass.cpp
 ////////////////////////////
 
@@ -12,6 +12,7 @@ InputClass::InputClass()
 	m_mouse = 0;
 	m_horizontal = 0;
 	m_vertical = 0;
+	
 }
 
 
@@ -67,7 +68,7 @@ bool InputClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int
 	//This focus loss generally happens when other windows become the main focus over your window or your window is minimized.
 
 	// Set the cooperative level of the keyboard to not share with other programs.
-	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE);
+	result = m_keyboard->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if (FAILED(result))
 	{
 		return false;
@@ -256,6 +257,15 @@ bool InputClass::ReadMouse()
 {
 	HRESULT result;
 
+	m_mouseLastFrameState.lX = m_mouseState.lX;
+	m_mouseLastFrameState.lY = m_mouseState.lY;
+	m_mouseLastFrameState.lZ = m_mouseState.lZ;
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_mouseLastFrameState.rgbButtons[i] = m_mouseState.rgbButtons[i];
+	}
+
 
 	// Read the mouse device.
 	result = m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
@@ -311,48 +321,6 @@ bool InputClass::IsEscapePressed()
 	return false;
 }
 
-bool InputClass::IsSpacePressed()
-{
-	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
-	if (m_keyboardState[DIK_SPACE] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsLeftCtrlPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the escape key is currently being pressed.
-	if (m_keyboardState[DIK_LCONTROL] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsLeftPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the LeftArrow key is currently being pressed.
-	if (m_keyboardState[DIK_LEFTARROW] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool InputClass::IsRightPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the RightArrow key is currently being pressed.
-	if (m_keyboardState[DIK_RIGHTARROW] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
 //GetMouseLocation is a helper function I wrote which returns the location of the mouse. 
 //GraphicsClass can get this info and then use TextClass to render the mouse X and Y position to the screen.
 void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
@@ -360,237 +328,6 @@ void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
 	mouseX = m_mouseX;
 	mouseY = m_mouseY;
 	return;
-}
-
-bool InputClass::IsUpPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_UP] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-
-bool InputClass::IsDownPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_DOWN] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-
-bool InputClass::IsAPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_A] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsDPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_D] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-
-bool InputClass::IsZPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_Z] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsQPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_Q] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsWPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_W] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsSPressed()
-{
-
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_S] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsPgUpPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_PGUP] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-
-bool InputClass::IsPgDownPressed()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_PGDN] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-
-bool InputClass::IsF1Toggled()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_F1] & 0x80)
-	{
-		if (m_F1_released)
-		{
-			m_F1_released = false;
-			return true;
-		}
-	}
-	else
-	{
-		m_F1_released = true;
-	}
-
-	return false;
-}
-
-
-bool InputClass::IsF2Toggled()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_F2] & 0x80)
-	{
-		if (m_F2_released)
-		{
-			m_F2_released = false;
-			return true;
-		}
-	}
-	else
-	{
-		m_F2_released = true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsF3Toggled()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_F3] & 0x80)
-	{
-		if (m_F3_released)
-		{
-			m_F3_released = false;
-			return true;
-		}
-	}
-	else
-	{
-		m_F3_released = true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsF4Toggled()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_F4] & 0x80)
-	{
-		if (m_F4_released)
-		{
-			m_F4_released = false;
-			return true;
-		}
-	}
-	else
-	{
-		m_F4_released = true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsF5Toggled()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_F5] & 0x80)
-	{
-		if (m_F5_released)
-		{
-			m_F5_released = false;
-			return true;
-		}
-	}
-	else
-	{
-		m_F5_released = true;
-	}
-
-	return false;
-}
-
-bool InputClass::IsF6Toggled()
-{
-	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
-	if (m_keyboardState[DIK_F6] & 0x80)
-	{
-		if (m_F6_released)
-		{
-			m_F6_released = false;
-			return true;
-		}
-	}
-	else
-	{
-		m_F6_released = true;
-	}
-
-	return false;
 }
 
 
@@ -740,6 +477,99 @@ float InputClass::GetHorizontal() {
 float InputClass::GetVertical() {
 	return m_vertical->value;
 }
+
+bool InputClass::IsKeyPressed(KeyCode key)
+{
+	if (m_keyboardState[key] & 0x80)
+	{
+		m_keys[key].isPressed = true;
+		return true;
+	}
+	m_keys[key].isPressed = false;
+	return false;
+}
+
+bool InputClass::IsKeyPressed(int keyCode)
+{
+	if (m_keyboardState[keyCode] & 0x80)
+	{
+		m_keys[keyCode].isPressed = true;
+		return true;
+	}
+	m_keys[keyCode].isPressed = false;
+	return false;
+}
+
+
+bool InputClass::IsKeyToggled(KeyCode key)
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[key] & 0x80)
+	{
+		if (m_keys[key].isReleased)
+		{
+			m_keys[key].isReleased = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_keys[key].isReleased = true;
+	}
+
+	return false;
+}
+
+bool InputClass::IsKeyToggled(int keyCode)
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_keyboardState[keyCode] & 0x80)
+	{
+		if (m_keys[keyCode].isReleased)
+		{
+			m_keys[keyCode].isReleased = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_keys[keyCode].isReleased = true;
+	}
+
+	return false;
+}
+
+bool InputClass::GetMouseButtonDown(int mouseButtonNum)
+{
+	// Do a bitwise and on the keyboard state to check if the key is currently being pressed.
+	if (m_mouseState.rgbButtons[mouseButtonNum] & 0x80)
+	{
+		if (m_mousebuttons[mouseButtonNum].isReleased)
+		{
+			m_mousebuttons[mouseButtonNum].isReleased = false;
+			return true;
+		}
+	}
+	else
+	{
+		m_mousebuttons[mouseButtonNum].isReleased = true;
+	}
+
+	return false;
+}
+
+bool InputClass::GetMouseButton(int mouseButtonNum)
+{
+	if (m_mouseState.rgbButtons[mouseButtonNum] & 0x80)
+	{
+		m_mousebuttons[mouseButtonNum].isPressed = true;
+		return true;
+	}
+	m_mousebuttons[mouseButtonNum].isPressed = false;
+	return false;
+}
+
+
 
 //void InputClass::KeyDown(unsigned int input)
 //{

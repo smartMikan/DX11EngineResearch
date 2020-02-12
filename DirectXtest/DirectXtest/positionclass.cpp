@@ -1,4 +1,4 @@
-﻿#include "positionclass.h"
+#include "positionclass.h"
 
 
 //The class constructor initializes the private member variables to zero to start with.
@@ -79,6 +79,11 @@ XMFLOAT3 PositionClass::GetPosition()
 	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
 }
 
+XMMATRIX PositionClass::GetPositionMatrix()
+{
+	return XMMatrixTranslation(m_positionX, m_positionY, m_positionZ);
+}
+
 void PositionClass::GetRotation(float& x, float& y, float& z)
 {
 	x = m_rotationX;
@@ -86,6 +91,18 @@ void PositionClass::GetRotation(float& x, float& y, float& z)
 	z = m_rotationZ;
 	return;
 }
+
+XMFLOAT3 PositionClass::GetRotation()
+{
+	return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
+}
+
+XMMATRIX PositionClass::GetRotationMatrix()
+{
+	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rotationX), XMConvertToRadians(m_rotationY+180), XMConvertToRadians(m_rotationZ));
+}
+
+
 
 //GetRotation returns the Y-axis rotation of the viewer. 
 void PositionClass::GetRotation(float & y)
@@ -406,8 +423,9 @@ void PositionClass::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
 		m_rotationY += 360.0f;
 	}
 	// Update the position using the roatation.
-	m_positionX = targetpsotion.x - sinf(m_rotationY * 0.0174532925f) * 5.0f;
-	m_positionZ = targetpsotion.z - cosf(m_rotationY * 0.0174532925f) * 5.0f;
-	m_positionY = targetpsotion.y + 4.0f;
+	m_positionX = targetpsotion.x - sinf(m_rotationY * 0.0174532925f) * 8.0f;
+	m_positionZ = targetpsotion.z - cosf(m_rotationY * 0.0174532925f) * 8.0f;
+	m_positionY = targetpsotion.y + 6.0f;
 
 }
+

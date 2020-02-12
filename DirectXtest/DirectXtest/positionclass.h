@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <DirectXMath.h>
 #include <math.h>
@@ -21,7 +21,10 @@ public:
 
 	void GetPosition(float&x, float&y, float&z);
 	XMFLOAT3 GetPosition();
+	XMMATRIX GetPositionMatrix();
 	void GetRotation(float&x, float&y, float&z);
+	XMFLOAT3 GetRotation();
+	XMMATRIX GetRotationMatrix();
 	void GetRotation(float&y);
 	float GetRotationY();
 
@@ -35,7 +38,7 @@ public:
 	void LookDownward(bool keydown);
 
 	void Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion);
-
+	
 
 private:
 	float m_positionX, m_positionY, m_positionZ;
@@ -47,4 +50,7 @@ private:
 	float m_upwardSpeed, m_downwardSpeed;
 	float m_leftTurnSpeed, m_rightTurnSpeed;
 	float m_lookUpSpeed, m_lookDownSpeed;
+
+	
+
 };
