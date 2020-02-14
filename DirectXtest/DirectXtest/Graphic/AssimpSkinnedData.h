@@ -67,7 +67,7 @@ namespace AssimpModel
 	{
 	public:
 		//Get boneTrans of given time pos
-		DirectX::XMMATRIX GetSample(float timestamp) const;
+		DirectX::XMMATRIX GetChannelKeyFrameSample(float timestamp) const;
 	public:
 		std::vector<PositionKeyFrame> position_keyframes;
 		std::vector<RotationKeyFrame> rotation_keyframes;
@@ -94,7 +94,7 @@ namespace AssimpModel
 		float duration;
 
 		//Get all bone trans at specific timepos
-		std::vector<DirectX::XMMATRIX> GetSample(float timepos, const std::vector<BoneNode>& avatar) const;
+		std::vector<DirectX::XMMATRIX> GetSample(float timepos, const std::vector<BoneNode>& nodeAvatar) const;
 	};
 
 	
@@ -103,13 +103,13 @@ namespace AssimpModel
 	public:
 		Animator() = default;
 		Animator(std::vector<BoneNode> avator, std::vector<BoneData> bones,std::vector<AnimationClip> animations,ConstantBuffer<ConstantBuffer_Bones>* boneConstantBuffer):
-			m_Avator(std::move(avator)),
+			m_AllNodeAvator(std::move(avator)),
 			m_Bones(std::move(bones)),
 			m_Animations(std::move(animations)),
 			m_BoneConstantBuffer(boneConstantBuffer)
 		{}
 
-		void Bind(ID3D11DeviceContext* deviceContext, bool ignoreRootTrans = true);
+		void Bind(ID3D11DeviceContext* deviceContext);
 
 		size_t GetNumAnimations() const { return m_Animations.size(); }
 		const AnimationClip& GetAnimation(size_t index)const { return m_Animations[index]; }
@@ -125,11 +125,11 @@ namespace AssimpModel
 		void SetTimpPos(float timepos) { m_TimePos = timepos; }
 
 	private:
-		void GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos, bool ignoreRootTrans = true) const;
+		void GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos) const;
 
 	private:
 		std::vector<BoneData> m_Bones;
-		std::vector<BoneNode> m_Avator;
+		std::vector<BoneNode> m_AllNodeAvator;
 		std::vector<AnimationClip> m_Animations;
 
 		ConstantBuffer<ConstantBuffer_Bones>* m_BoneConstantBuffer;
@@ -189,7 +189,7 @@ namespace AssimpModel
 		{
 			const AnimationChannel* channel = GetCurrentChannel();
 			float timepos = m_Animator->GetTimePos();
-			return channel->GetSample(timepos);
+			return channel->GetChannelKeyFrameSample(timepos);
 		}
 
 

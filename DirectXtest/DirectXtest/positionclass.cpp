@@ -11,6 +11,10 @@ PositionClass::PositionClass()
 	m_rotationX = 0.0f;
 	m_rotationY = 0.0f;
 	m_rotationZ = 0.0f;
+	
+	m_scaleX = 1.0f;
+	m_scaleY = 1.0f;
+	m_scaleZ = 1.0f;
 
 	m_frameTime = 0.0f;
 
@@ -62,6 +66,14 @@ void PositionClass::SetRotation(float x, float y, float z)
 	return;
 }
 
+void PositionClass::SetScale(float x, float y, float z)
+{
+	m_scaleX = x;
+	m_scaleY = y;
+	m_scaleZ = z;
+	return;
+}
+
 
 
 
@@ -99,7 +111,7 @@ XMFLOAT3 PositionClass::GetRotation()
 
 XMMATRIX PositionClass::GetRotationMatrix()
 {
-	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rotationX), XMConvertToRadians(m_rotationY+180), XMConvertToRadians(m_rotationZ));
+	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rotationX), XMConvertToRadians(m_rotationY+180.0f), XMConvertToRadians(m_rotationZ));
 }
 
 
@@ -114,6 +126,30 @@ float PositionClass::GetRotationY()
 {
 	return m_rotationY;
 }
+
+void PositionClass::GetScale(float & x, float & y, float & z)
+{
+	x = m_scaleX;
+	y = m_scaleY;
+	z = m_scaleZ;
+}
+
+XMFLOAT3 PositionClass::GetScale()
+{
+	return XMFLOAT3(m_scaleX, m_scaleY, m_scaleZ);
+}
+
+XMMATRIX PositionClass::GetScaleMatrix()
+{
+	return  XMMatrixScaling(m_scaleX, m_scaleY, m_scaleZ);
+}
+
+XMMATRIX PositionClass::GetWorldMatrix()
+{
+	return GetScaleMatrix() * GetRotationMatrix() * GetPositionMatrix();
+}
+
+
 
 //The following eight movement functions all work nearly the same. All eight functions are called each frame. 
 //The keydown input variable to each function indicates if the user is pressing the forward key, the backward key, and so forth. 

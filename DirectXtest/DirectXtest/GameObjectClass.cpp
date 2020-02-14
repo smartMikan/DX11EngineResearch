@@ -72,6 +72,11 @@ void GameObjectClass::Frame(InputClass* input)
 
 }
 
+void GameObjectClass::Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
+{
+	Draw(m_Position.GetWorldMatrix(), viewMatrix, projectionMatrix);
+}
+
 void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
 {
 	int index = mAnimator.GetCurrentAnimationIndex();

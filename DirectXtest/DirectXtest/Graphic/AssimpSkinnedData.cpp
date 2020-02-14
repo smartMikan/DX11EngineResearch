@@ -102,7 +102,7 @@ namespace AssimpModel {
 		return InterpolateScaleKeyFrame(keyframes[prev_key_frame], keyframes[next_key_frame], timePos);
 	}
 
-	DirectX::XMMATRIX AnimationChannel::GetSample(float timePos) const
+	DirectX::XMMATRIX AnimationChannel::GetChannelKeyFrameSample(float timePos) const
 	{
 		if (timePos < last_timepos)
 		{
@@ -132,25 +132,28 @@ namespace AssimpModel {
 		last_scale_index = 0;
 	}
 
-	std::vector<DirectX::XMMATRIX> AnimationClip ::GetSample(float timePos, const std::vector<BoneNode>& avatar) const
+	std::vector<DirectX::XMMATRIX> AnimationClip ::GetSample(float timePos, const std::vector<BoneNode>& nodeAvatar) const
 	{
-		std::vector<DirectX::XMMATRIX> new_transforms;
-		new_transforms.reserve(avatar.size());
-		std::transform(avatar.begin(), avatar.end(), std::back_inserter(new_transforms), [](const BoneNode& node)
+		std::vector<DirectX::XMMATRIX> node_localtransforms;
+		node_localtransforms.reserve(nodeAvatar.size());
+		std::transform(nodeAvatar.begin(), nodeAvatar.end(), std::back_inserter(node_localtransforms), [](const BoneNode& node)
 		{
 			return DirectX::XMMatrixIdentity();
-			//return node.local_transform;
+
 		});
 
 		for (const AnimationChannel& channel : channels)
 		{
-			new_transforms[channel.node_index] = channel.GetSample(timePos);
+			node_localtransforms[channel.node_index] = channel.GetChannelKeyFrameSample(timePos);
 		}
 
-		return new_transforms;
+		//
+		//all BoneNode WillGet OffsetTransformMatrix At keyFrame and Non-BoneNode will get XMMatrixIdentity();
+
+		return node_localtransforms;
 	}
 
-	void Animator::Bind(ID3D11DeviceContext* deviceContext, bool ignoreRootTrans)
+	void Animator::Bind(ID3D11DeviceContext* deviceContext)
 	{
 		const AnimationClip& animation = GetAnimation(GetCurrentAnimationIndex());
 
@@ -175,19 +178,24 @@ namespace AssimpModel {
 		m_Animations.push_back(anim);
 	}
 
-	void Animator::GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos, bool ignoreRootTrans) const
+	void Animator::GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos) const
 	{
 		assert(m_Bones.size() <= MAX_BONES, "bone num out of limit");
 
-		std::vector<DirectX::XMMATRIX> transforms = animation.GetSample(timePos, m_Avator);
+		//Contarins All Node include Non-Bone Nodes
+		std::vector<DirectX::XMMATRIX> node_localtransforms = animation.GetSample(timePos, m_AllNodeAvator);
 
-		for (size_t i = 1; i < transforms.size(); i++)
+		for (size_t i = 1; i < node_localtransforms.size(); i++)
 		{
-			transforms[i] = transforms[i] * transforms[m_Avator[i].parent_index];
+			//For This is an Top-Down Three(Such as node[i].parentIndex will actually less than i)
+			//so All Nodes Front Should Get Correct Transform to root Before Nodes Back 
+			//then these back nodes can just multiply front nodes transfrom to get correct final transform  
+			node_localtransforms[i] = node_localtransforms[i] * node_localtransforms[m_AllNodeAvator[i].parent_index];
 		}
 		for (size_t i = 0; i < m_Bones.size(); i++)
 		{
-			out[i] = XMMatrixTranspose(m_Bones[i].inverse_transform * transforms[m_Bones[i].index]);
+			//Only Return Bone-Node Data, m_Bones[i].inverse_transform has store the Bones initial offset to rootNode so that we don't need to get localtrans for that bones again like meshes
+			out[i] = XMMatrixTranspose(m_Bones[i].inverse_transform * node_localtransforms[m_Bones[i].index]);
 		}
 
 		

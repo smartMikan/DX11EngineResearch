@@ -91,8 +91,6 @@ bool Model::AddAnimation(const std::string & filePath, Animator * animator_out, 
 				continue;
 			}
 
-			
-
 			AnimationChannel& channel = animation.channels[channel_index];
 			channel.node_index = node_index;
 			channel.channel_name = pNodeAnim->mNodeName.C_Str();
@@ -101,7 +99,7 @@ bool Model::AddAnimation(const std::string & filePath, Animator * animator_out, 
 			if (disablerootTrans && channel.channel_name == m_Bones[0].name)
 			{
 				//XMFLOAT4X4 temp;
-				//XMStoreFloat4x4(&temp, m_Avator[node_index].local_transform);
+				//XMStoreFloat4x4(&temp, m_AllNodeAvator[node_index].local_transform);
 				channel.position_keyframes.reserve(1);
 				const aiVectorKey& ai_key = pNodeAnim->mPositionKeys[0];
 				PositionKeyFrame keyframe;
@@ -613,7 +611,7 @@ int Model::AddBone(aiNode* node, aiBone* bone, int parent_index)
 	boneData.name = bone->mName.C_Str();
 	//
 	boneData.inverse_transform = AiToDxMatrix(bone->mOffsetMatrix);
-
+	
 	m_mapBoneNameToIndex[boneData.name] = (int)m_Bones.size();
 
 	m_Bones.push_back(boneData);

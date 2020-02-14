@@ -18,6 +18,7 @@ public:
 
 	void SetPosition(float, float, float);
 	void SetRotation(float, float, float);
+	void SetScale(float, float, float);
 
 	void GetPosition(float&x, float&y, float&z);
 	XMFLOAT3 GetPosition();
@@ -27,6 +28,12 @@ public:
 	XMMATRIX GetRotationMatrix();
 	void GetRotation(float&y);
 	float GetRotationY();
+
+	void GetScale(float&x, float&y, float&z);
+	XMFLOAT3 GetScale();
+	XMMATRIX GetScaleMatrix();
+
+	XMMATRIX GetWorldMatrix();
 
 	void MoveForward(bool keydown);
 	void MoveBackward(bool keydown);
@@ -43,6 +50,7 @@ public:
 private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
+	float m_scaleX, m_scaleY, m_scaleZ;
 
 	float m_frameTime;
 

@@ -34,7 +34,7 @@ void ImGuiClass::ShutDown()
 
 bool ImGuiClass::Frame(ZoneClass* zone)
 {
-
+	static bool lighttype = false;
 	float lightRot[3];
 	float lightpos[3];
 
@@ -83,7 +83,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::ColorEdit3("Light Ambient", ambientcolor);
 	ImGui::ColorEdit3("Light Diffuse", diffusecolor);
 	zone->m_Light->position.SetRotation(lightRot[0], lightRot[1], lightRot[2]);
-	//zone->m_Light->position.SetPosition(lightpos[0],lightpos[1],lightpos[2]);
+	zone->m_Light->position.SetPosition(lightpos[0],lightpos[1],lightpos[2]);
 	zone->m_Light->SetAmbientColor(ambientcolor[0], ambientcolor[1], ambientcolor[2],1.0f);
 	zone->m_Light->SetDiffuseColor(diffusecolor[0],diffusecolor[1],diffusecolor[2],1.0f);
 	ImGui::DragFloat("AmbientStrength", &zone->m_Light->ambientLightStrength, 0.01, 0.0f, 1.0f);
@@ -91,7 +91,9 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::DragFloat("Dynamic Light Attenuation Base", &zone->m_Light->dynamicLightAttenuation_a, 0.001, 0.1f, 1.0f);
 	ImGui::DragFloat("Dynamic Light Attenuation Distance", &zone->m_Light->dynamicLightAttenuation_b, 0.001, 0.0f, 1.0f);
 	ImGui::DragFloat("Dynamic Light Attenuation DistancePow", &zone->m_Light->dynamicLightAttenuation_c, 0.001, 0.0f, 1.0f);
-	
+	ImGui::Checkbox("PointLight", &lighttype);
+	zone->m_lightType = !lighttype ? 0 : 1;
+	ImGui::Checkbox("ToonShader", &zone->toonShading);
 	ImGui::End();
 
 

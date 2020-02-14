@@ -22,6 +22,8 @@ public:
 	
 	void Frame(InputClass* input);
 
+	void Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
+
 	void Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
 	void SwitchAnim(int index);
 	void StartAnim(int index);

@@ -83,7 +83,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 vectorToLight;
     if (LightType == 0)
     {
-        vectorToLight = normalize(dynamicLightDirection);
+        vectorToLight = normalize(-dynamicLightDirection);
+
     }
     else if (LightType == 1)
     {
@@ -93,6 +94,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     {
         vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
     }
+    
     float3 diffuseLightIntensity = max(dot(vectorToLight, normal), 0);
     float distanceToLight = distance(dynamicLightPosition, input.inWorldPos);
     float attenuationFactor = 1 / (dynamicLightAttenuation_a + dynamicLightAttenuation_b * distanceToLight + dynamicLightAttenuation_c * pow(distanceToLight, 2));
@@ -107,11 +109,11 @@ float4 main(PS_INPUT input) : SV_TARGET
     float light = dot(vectorToLight, normal) / 2.0 + 0.5;
     light *= Shadow(worldPos, normal, vectorToLight);
     float facing = dot(eyev, normal);
-    float2 toneTexcoord = float2(light, facing);
-    float3 toneColor = toneTexture.Sample(objSamplerState, toneTexcoord).rgb;
+    float2 toonTexcoord = float2(light, facing);
+    float3 toonColor = toonTexture.Sample(objSamplerState, toonTexcoord).rgb;
     
     //diffuseLightIntensity = (diffuseLightIntensity + specular) * attenuationFactor * Shadow(worldPos, normal, vectorToLight);
-    diffuseLightIntensity = toneColor * attenuationFactor;// * Shadow(worldPos, normal, vectorToLight);
+    diffuseLightIntensity = toonColor * attenuationFactor;// * Shadow(worldPos, normal, vectorToLight);
     float3 diffuseLight = diffuseLightIntensity * dynamicStrength * dynamicLight;
     appliedLight += diffuseLight;
     

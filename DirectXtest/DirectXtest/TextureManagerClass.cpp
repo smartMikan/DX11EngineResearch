@@ -20,7 +20,7 @@ TextureManagerClass::~TextureManagerClass()
 }
 
 
-bool TextureManagerClass::Initialize(int count)
+bool TextureManagerClass::Initialize(int count, ID3D11Device* device)
 {
 	m_textureCount = count;
 
@@ -30,6 +30,7 @@ bool TextureManagerClass::Initialize(int count)
 	{
 		return false;
 	}
+	DirectX::CreateWICTextureFromFile(device, L"./Resources/tone_.png", nullptr, toneTexture.GetAddressOf());
 
 	return true;
 }
@@ -76,4 +77,9 @@ bool TextureManagerClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext*
 ID3D11ShaderResourceView *TextureManagerClass::GetTexture(int id)
 {
 	return m_TextureArray[id].GetTexture();
+}
+
+ID3D11ShaderResourceView * const * TextureManagerClass::GetToonTexture()
+{
+	return toneTexture.GetAddressOf();
 }

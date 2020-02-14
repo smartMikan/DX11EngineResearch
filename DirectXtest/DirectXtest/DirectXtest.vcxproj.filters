@@ -801,12 +801,12 @@
     <FxCompile Include="Graphic\Shaders\pixelshader.hlsl" />
     <FxCompile Include="Graphic\Shaders\PixelShader_HeightMapping.hlsl" />
     <FxCompile Include="Graphic\Shaders\pixelshader_nolight.hlsl" />
-    <FxCompile Include="Graphic\Shaders\pixelshader_tonemapping.hlsl" />
     <FxCompile Include="Graphic\Shaders\vertexShader.hlsl" />
     <FxCompile Include="Graphic\Shaders\VertexShaderAnim.hlsl" />
     <FxCompile Include="Graphic\Shaders\VS_nolight.hlsl" />
     <FxCompile Include="Graphic\Shaders\VS_shadowmap.hlsl" />
     <FxCompile Include="Graphic\Shaders\VS_shadowmap_anim.hlsl" />
     <FxCompile Include="Graphic\Shaders\PixelShader_Depth.hlsl" />
+    <FxCompile Include="Graphic\Shaders\pixelshader_toonmapping.hlsl" />
   </ItemGroup>
 </Project>

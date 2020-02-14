@@ -85,27 +85,25 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 ambientLight = ambientLightColor * ambientLightStrength;
     float3 appliedLight = ambientLight;
     float3 vectorToLight;
+    //減衰係数
     float attenuationFactor;
     
     if (LightType == 0)
     {
-        vectorToLight = normalize(dynamicLightDirection);
-        attenuationFactor = 1 / (dynamicLightAttenuation_a);
+        vectorToLight = normalize(-dynamicLightDirection);
 
     }
     else if (LightType == 1)
     {
         vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
-        float distanceToLight = distance(dynamicLightPosition, input.inWorldPos);
-        attenuationFactor = 1 / (dynamicLightAttenuation_a + dynamicLightAttenuation_b * distanceToLight + dynamicLightAttenuation_c * pow(distanceToLight, 2));
-    
     }
     else
     {
         vectorToLight = normalize(dynamicLightPosition - input.inWorldPos);
-		float distanceToLight = distance(dynamicLightPosition, input.inWorldPos);
-        attenuationFactor = 1 / (dynamicLightAttenuation_a);
     }
+	float distanceToLight = distance(dynamicLightPosition, input.inWorldPos);
+    attenuationFactor = 1 / (dynamicLightAttenuation_a + dynamicLightAttenuation_b * distanceToLight + dynamicLightAttenuation_c * pow(distanceToLight, 2));
+    
     
     
     float3 refv = reflect(vectorToLight, normal);

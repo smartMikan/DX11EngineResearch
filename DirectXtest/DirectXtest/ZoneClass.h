@@ -45,6 +45,8 @@ public:
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
 	float cubeTranslation[3] = {12.0f,0.1f,33.0f};
+	int m_lightType = 0;
+	bool toonShading = false;
 
 	IVertexShader* CreateVertexShader(const std::string& filename);
 
@@ -57,12 +59,15 @@ public:
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
 	
-	bool RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass*);
+	bool RenderShadowMap(D3DClass* Direct3D, const XMMATRIX&, const XMMATRIX&);
 	
 	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
+	
+	bool RenderAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
+	bool RenderNonAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
 
 	bool InitializeShaders();
-	void SetLight();
+	void SetLight(int lightType);
 private:
 	ComPtr<ID3D11Device> device;
 	ComPtr <ID3D11DeviceContext> deviceContext;
@@ -108,11 +113,11 @@ private:
 	std::unique_ptr<D3DVertexShader> d3dvertexshader_shadowmap_anim;
 	PixelShader pixelshader;
 	PixelShader pixelshader_nolight;
-	PixelShader pixelshader_tonemapping;
+	PixelShader pixelshader_toonmapping;
 	PixelShader pixelshader_heightmapping;
 	PixelShader pixelshader_depthColor;
 
-	bool enableToneshading = false;
+	
 	// c_buffers
 	ConstantBuffer<CB_VS_MatrixBuffer> cb_vs_wvpBuffer;
 	ConstantBuffer<CB_PS_LightBuffer> cb_ps_light;

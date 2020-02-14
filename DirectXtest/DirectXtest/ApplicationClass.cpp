@@ -1,4 +1,4 @@
-﻿#include "applicationclass.h"
+#include "applicationclass.h"
 
 ApplicationClass::ApplicationClass()
 {
@@ -97,7 +97,7 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd,bool fullscreen
 	}
 
 	// Initialize the texture manager object.
-	result = m_TextureManager->Initialize(10);
+	result = m_TextureManager->Initialize(10, m_Direct3D->GetDevice());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the texture manager object.", L"Error", MB_OK);

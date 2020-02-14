@@ -256,6 +256,10 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_AnimModel->AddAnimation("./3DModel/Boxing.fbx");
 	m_AnimModel->AddAnimation("./3DModel/Hip_Hop_Dancing.fbx");
 	
+	m_AnimModel->m_Position.SetScale(0.02f, 0.02f, 0.02f);
+	m_AnimModel->m_Position.SetRotation(0,180,0);
+
+
 	m_Player = new GameObjectClass;
 	if (!m_Player)
 	{
@@ -277,7 +281,8 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield 180 turn.fbx",false,true);
 	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield 180 turn (2).fbx", false, true);
 
-
+	m_Player->m_Position.SetScale(0.02f, 0.02f, 0.02f);
+	
 	m_UnMoveModel = new GameObjectClass;
 	if (!m_UnMoveModel)
 	{
@@ -307,11 +312,11 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Light->ambientLightStrength = 0.4f;
 	m_Light->dynamicLightStrength = 3.8f;
 
-	m_Light->GenerateOrthoMatrix(100.0f, SHADOWMAP_DEPTH, SHADOWMAP_NEAR);
+	m_Light->GenerateOrthoMatrix(100.0f, screenDepth, 1.0f);
 	m_Light->GenerateProjectionMatrix(screenDepth,1.0f);
 	m_Light->Frame();
 
-
+	
 
 	// Create the render to texture object.
 	m_RenderTexture = new RenderTextureClass;
@@ -625,8 +630,17 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 			
 		}
 	}
+	XMMATRIX lightViewMatrix, lightOrthoMatrix, lightProjMatrix;
 
-	result = RenderShadowMap(Direct3D, ShaderManager);
+	SetLight(m_lightType);
+	//m_Light->SetPosition(m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
+
+	m_Light->GetViewMatrix(lightViewMatrix);
+	m_Light->GetOrthoMatrix(lightOrthoMatrix);
+	m_Light->GetProjectionMatrix(lightProjMatrix);
+
+	result = RenderShadowMap(Direct3D, lightViewMatrix, m_lightType==0?lightOrthoMatrix: lightProjMatrix);
+
 	if (!result)
 	{
 		return false;
@@ -827,91 +841,30 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime,float fps
 	//mCharacterInstance1.position->SetRotation(0, rotY, 0);
 	m_Player->m_Position.SetRotation(0, rotY, 0);
 
-	m_Light->position.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
+	//m_Light->position.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
 	//m_Light->position.SetRotation(rotX, rotY, rotZ);
 	
 
 	return;
 }
 
-bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, ShaderManagerClass* ShaderManager)
+bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, const XMMATRIX& lightViewMatrix, const XMMATRIX& lightProjMatrix)
 {
-	XMMATRIX lightViewMatrix, lightOrthoMatrix, lightProjMatrix;
+	
 
-	SetLight();
 	// Set the render target to be the render to DepthStencilView.
 	m_RenderTexture->SetDVRenderTarget(Direct3D->GetDeviceContext());
 	// Clear the render to texture.
-	m_RenderTexture->ClearDVRenderTarget(Direct3D->GetDeviceContext(),0.0f, 0.0f, 0.0f, 1.0f);
+	m_RenderTexture->ClearDVRenderTarget(Direct3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
 
-
-	//m_Light->SetPosition(m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
-
-	m_Light->GetViewMatrix(lightViewMatrix);
-	m_Light->GetOrthoMatrix(lightOrthoMatrix);
-	m_Light->GetProjectionMatrix(lightProjMatrix);
 	cb_ps_shadowMatrix.data.shadowMatrix = XMMatrixTranspose(lightViewMatrix * lightProjMatrix);
 	cb_ps_shadowMatrix.ApplyChanges();
 
-
-	deviceContext->PSSetConstantBuffers(3, 1, cb_ps_shadowMatrix.GetAddress());
-	//animModels
-	deviceContext->VSSetShader(d3dvertexshader_shadowmap_anim.get()->GetShader(device.Get()), NULL, 0);
-	deviceContext->IASetInputLayout(d3dvertexshader_shadowmap_anim.get()->GetLayout());
 	deviceContext->PSSetShader(NULL, NULL, 0);
-	
-	modelPosition = XMMatrixTranslation(10.0f, 0.0f, 30.0f);
-	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-
-	m_AnimModel->SwitchAnim(3);
-	m_AnimModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
-	
-	modelPosition = XMMatrixTranslation(15.0f, 0.0f, 30.0f);
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-
-	m_AnimModel->SwitchAnim(1);
-	m_AnimModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
-	
-	modelPosition = XMMatrixTranslation(20.0f, 0.0f, 30.0f);
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-
-	m_AnimModel->SwitchAnim(2);
-	m_AnimModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
-
-
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	XMMATRIX meshModelRot = m_Player->m_Position.GetRotationMatrix();
-	modelPosition = m_Player->m_Position.GetPositionMatrix();
-	modelPosition = meshModelScale * meshModelRot * modelPosition;
-	m_Player->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
-
+	//animModels
+	RenderAnimationGameObjects(d3dvertexshader_shadowmap_anim.get(), lightViewMatrix, lightProjMatrix);
 	//noanimModels
-	deviceContext->VSSetShader(d3dvertexshader_shadowmap.get()->GetShader(device.Get()), NULL, 0);
-	deviceContext->IASetInputLayout(d3dvertexshader_shadowmap.get()->GetLayout());
-	
-
-	meshModelRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	meshModelScale = XMMatrixScaling(50.0f, 50.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(50.0f, 0.1f, 50.0f);
-	m_UnMoveModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
-	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
-	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
-	m_UnMoveModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-
-	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PI, 0.0f);
-	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2] + 0.001f);
-	m_UnMoveModel->Draw(modelPosition, lightViewMatrix, lightProjMatrix);
-	
+	RenderNonAnimationGameObjects(d3dvertexshader_shadowmap.get(), lightViewMatrix, lightProjMatrix);
 
 
 	// Reset the render target back to the original back buffer and not the render to texture anymore.
@@ -1108,44 +1061,23 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 		lightOrthoMatrix, m_Model->GetTextureVector()[0], m_RenderTexture->GetShaderResourceView(), m_Light->GetDirection(),
 		m_Light->GetAmbientColor(), m_Light->GetDiffuseColor());*/
 
-
-	//WithAnim
-	deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
-	deviceContext->VSSetShader(d3dvertexshader_animation.get()->GetShader(device.Get()), NULL, 0);
-	deviceContext->IASetInputLayout(d3dvertexshader_animation.get()->GetLayout());
-
 	
-	SetLight();
+	if (toonShading) {
+		deviceContext->PSSetShader(pixelshader_toonmapping.GetShader(), NULL, 0);
+		deviceContext->PSSetShaderResources(5,1,TextureManager->GetToonTexture());
+	}
+	else
+	{
+		deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
+	}
 	deviceContext->PSSetSamplers(1, 1, m_RenderTexture->shadowSampler.GetAddressOf());
 	//deviceContext->PSSetShaderResources(4, 1, m_RenderTexture->GetShaderResourceViewAddress());
 	deviceContext->PSSetShaderResources(4, 1, m_RenderTexture->GetShadowShaderResourceViewAddress());
-	
+	deviceContext->PSSetConstantBuffers(3, 1, cb_ps_shadowMatrix.GetAddress());
+	SetLight(m_lightType);
 
-	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(10.0f, 0.0f, 30.0f);
-	XMMATRIX meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-
-	m_AnimModel->SwitchAnim(3);
-	m_AnimModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-
-
-	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(15.0f, 0.0f, 30.0f);
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-	
-	m_AnimModel->SwitchAnim(1);
-	m_AnimModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-
-	modelPosition = worldMatrix;
-	modelPosition = XMMatrixTranslation(20.0f, 0.0f, 30.0f);
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	modelPosition = meshModelScale * modelPosition;
-
-	m_AnimModel->SwitchAnim(2);
-	m_AnimModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-	
+	//WithAnim
+	RenderAnimationGameObjects(d3dvertexshader_animation.get(), viewMatrix, projectionMatrix);
 	
 	//modelPosition = worldMatrix;
 	//modelPosition = XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
@@ -1155,38 +1087,9 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	//m_AnimModel->SwitchAnim(3);
 	//m_AnimModel->Draw(modelPosition, viewMatrix, projectionMatrix);
 
-	meshModelScale = XMMatrixScaling(0.02f, 0.02f, 0.02f);
-	XMMATRIX meshModelRot = m_Player->m_Position.GetRotationMatrix();
-	modelPosition = m_Player->m_Position.GetPositionMatrix();
-	modelPosition = meshModelScale * meshModelRot * modelPosition;
-	m_Player->Draw(modelPosition, viewMatrix, projectionMatrix);
-
-
 	//NoAnim
 	//deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
-	deviceContext->VSSetShader(d3dvertexshader.get()->GetShader(device.Get()), NULL, 0);
-	deviceContext->IASetInputLayout(d3dvertexshader.get()->GetLayout());
-	modelPosition = worldMatrix;
-	
-	meshModelRot = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	meshModelScale = XMMatrixScaling(50.0f, 50.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(50.0f, 0.1f, 50.0f);
-	m_UnMoveModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-
-
-	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
-	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
-	m_UnMoveModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-	
-	meshModelRot = XMMatrixRotationRollPitchYaw(0.0f, XM_PI, 0.0f);
-	meshModelScale = XMMatrixScaling(20.0f, 20.0f, 1.0f);
-	modelPosition = meshModelScale * meshModelRot * XMMatrixTranslation(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]+0.001f);
-	m_UnMoveModel->Draw(modelPosition, viewMatrix, projectionMatrix);
-
-	
-
-
+	RenderNonAnimationGameObjects(d3dvertexshader.get(), viewMatrix, projectionMatrix);
 
 	//float Deltatime = 0.01f;
 	//XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
@@ -1288,6 +1191,61 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	return true;
 }
 
+bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const XMMATRIX & viewMatrix, const XMMATRIX & projMatrix)
+{
+	deviceContext->VSSetShader(vertexshader->GetShader(device.Get()), NULL, 0);
+	deviceContext->IASetInputLayout(vertexshader->GetLayout());
+	
+
+
+	m_AnimModel->m_Position.SetPosition(10.0f, 0.0f, 30.0);
+	m_AnimModel->SwitchAnim(3);
+	m_AnimModel->Render(viewMatrix, projMatrix);
+
+
+
+	m_AnimModel->m_Position.SetPosition(15.0f, 0.0f, 30.0f);
+	m_AnimModel->SwitchAnim(1);
+	m_AnimModel->Render(viewMatrix, projMatrix);
+
+
+	m_AnimModel->m_Position.SetPosition(20.0f, 0.0f, 30.0f);
+	m_AnimModel->SwitchAnim(2);
+	m_AnimModel->Render(viewMatrix, projMatrix);
+
+
+	m_Player->Render(viewMatrix, projMatrix);
+
+	return true;
+}
+
+bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, const XMMATRIX & viewMatrix, const XMMATRIX & projMatrix)
+{
+	deviceContext->VSSetShader(vertexshader->GetShader(device.Get()), NULL, 0);
+	deviceContext->IASetInputLayout(vertexshader->GetLayout());
+
+
+	m_UnMoveModel->m_Position.SetPosition(50.0f, 0.1f, 50.0f);
+	m_UnMoveModel->m_Position.SetRotation(90.0f, 0.0f, 0.0f);
+	m_UnMoveModel->m_Position.SetScale(50.0f, 50.0f, 1.0f);
+	m_UnMoveModel->Render(viewMatrix, projMatrix);
+
+
+	m_UnMoveModel->m_Position.SetPosition(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2]);
+	m_UnMoveModel->m_Position.SetRotation(0.0f, 0.0f, 0.0f);
+	m_UnMoveModel->m_Position.SetScale(20.0f, 20.0f, 1.0f);
+	m_UnMoveModel->Render(viewMatrix, projMatrix);
+
+
+	m_UnMoveModel->m_Position.SetPosition(cubeTranslation[0], cubeTranslation[1], cubeTranslation[2] + 0.001f);
+	m_UnMoveModel->m_Position.SetRotation(0.0f, 180.0f, 0.0f);
+	m_UnMoveModel->m_Position.SetScale(20.0f, 20.0f, 1.0f);
+	m_UnMoveModel->Render(viewMatrix, projMatrix);
+	return true;
+}
+
+
+
 bool ZoneClass::InitializeShaders()
 {
 	std::wstring shaderfolder = L"";
@@ -1322,7 +1280,7 @@ bool ZoneClass::InitializeShaders()
 	{
 		return false;
 	}
-	if (!pixelshader_tonemapping.Initialize(this->device, shaderfolder + L"pixelshader_tonemapping.cso"))
+	if (!pixelshader_toonmapping.Initialize(this->device, shaderfolder + L"pixelshader_toonmapping.cso"))
 	{
 		return false;
 	}
@@ -1342,7 +1300,7 @@ IVertexShader* ZoneClass::CreateVertexShader(const std::string& filename)
 	return new D3DVertexShader(device.Get(), filename);
 }
 
-void ZoneClass::SetLight()
+void ZoneClass::SetLight(int lightType)
 {
 	cb_ps_camera.data.cameraPosition = m_Camera->GetPosition();
 	cb_ps_camera.ApplyChanges();
@@ -1356,7 +1314,7 @@ void ZoneClass::SetLight()
 	cb_ps_light.data.dynamicLightAttenuation_a = m_Light->dynamicLightAttenuation_a;
 	cb_ps_light.data.dynamicLightAttenuation_b = m_Light->dynamicLightAttenuation_b;
 	cb_ps_light.data.dynamicLightAttenuation_c = m_Light->dynamicLightAttenuation_c;
-	cb_ps_light.data.LightType = 1;
+	cb_ps_light.data.LightType = lightType;
 	cb_ps_light.data.lightDirection = m_Light->GetDirection();
 	cb_ps_light.ApplyChanges();
 
