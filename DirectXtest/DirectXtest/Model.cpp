@@ -30,14 +30,17 @@ bool Model::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11
 
 void Model::Update(float timepos)
 {
-	vector<XMMATRIX> trans;
-
-	BoneTransform(timepos, trans);
-	FinalTransforms.resize(trans.size());
-	for (UINT i = 0; i < trans.size(); i++)
-	{
-		XMStoreFloat4x4(&FinalTransforms[i], trans[i]);
+	for (int i = 0; i < m_meshes.size(); i++) {
+		vector<XMMATRIX> trans;
+		numMesh = i;
+		BoneTransform(timepos, trans);
+		FinalTransforms[i].resize(trans.size());
+		for (UINT j = 0; j < trans.size(); j++)
+		{
+			XMStoreFloat4x4(&FinalTransforms[i][j], trans[j]);
+		}
 	}
+	
 }
 
 
@@ -61,7 +64,7 @@ void Model::Draw(ShaderManagerClass* shaderManager, XMMATRIX worldMatrix, XMMATR
 		//UpdateConstanBuffer
 		//shaderManager->DrawSetWithMyShader(this->m_deviceContext, m_meshes[i].GetTransformMatrix() * worldMatrix, viewMatrix, projectionMatrix, cameraPosition, ambientColor, diffuseColor, lightDirection, XMFLOAT4(1,1,1,1),XMFLOAT4(1,1,1,1), specularColor);
 		
-		shaderManager->RenderSkeletalCharacterShader(this->m_deviceContext, FinalTransforms.size(), worldMatrix, viewMatrix, projectionMatrix, DiffuseMap, NormalMap, ambientColor, diffuseColor, lightDirection, cameraPosition, &FinalTransforms[0], mat);
+		shaderManager->RenderSkeletalCharacterShader(this->m_deviceContext, FinalTransforms[i].size(), worldMatrix, viewMatrix, projectionMatrix, DiffuseMap, NormalMap, ambientColor, diffuseColor, lightDirection, cameraPosition, &FinalTransforms[i][0], mat);
 		
 		m_meshes[i].Draw();
 	}
@@ -144,15 +147,20 @@ bool Model::LoadModel(const std::string& filePath)
 
 	//FinalTransforms.resize(skinnedData.mBoneOffsets.size());
 	//FinalTransforms = skinnedData.mBoneOffsets;
-	vector<XMMATRIX> trans;
-
-	BoneTransform(0.5f, trans);
-	FinalTransforms.resize(trans.size());
-	for (UINT i = 0; i < trans.size(); i++)
+	for (UINT j = 0; j < m_meshes.size(); j++)
 	{
-		XMStoreFloat4x4(&FinalTransforms[i], trans[i]);
+		vector<XMMATRIX> trans;
+		vector<XMFLOAT4X4> transf;
+		numMesh = j;
+		BoneTransform(0.5f, trans);
+		transf.resize(trans.size());
+		for (UINT i = 0; i < trans.size(); i++)
+		{
+			XMStoreFloat4x4(&transf[i], trans[i]);
+		}
+		FinalTransforms.push_back(transf);
 	}
-
+	
 
 	//m_skindata.Set(bongHierarchy, boneOffsets, animations);
 	return true;
@@ -172,6 +180,8 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& pare
 		Mesh myMesh = this->ProcessMesh(mesh, scene, nodeTransformMatrix, i);
 
 		m_meshes.push_back(myMesh);
+
+		numMesh++;
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
@@ -262,20 +272,22 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 	
 	mesh->mBones[0]->mWeights;
 
+	vector<VertexBoneData> bones;
+
 	
-	LoadBones(mesh, m_Bones);
-	
+	LoadBones(mesh, bones);
+	m_Bones.push_back(bones);
 
 	for (UINT i = 0; i < vertices.size(); i++)
 	{
-		vertices[i].BoneIndices[0] = m_Bones[i].IDs[0];
-		vertices[i].BoneIndices[1] = m_Bones[i].IDs[1];
-		vertices[i].BoneIndices[2] = m_Bones[i].IDs[2];
-		vertices[i].BoneIndices[3] = m_Bones[i].IDs[3];
+		vertices[i].BoneIndices[0] = bones[i].IDs[0];
+		vertices[i].BoneIndices[1] = bones[i].IDs[1];
+		vertices[i].BoneIndices[2] = bones[i].IDs[2];
+		vertices[i].BoneIndices[3] = bones[i].IDs[3];
 
-		vertices[i].Weights[0] = m_Bones[i].Weights[0];
-		vertices[i].Weights[1] = m_Bones[i].Weights[1];
-		vertices[i].Weights[2] = m_Bones[i].Weights[2];
+		vertices[i].Weights[0] = bones[i].Weights[0];
+		vertices[i].Weights[1] = bones[i].Weights[1];
+		vertices[i].Weights[2] = bones[i].Weights[2];
 	}
 
 	/*vertex.BoneIndices[0] = boneNameToNumberIndexMap[mesh->mBones[0]->mName.C_Str()];
@@ -333,10 +345,10 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& tran
 	//	boneOffsets.push_back(offset);
 	//}
 
-	for (UINT i = 0; i < m_BoneInfo.size(); i++)
+	for (UINT i = 0; i < m_BoneInfo[numMesh].size(); i++)
 	{
 		XMFLOAT4X4 offset;
-		XMStoreFloat4x4(&offset, m_BoneInfo[i].BoneOffset);
+		XMStoreFloat4x4(&offset, m_BoneInfo[numMesh][i].BoneOffset);
 		boneOffsets.push_back(offset);
 	}
 
@@ -548,10 +560,10 @@ void Model::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const XM
 
 	XMMATRIX GlobalTransformation = ParentTransform * NodeTransformation;
 
-	if (m_BoneMapping.find(NodeName) != m_BoneMapping.end()) {
-		UINT BoneIndex = m_BoneMapping[NodeName];
-		m_BoneInfo[BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation *
-			m_BoneInfo[BoneIndex].BoneOffset;
+	if (m_BoneMapping[numMesh].find(NodeName) != m_BoneMapping[numMesh].end()) {
+		UINT BoneIndex = m_BoneMapping[numMesh][NodeName];
+		m_BoneInfo[numMesh][BoneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation *
+			m_BoneInfo[numMesh][BoneIndex].BoneOffset;
 	}
 
 	for (UINT i = 0; i < pNode->mNumChildren; i++) {
@@ -671,11 +683,11 @@ void Model::BoneTransform(float TimeInSeconds, vector<XMMATRIX>& Transforms)
 
 	ReadNodeHeirarchy(AnimationTime, m_pScene->mRootNode, Identity);
 
-	UINT num = m_BoneInfo.size();
+	UINT num = m_BoneInfo[numMesh].size();
 	Transforms.resize(num);
 	for (UINT i = 0; i < num; i++)
 	{
-		Transforms[i] = m_BoneInfo[i].FinalTransformation;
+		Transforms[i] = m_BoneInfo[numMesh][i].FinalTransformation;
 	}
 }
 
@@ -935,7 +947,8 @@ void Model::ProcessBoneToParentIndex(vector<int> &boneToParentIndex, map<string,
 void Model::LoadBones(aiMesh* pMesh, std::vector<VertexBoneData>& Bones)
 {
 	m_NumBones = 0;
-
+	vector<BoneInfo> boneinfothismesh;
+	std::map<std::string, UINT> boneMappingThisMesh;
 	Bones.clear();
 	//Bones.reserve(pMesh->mNumBones);
 	Bones.resize(pMesh->mNumVertices);
@@ -943,18 +956,20 @@ void Model::LoadBones(aiMesh* pMesh, std::vector<VertexBoneData>& Bones)
 		UINT BoneIndex = 0;
 		std::string BoneName(pMesh->mBones[i]->mName.data);
 
-		if (m_BoneMapping.find(BoneName) == m_BoneMapping.end()) {
+		if (boneMappingThisMesh.find(BoneName) == boneMappingThisMesh.end()) {
 			// Allocate an index for a new bone
 			BoneIndex = m_NumBones;
 			m_NumBones += 1;
 			BoneInfo bi;
-			m_BoneInfo.push_back(bi);
-			//m_BoneInfo[BoneIndex].BoneOffset = pMesh->mBones[i]->mOffsetMatrix;
-			m_BoneInfo[BoneIndex].BoneOffset = XMMatrixTranspose(XMMATRIX(&pMesh->mBones[i]->mOffsetMatrix.a1));
-			m_BoneMapping[BoneName] = BoneIndex;
+			
+			boneinfothismesh.push_back(bi);
+			//boneinfothismesh[BoneIndex].BoneOffset = XMMATRIX(&pMesh->mBones[i]->mOffsetMatrix.a1);
+			boneinfothismesh[BoneIndex].BoneOffset = XMMatrixTranspose(XMMATRIX(&pMesh->mBones[i]->mOffsetMatrix.a1));
+
+			boneMappingThisMesh[BoneName] = BoneIndex;
 		}
 		else {
-			BoneIndex = m_BoneMapping[BoneName];
+			BoneIndex = boneMappingThisMesh[BoneName];
 		}
 		
 
@@ -965,6 +980,8 @@ void Model::LoadBones(aiMesh* pMesh, std::vector<VertexBoneData>& Bones)
 			Bones[VertexID].AddBoneData(BoneIndex, Weight);
 		}
 	}
+	m_BoneInfo.push_back(boneinfothismesh);
+	m_BoneMapping.push_back(boneMappingThisMesh);
 }
 
 void VertexBoneData::AddBoneData(UINT BoneID, float Weight)

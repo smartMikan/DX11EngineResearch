@@ -192,6 +192,7 @@
     <ClCompile Include="ddstextureClass.cpp" />
     <ClCompile Include="debugwindowclass.cpp" />
     <ClCompile Include="DeferredBuffersClass.cpp" />
+    <ClCompile Include="depthshaderclass.cpp" />
     <ClCompile Include="fadebitmapclass.cpp" />
     <ClCompile Include="fadeshaderclass.cpp" />
     <ClCompile Include="fogshaderclass.cpp" />
@@ -227,6 +228,7 @@
     <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="ShaderManagerClass.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="shadowshaderclass.cpp" />
     <ClCompile Include="SkeletalCharacterShaderClass.cpp" />
     <ClCompile Include="SkinnedDataClass.cpp" />
     <ClCompile Include="SkinnedModelClass.cpp" />
@@ -274,6 +276,7 @@
     <ClInclude Include="ddstextureClass.h" />
     <ClInclude Include="debugwindowclass.h" />
     <ClInclude Include="DeferredBuffersClass.h" />
+    <ClInclude Include="depthshaderclass.h" />
     <ClInclude Include="fadebitmapclass.h" />
     <ClInclude Include="fadeshaderclass.h" />
     <ClInclude Include="fogshaderclass.h" />
@@ -313,6 +316,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ShaderManagerClass.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="shadowshaderclass.h" />
     <ClInclude Include="SkeletalCharacterShaderClass.h" />
     <ClInclude Include="SkinnedDataClass.h" />
     <ClInclude Include="SkinnedModelClass.h" />

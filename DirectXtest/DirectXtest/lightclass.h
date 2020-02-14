@@ -1,23 +1,10 @@
 ﻿#pragma once
-////////////////////////////////////////////////////////////////////////////////
-// Filename: lightclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _LIGHTCLASS_H_
-#define _LIGHTCLASS_H_
 
-
-//////////////
-// INCLUDES //
-//////////////
 
 #include <directxmath.h>
-
 #include "positionclass.h"
 #include <directxmath.h>
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: LightClass
-////////////////////////////////////////////////////////////////////////////////
 using namespace DirectX;
 
 class LightClass
@@ -27,24 +14,35 @@ public:
 	LightClass(const LightClass&);
 	~LightClass();
 
-	PositionClass m_position;
+	PositionClass positionClass;
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
-	void SetDirection(float, float, float);
-	void SetDirectionYawPitchRoll(float, float, float);
-
-
 	void SetSpecularColor(float, float, float, float);
 	void SetSpecularPower(float);
 
-
 	XMFLOAT4 GetAmbientColor();
 	XMFLOAT4 GetDiffuseColor();
-	XMFLOAT3 GetDirection();
+
 
 	XMFLOAT4 GetSpecularColor();
 	float GetSpecularPower();
+
+	void SetDirection(float, float, float);
+	void SetDirectionYawPitchRoll(float, float, float);
+	void SetPosition(float, float, float);
+	void SetLookAt(float, float, float);
+	
+	XMFLOAT3 GetDirection();
+	XMFLOAT3 GetPosition();
+	void GenerateViewMatrix();
+	void GetViewMatrix(XMMATRIX&);
+	
+	void GenerateOrthoMatrix(float, float, float);
+	void GetOrthoMatrix(XMMATRIX&);
+
+
+
 
 	void SetFrameTime(float time);
 
@@ -52,19 +50,24 @@ public:
 
 	//void TurnLeft(bool keydown);
 
+	void Frame();
 
 private:
 	XMFLOAT4 m_diffuseColor;
 	XMFLOAT4 m_ambientColor;
-	XMFLOAT3 m_direction;
-	
+
 	XMFLOAT4 m_specularColor;
 	float m_specularPower;
 
-	float m_frameTime;
 
-	//float m_rotationZ;
-	//float m_leftTurnSpeed, m_rightTurnSpeed;
+	XMFLOAT3 m_direction;
+	XMFLOAT3 m_position;
+	XMFLOAT3 m_lookAt;
+	XMMATRIX m_viewMatrix;
+	XMMATRIX m_orthoMatrix;
+
+	//float m_rotationX, m_rotationY, m_rotationZ;
+
+	float m_frameTime;
 };
 
-#endif

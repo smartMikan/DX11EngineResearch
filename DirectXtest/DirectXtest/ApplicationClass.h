@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#ifndef _APPLICATIONCLASS_H_
+#define _APPLICATIONCLASS_H_
 
 
 //const bool FULL_SCREEN = full;
@@ -7,10 +9,9 @@ const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
 
+
 #include <fstream>
 #include <stdio.h>
-
-
 #include "inputclass.h"
 #include "d3dclass.h"
 #include "shadermanagerclass.h"
@@ -42,11 +43,8 @@ private:
 	FpsClass* m_Fps;
 	CpuClass* m_Cpu;
 	ZoneClass* m_Zone;
-
-
-
 	SoundClass* m_Sound;
 	ImGuiClass* m_ImGui;
-
-
 };
+
+#endif

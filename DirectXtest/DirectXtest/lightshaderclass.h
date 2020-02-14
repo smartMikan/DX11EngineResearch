@@ -1,14 +1,4 @@
 ﻿#pragma once
-////////////////////////////////////////////////////////////////////////////////
-// Filename: lightshaderclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _LIGHTSHADERCLASS_H_
-#define _LIGHTSHADERCLASS_H_
-
-
-//////////////
-// INCLUDES //
-//////////////
 #include <d3d11.h>
 #include<directxmath.h>
 #include<d3dcompiler.h>
@@ -17,9 +7,7 @@
 using namespace std;
 using namespace DirectX;
 
-//////////////////////////////////////////////////
-// Class name: LightShaderClass
-//////////////////////////////////////////////////
+
 class LightShaderClass
 {
 private:
@@ -98,8 +86,6 @@ private:
 	ConstantBuffer<CameraBufferType>* m_cameraBuffer;
 	ConstantBuffer<LightBufferType>* m_lightBuffer;
 };
-
-#endif
 
 
 

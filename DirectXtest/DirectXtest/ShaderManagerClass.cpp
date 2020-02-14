@@ -14,6 +14,9 @@ ShaderManagerClass::ShaderManagerClass()
 	m_SkyCubeShader = 0;
 	m_TerrainShader = 0;
 	m_ParticleShader = 0;
+	m_SkeletalCharacterShader = 0;
+	m_ShadowShader = 0;
+	m_DepthShader = 0;
 }
 
 
@@ -100,6 +103,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	result = m_TerrainShader->Initialize(device, hwnd);
 	if (!result)
 	{
+		MessageBoxW(hwnd, L"failed to initialize m_TerrainShader", NULL, MB_OK);
 		return false;
 	}
 
@@ -115,6 +119,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	result = m_SkyDomeShader->Initialize(device, hwnd);
 	if (!result)
 	{
+		MessageBoxW(hwnd, L"failed to initialize m_SkyDomeShader", NULL, MB_OK);
 		return false;
 	}
 	
@@ -129,6 +134,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	result = m_SkyCubeShader->Initialize(device, hwnd);
 	if (!result)
 	{
+		MessageBoxW(hwnd, L"failed to initialize m_SkyCubeShader", NULL, MB_OK);
 		return false;
 	}
 
@@ -144,6 +150,7 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	result = m_ParticleShader->Initialize(device, hwnd);
 	if (!result)
 	{
+		MessageBoxW(hwnd, L"failed to initialize m_ParticleShader", NULL, MB_OK);
 		return false;
 	}
 
@@ -159,6 +166,33 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		MessageBoxW(hwnd, L"failed to initialize m_SkeletalCharacterShader", NULL, MB_OK);
 		return false;
 	}
+
+	m_ShadowShader = new ShadowShaderClass;
+	if (!m_ShadowShader)
+	{
+		return false;
+	}
+
+	result = m_ShadowShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"failed to initialize m_ShadowShader", NULL, MB_OK);
+		return false;
+	}
+
+	m_DepthShader = new DepthShaderClass;
+	if (!m_DepthShader)
+	{
+		return false;
+	}
+
+	result = m_DepthShader->Initialize(device, hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"failed to initialize m_DepthShader", NULL, MB_OK);
+		return false;
+	}
+
 
 	return true;
 }
@@ -226,6 +260,24 @@ bool ShaderManagerClass::InitializeMyShader(ID3D11Device *device, std::wstring v
 
 void ShaderManagerClass::Shutdown()
 {
+	// Release the depth shader object.
+	if (m_DepthShader)
+	{
+		m_DepthShader->Shutdown();
+		delete m_DepthShader;
+		m_DepthShader = 0;
+	}
+
+
+	// Release the shadowMap shader object.
+	if (m_ShadowShader)
+	{
+		m_ShadowShader->Shutdown();
+		delete m_ShadowShader;
+		m_ShadowShader = 0;
+	}
+
+
 	// Release the SkeletalCharacter shader object.
 	if (m_SkeletalCharacterShader)
 	{
@@ -367,6 +419,21 @@ bool ShaderManagerClass::RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dD
 {
 	return m_SkeletalCharacterShader->Render(d3dDeviceContext, BoneNums, WorldMatrix, ViewMatrix, ProjMatrix, DiffuseMap,
 		NormalMap, AmbientLight, diffuseLight, LightDirection, CameraPos, BoneTransforms, mat);
+}
+
+bool ShaderManagerClass::RenderShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix, ID3D11ShaderResourceView * texture, ID3D11ShaderResourceView * depthMapTexture, XMFLOAT3 lightDirection, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
+{
+	return m_ShadowShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix, texture, depthMapTexture, lightDirection, ambientColor, diffuseColor);
+}
+
+bool ShaderManagerClass::RenderDepthShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix)
+{
+	return m_DepthShader->Render(deviceContext,indexCount,worldMatrix,viewMatrix,projectionMatrix);
+}
+
+bool ShaderManagerClass::RenderDepthShader(ID3D11DeviceContext *deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+{
+	return m_DepthShader->Render(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 }
 
 void ShaderManagerClass::DrawSetWithMyShader(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPosition, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT4 materialAmbientColor, XMFLOAT4 materialDiffuseColor, XMFLOAT4 SpecularColor)

@@ -157,14 +157,18 @@ private:
 
 	map<std::string, int> boneNameToNumberIndexMap;
 	map<int, std::string> boneNumberToNameIndexMap;
-	std::vector<XMFLOAT4X4> FinalTransforms;
+	std::vector<std::vector<XMFLOAT4X4>> FinalTransforms;
+	/*XMFLOAT4X4 FinalTransformsMeshes[10][10];*/
 	Material mat;
 	map<string, AnimationClip> animations;
 
-	std::vector<VertexBoneData> m_Bones;
-	std::vector<BoneInfo> m_BoneInfo;
-	std::map<std::string, UINT> m_BoneMapping; // maps a bone name to its index
+	std::vector<std::vector<VertexBoneData>> m_Bones;
+
+	std::vector<std::vector<BoneInfo>> m_BoneInfo;
+	std::vector <std::map<std::string, UINT>> m_BoneMapping; // maps a bone name to its index
 	UINT m_NumBones = 0;
+
+	int numMesh = 0;
 };
 
 

@@ -34,6 +34,7 @@ bool ParticleSystemClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* 
 
 	// Initialize the particle system.
 	result = InitializeParticleSystem();
+	SetParticleProperty(500, 10, 500, -3, 1, 0.2, 1000);
 	if (!result)
 	{
 		return false;
