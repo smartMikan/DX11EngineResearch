@@ -64,6 +64,12 @@ void GameObjectClass::Shutdown()
 		delete m_Model;
 		m_Model = 0;
 	}
+
+	if (mAnimComp) {
+		mAnimComp.release();
+		
+	}
+
 }
 
 void GameObjectClass::Frame(InputClass* input)

@@ -237,6 +237,43 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	//	MessageBoxW(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 	//	return false;
 	//}
+	m_sword = new GameObjectClass;
+	if (!m_sword)
+	{
+		return false;
+	}
+	result = m_sword->Initialize("./3DModel/aaa.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize tianyi model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_sword->InitAnimation(cb_bones);
+	m_sword->AddAnimation("./3DModel/aaa.fbx");
+	m_sword->SwitchAnim(1);
+	m_sword->m_Position.SetScale(2.02f, 2.02f, 2.02f);
+	m_sword->m_Position.SetRotation(90.0f, 180.0f, 0.0f);
+	
+	
+	m_tianyi = new GameObjectClass;
+	if (!m_tianyi)
+	{
+		return false;
+	}
+	result = m_tianyi->Initialize("./3DModel/bbb.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize tianyi model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_tianyi->InitAnimation(cb_bones);
+	m_tianyi->AddAnimation("./3DModel/bbb.fbx");
+	m_tianyi->SwitchAnim(1);
+	m_tianyi->m_Position.SetScale(0.02f, 0.02f, 0.02f);
+
+
 
 	m_AnimModel = new GameObjectClass;
 	if (!m_AnimModel)
@@ -247,11 +284,11 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	result = m_AnimModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
 	if (!result)
 	{
-		MessageBoxW(hwnd, L"Could not initialize the mesh model object.", L"Error", MB_OK);
+		MessageBoxW(hwnd, L"Could not initialize the hiphop dancing mesh model object.", L"Error", MB_OK);
 		return false;
 	}
 
-	m_AnimModel->InitAnimation(cb_bones); 
+	m_AnimModel->InitAnimation(cb_bones);
 	m_AnimModel->AddAnimation("./3DModel/Bellydancing.fbx");
 	m_AnimModel->AddAnimation("./3DModel/Boxing.fbx");
 	m_AnimModel->AddAnimation("./3DModel/Hip_Hop_Dancing.fbx");
@@ -283,6 +320,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	m_Player->m_Position.SetScale(0.02f, 0.02f, 0.02f);
 	
+
+	
+
 	m_UnMoveModel = new GameObjectClass;
 	if (!m_UnMoveModel)
 	{
@@ -422,6 +462,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 	cb_bones.SetDebugName("vs_bone_transforms");
 	
+	
 	this->cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	this->cb_ps_light.data.ambientLightStrength = 0.3f;
 
@@ -544,6 +585,17 @@ void ZoneClass::Shutdown()
 		m_Player->Shutdown();
 		delete m_Player;
 		m_Player = 0;
+	}
+	if (m_tianyi) {
+		m_tianyi->Shutdown();
+		delete m_tianyi;
+		m_tianyi = 0;
+	}
+	
+	if (m_sword) {
+		m_sword->Shutdown();
+		delete m_sword;
+		m_sword = 0;
 	}
 
 	//// Release the model object.
@@ -1214,8 +1266,15 @@ bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const 
 	m_AnimModel->Render(viewMatrix, projMatrix);
 
 
-	m_Player->Render(viewMatrix, projMatrix);
+	m_tianyi->m_Position.SetPosition(25.0f, 0.0f, 30.0f);
+	m_tianyi->Render(viewMatrix, projMatrix);
 
+	m_sword->m_Position.SetPosition(30.0f, 0.2f, 30.0f);
+	m_sword->Render(viewMatrix, projMatrix);
+
+
+
+	m_Player->Render(viewMatrix, projMatrix);
 	return true;
 }
 
@@ -1241,6 +1300,8 @@ bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, con
 	m_UnMoveModel->m_Position.SetRotation(0.0f, 180.0f, 0.0f);
 	m_UnMoveModel->m_Position.SetScale(20.0f, 20.0f, 1.0f);
 	m_UnMoveModel->Render(viewMatrix, projMatrix);
+
+
 	return true;
 }
 

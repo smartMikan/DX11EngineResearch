@@ -55,7 +55,7 @@ bool Model::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animat
 bool Model::AddAnimation(const std::string & filePath, Animator * animator_out, AnimationComponent * animComp, bool disablerootTrans = false, bool disablerootRot = false, bool disablerootScale = false)
 {
 	this->directory = StringHelper::GetDirectoryFromPath(filePath);
-
+	//m_pScene = new aiScene;
 	m_pScene = m_Importer.ReadFile(filePath,
 		aiProcessPreset_TargetRealtime_Fast |
 		aiProcess_ConvertToLeftHanded | aiProcess_TransformUVCoords/*|aiProcess_JoinIdenticalVertices*/);
@@ -198,7 +198,6 @@ bool Model::AddAnimation(const std::string & filePath, Animator * animator_out, 
 		animator_out->AddAnim(animation);
 	}
 
-
 	return true;
 }
 
@@ -206,8 +205,7 @@ bool Model::LoadModel(const std::string& filePath)
 {
 	this->directory = StringHelper::GetDirectoryFromPath(filePath);
 
-	
-	m_pScene = new aiScene;
+	//m_pScene = new aiScene;
 	m_pScene = m_Importer.ReadFile(filePath,
 		aiProcessPreset_TargetRealtime_Fast |
 		aiProcess_ConvertToLeftHanded | aiProcess_TransformUVCoords/*|aiProcess_JoinIdenticalVertices*/);
@@ -789,5 +787,5 @@ void Model::ProcessAnimation(Animator* animator_out, ConstantBuffer<ConstantBuff
 		}
 		m_Animations.push_back(animation);
 	}
-	*animator_out = Animator(m_Avator, m_Bones, std::move(m_Animations), cbufBone);
+	*animator_out = Animator(m_Avator, m_Bones, m_Animations, cbufBone);
 }

@@ -55,6 +55,8 @@ public:
 	GameObjectClass* m_AnimModel;
 	GameObjectClass* m_UnMoveModel;
 	GameObjectClass* m_Player;
+	GameObjectClass* m_tianyi;
+	GameObjectClass* m_sword;
 	
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);
@@ -125,5 +127,6 @@ private:
 	ConstantBuffer<CB_PS_Material> cb_ps_material;
 	ConstantBuffer<CB_PS_ShadowMatrix> cb_ps_shadowMatrix;
 	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
+	//ConstantBuffer<ConstantBuffer_Bones> cb_bones2;
 
 };

@@ -65,7 +65,6 @@ private:
 private:
 
 	std::vector<Mesh> m_meshes;
-
 	const aiScene* m_pScene;
 	Assimp::Importer m_Importer;
 
