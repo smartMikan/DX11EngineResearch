@@ -7,26 +7,24 @@ const float SHADOWMAP_NEAR = 1.0f;
 
 #include<memory>
 
-#include "d3dclass.h"
-#include "inputclass.h"
-#include "shadermanagerclass.h"
+#include "Engine/d3dclass.h"
+#include "Engine/inputclass.h"
+#include "Graphic/RasterTekObjects/shadermanagerclass.h"
 #include "texturemanagerclass.h"
-#include "timerclass.h"
-#include "userinterfaceclass.h"
-#include "cameraclass.h"
-#include "positionclass.h"
-#include "GameObjectClass.h"
-#include "TerrainClass.h"
-//#include "modelclass.h"
-#include "frustumclass.h"
-#include "skydomeclass.h"
-#include "skycubeclass.h"
-#include "lightclass.h"
-#include "particlesystemclass.h"
+#include "Engine/timerclass.h"
+#include "Graphic/RasterTekObjects/userinterfaceclass.h"
+#include "Engine/cameraclass.h"
+#include "Engine/positionclass.h"
+#include "Engine/GameObjectClass.h"
+#include "Engine/TerrainClass.h"
+#include "Engine/frustumclass.h"
+#include "Graphic/RasterTekObjects/skydomeclass.h"
+#include "Graphic/RasterTekObjects/skycubeclass.h"
+#include "Engine/lightclass.h"
+#include "Graphic/RasterTekObjects/particlesystemclass.h"
 
-//#include"SkinnedModelClass.h"
 
-#include "rendertextureclass.h"
+#include "Graphic/RasterTekObjects/rendertextureclass.h"
 #include "Graphic/Shaders.h"
 
 class ZoneClass
@@ -44,7 +42,13 @@ public:
 	void Shutdown();
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
-	float cubeTranslation[3] = {12.0f,0.1f,33.0f};
+
+
+public:
+	float wallTranslation[3] = { 12.0f,0.1f,33.0f };
+	float wallRotation[3] = { 0.0f, 0.0f, 0.0f };
+	float wallScaling[3] = { 20.0f, 20.0f, 1.0f };
+	
 	int m_lightType = 0;
 	bool toonShading = false;
 
@@ -65,6 +69,12 @@ private:
 	
 	bool Render(D3DClass*, ShaderManagerClass*, TextureManagerClass*);
 	
+	bool RenderSky(D3DClass*, ShaderManagerClass*, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&);
+	
+	bool RenderParticles(D3DClass*, ShaderManagerClass*, const XMMATRIX&, const XMMATRIX&, const XMMATRIX&);
+
+	bool RenderTerrain(D3DClass*, ShaderManagerClass*, TextureManagerClass* , const XMMATRIX&, const XMMATRIX&, const XMMATRIX&);
+
 	bool RenderAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
 	bool RenderNonAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
 
@@ -127,6 +137,5 @@ private:
 	ConstantBuffer<CB_PS_Material> cb_ps_material;
 	ConstantBuffer<CB_PS_ShadowMatrix> cb_ps_shadowMatrix;
 	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
-	//ConstantBuffer<ConstantBuffer_Bones> cb_bones2;
 
 };

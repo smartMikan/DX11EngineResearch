@@ -2,8 +2,7 @@
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
-
-#include "./Loader/DDSTextureLoader.h"
+#include "../DDSTextureLoader.h"
 using namespace DirectX;
 using namespace std;
 

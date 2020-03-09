@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include "../Graphic/Texture.h"
+#include "../Graphic/Shaders.h"
 
 class IVertexShader;
 class Texture;

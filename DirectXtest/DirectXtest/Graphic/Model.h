@@ -9,7 +9,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "AssimpSkinnedData.h"
-#include "../positionclass.h"
+#include "../Engine/positionclass.h"
 
 using namespace DirectX;
 using namespace AssimpModel;

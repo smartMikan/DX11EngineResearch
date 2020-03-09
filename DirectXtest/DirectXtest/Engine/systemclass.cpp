@@ -2,7 +2,7 @@
 // Filename: SystemClass.cpp
 /////////////////////////////
 #include "systemclass.h"
-#include "resource.h"
+#include "../resource.h"
 
 ///
 ///コンストラクタ

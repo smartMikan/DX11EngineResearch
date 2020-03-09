@@ -1,8 +1,8 @@
 #pragma once
 #include <d3d11.h>
 #include <directxmath.h>
-#include "Graphic/Buffers/VertexBuffer.h"
-#include "Graphic/Buffers/IndexBuffer.h"
+#include "../Graphic/Buffers/VertexBuffer.h"
+#include "../Graphic/Buffers/IndexBuffer.h"
 using namespace DirectX;
 
 class TerrainCellClass

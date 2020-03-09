@@ -2,8 +2,8 @@
 #include <list>
 #include "inputclass.h"
 #include "positionclass.h"
-#include "Graphic/Model.h"
-#include "Engine/Timer.h"
+#include "../Graphic/Model.h"
+#include "Timer.h"
 
 class GameObjectClass
 {

@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Filename: shadermanagerclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "shadermanagerclass.h"
@@ -14,7 +14,6 @@ ShaderManagerClass::ShaderManagerClass()
 	m_SkyCubeShader = 0;
 	m_TerrainShader = 0;
 	m_ParticleShader = 0;
-	m_SkeletalCharacterShader = 0;
 	m_ShadowShader = 0;
 	m_DepthShader = 0;
 }
@@ -154,19 +153,6 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd, ID3D11Devic
 		return false;
 	}
 
-
-	m_SkeletalCharacterShader = new SkeletalCharacterShaderClass;
-	if (!m_SkeletalCharacterShader)
-	{
-		return false;
-	}
-	result = m_SkeletalCharacterShader->Initialize(device, hwnd, deviceContext);
-	if (!result)
-	{
-		MessageBoxW(hwnd, L"failed to initialize m_SkeletalCharacterShader", NULL, MB_OK);
-		return false;
-	}
-
 	m_ShadowShader = new ShadowShaderClass;
 	if (!m_ShadowShader)
 	{
@@ -278,13 +264,7 @@ void ShaderManagerClass::Shutdown()
 	}
 
 
-	// Release the SkeletalCharacter shader object.
-	if (m_SkeletalCharacterShader)
-	{
-		m_SkeletalCharacterShader->Shutdown();
-		delete m_SkeletalCharacterShader;
-		m_SkeletalCharacterShader = 0;
-	}
+	
 
 	// Release the sky dome shader object.
 	if (m_ParticleShader)
@@ -414,12 +394,7 @@ bool ShaderManagerClass::RenderSkyCubeShader(ID3D11DeviceContext* deviceContext,
 {
 	return m_SkyCubeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
 }
-bool ShaderManagerClass::RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
-	ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, M3d::Material mat)
-{
-	return m_SkeletalCharacterShader->Render(d3dDeviceContext, BoneNums, WorldMatrix, ViewMatrix, ProjMatrix, DiffuseMap,
-		NormalMap, AmbientLight, diffuseLight, LightDirection, CameraPos, BoneTransforms, mat);
-}
+
 
 bool ShaderManagerClass::RenderShadowShader(ID3D11DeviceContext * deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix, ID3D11ShaderResourceView * texture, ID3D11ShaderResourceView * depthMapTexture, XMFLOAT3 lightDirection, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor)
 {

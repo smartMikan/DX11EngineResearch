@@ -1,7 +1,7 @@
-﻿#pragma once
+#pragma once
 
 
-#include "d3dclass.h"
+#include "../../Engine/d3dclass.h"
 #include "colorshaderclass.h"
 #include "textureshaderclass.h"
 #include "lightshaderclass.h"
@@ -10,13 +10,12 @@
 #include "skydomeshaderclass.h"
 #include "skycubeshaderclass.h"
 #include "particleshaderclass.h"
-#include "SkeletalCharacterShaderClass.h"
 #include "shadowshaderclass.h"
 #include "depthshaderclass.h"
 
-#include "Graphic/Shaders.h"
-#include "Graphic/Buffers/ConstantBuffer.h"
-#include "Graphic/Buffers/ConstanBufferTypes.h"
+#include "../Shaders.h"
+#include "../Buffers/ConstantBuffer.h"
+#include "../Buffers/ConstanBufferTypes.h"
 
 class ShaderManagerClass
 {
@@ -40,8 +39,6 @@ public:
 	bool RenderSkyCubeShader(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
 	bool RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView * normalMap, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor);
 	bool RenderParticleShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
-	bool RenderSkeletalCharacterShader(ID3D11DeviceContext* d3dDeviceContext, UINT BoneNums, CXMMATRIX WorldMatrix, CXMMATRIX ViewMatrix, CXMMATRIX ProjMatrix, ID3D11ShaderResourceView* DiffuseMap,
-		ID3D11ShaderResourceView* NormalMap, XMFLOAT4 AmbientLight, XMFLOAT4 diffuseLight, XMFLOAT3 LightDirection, XMFLOAT3 CameraPos, XMFLOAT4X4* BoneTransforms, M3d::Material mat);
 
 	bool RenderShadowShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix,
 		XMMATRIX projectionMatrix, XMMATRIX lightViewMatrix, XMMATRIX lightProjectionMatrix,
@@ -62,7 +59,6 @@ private:
 	SkyCubeShaderClass* m_SkyCubeShader;
 	TerrainShaderClass* m_TerrainShader;
 	ParticleShaderClass* m_ParticleShader;
-	SkeletalCharacterShaderClass* m_SkeletalCharacterShader;
 	ShadowShaderClass* m_ShadowShader;
 	DepthShaderClass* m_DepthShader;
 

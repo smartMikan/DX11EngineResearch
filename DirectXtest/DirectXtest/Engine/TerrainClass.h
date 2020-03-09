@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 
 //////////////
@@ -8,8 +8,6 @@
 #include <directxmath.h>
 #include <fstream>
 #include <stdio.h>
-//#include "System/VertexBuffer.h"
-//#include "System/IndexBuffer.h"
 #include "terraincellclass.h"
 #include "frustumclass.h"
 using namespace DirectX;

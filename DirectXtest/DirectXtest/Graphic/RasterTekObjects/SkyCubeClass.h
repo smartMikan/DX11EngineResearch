@@ -1,12 +1,12 @@
-﻿#pragma once
+#pragma once
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
-#include "Utility/ErrorLoger.h"
-#include "Graphic/Buffers/VertexBuffer.h"
-#include "Graphic/Buffers/IndexBuffer.h"
-#include "Loader/WICTextureLoader.h"
-#include "Loader/DDSTextureLoader.h"
+#include "../../Utility/ErrorLoger.h"
+#include "../Buffers/VertexBuffer.h"
+#include "../Buffers/IndexBuffer.h"
+#include "../WICTextureLoader.h"
+#include "../DDSTextureLoader.h"
 #include <vector>
 
 using namespace DirectX;

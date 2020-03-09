@@ -9,7 +9,7 @@
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "textureclass.h"
+#include "Graphic/RasterTekObjects/textureclass.h"
 #include<D3D11.h>
 #include <d3dcompiler.h>
 #include"Macro.h"

@@ -1,9 +1,9 @@
-﻿#pragma once
+#pragma once
 #include <d3d11.h>
 #include<directxmath.h>
 #include<d3dcompiler.h>
 #include <fstream>
-#include "Graphic/Buffers/ConstantBuffer.h"
+#include "../Buffers/ConstantBuffer.h"
 using namespace std;
 using namespace DirectX;
 

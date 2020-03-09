@@ -1,5 +1,3 @@
-#include "../Graphic/Texture.h"
-#include "../Graphic/Shaders.h"
 #include "../Utility/StringHelper.h"
 #include "ResourceManager.h"
 

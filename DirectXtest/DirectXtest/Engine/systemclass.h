@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 ///システムクラス
 
 #ifndef _SYSTEMCLASS_H_
@@ -15,8 +15,8 @@
 
 
 #include <windows.h>
-#include "Utility/StringHelper.h"
-#include "applicationclass.h"
+#include "../Utility/StringHelper.h"
+#include "../applicationclass.h"
 
 class SystemClass
 {

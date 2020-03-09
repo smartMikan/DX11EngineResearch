@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 ///////////////////////////////////////////////////////////////////////////////
 // Filename: skydomeclass.h
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,8 +12,8 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <fstream>
-#include "Graphic/Buffers/VertexBuffer.h"
-#include "Graphic/Buffers/IndexBuffer.h"
+#include "../Buffers/VertexBuffer.h"
+#include "../Buffers/IndexBuffer.h"
 using namespace DirectX;
 using namespace std;
 

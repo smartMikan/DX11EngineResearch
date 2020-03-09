@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 //The TextureArrayClass replaces the TextureClass that was used before. 
 //Instead of having just a single texture it can now have multiple textures and give calling objects access to those textures. 
 //For this tutorial it just handles two textures but it can easily be expanded.
@@ -12,8 +12,8 @@
 #include <d3dcompiler.h>
 #include <vector>
 
-#include "./Loader/DDSTextureLoader.h"
-#include "./Loader/WICTextureLoader.h"
+#include "../DDSTextureLoader.h"
+#include "../WICTextureLoader.h"
 
 class TextureArrayClass
 {

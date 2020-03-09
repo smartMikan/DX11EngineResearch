@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: skydomeshaderclass.h
@@ -14,7 +14,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <fstream>
-#include "Graphic/Buffers/ConstantBuffer.h"
+#include "../Buffers/ConstantBuffer.h"
 using namespace DirectX;
 using namespace std;
 

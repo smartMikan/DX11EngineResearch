@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef _APPLICATIONCLASS_H_
 #define _APPLICATIONCLASS_H_
@@ -12,15 +12,15 @@ const float SCREEN_NEAR = 0.1f;
 
 #include <fstream>
 #include <stdio.h>
-#include "inputclass.h"
-#include "d3dclass.h"
-#include "shadermanagerclass.h"
+#include "Engine/inputclass.h"
+#include "Engine/d3dclass.h"
+#include "Graphic/RasterTekObjects/ShaderManagerClass.h"
 #include "texturemanagerclass.h"
-#include "timerclass.h"
-#include "fpsclass.h"
-#include "cpuclass.h"
+#include "Engine/timerclass.h"
+#include "Engine/fpsclass.h"
+#include "Engine/cpuclass.h"
 #include "zoneclass.h"
-#include "soundclass.h"
+#include "Engine/soundclass.h"
 #include "ImGuiClass.h"
 
 class ApplicationClass

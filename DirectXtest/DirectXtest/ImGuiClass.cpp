@@ -70,7 +70,13 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::Begin("WallPos");
 
 	ImGui::Text("WallPosition:");
-	ImGui::DragFloat3("Translation X/Y/Z", zone->cubeTranslation, 0.1f);
+	ImGui::DragFloat3("Translation X/Y/Z", zone->wallTranslation, 0.1f);
+	ImGui::Text("WallRotation:");
+	ImGui::DragFloat3("Rotation X/Y/Z", zone->wallRotation, 0.1f);
+	ImGui::Text("WallScaling:");
+	ImGui::DragFloat3("Scale X/Y/Z", zone->wallScaling, 0.1f);
+
+
 
 	ImGui::End();
 
@@ -95,16 +101,6 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	zone->m_lightType = !lighttype ? 0 : 1;
 	ImGui::Checkbox("ToonShader", &zone->toonShading);
 	ImGui::End();
-
-
-	//ImGui::Begin("Anim Model Instance");
-	//ImGui::Text("Animation Clip: ");
-	//ImGui::SameLine();
-	//ImGui::Text(zone->mCharacterInstance2.ClipName.c_str());
-	//ImGui::SliderFloat("AnimClipTime", &timepos, 0.0f, zone->mCharacterInstance2.Model->SkinnedData.GetClipEndTime(zone->mCharacterInstance2.ClipName));
-	//zone->mCharacterInstance2.Update(timepos - zone->mCharacterInstance2.TimePos);
-
-	//ImGui::End();
 
 
 

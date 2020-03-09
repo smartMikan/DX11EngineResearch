@@ -1,8 +1,8 @@
-﻿#pragma once
+#pragma once
 
 #include <d3d11.h>
 #include <directxmath.h>
-#include "Graphic/Buffers/ConstantBuffer.h"
+#include "../Buffers/ConstantBuffer.h"
 #include<d3dcompiler.h>
 #include <fstream>
 using namespace std;
