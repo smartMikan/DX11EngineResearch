@@ -544,12 +544,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader.dgsl">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="Scene.fbx">
-      <Filter>リソース ファイル</Filter>
-    </None>
     <None Include="Shader\TranslateVertexShader.hlsl">
       <Filter>リソース ファイル\Shader</Filter>
     </None>

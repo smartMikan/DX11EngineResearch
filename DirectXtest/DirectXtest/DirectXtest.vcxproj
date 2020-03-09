@@ -341,8 +341,6 @@
   <ItemGroup>
     <None Include="Graphic\Shaders\PSCommon.hlsli" />
     <None Include="Graphic\Shaders\VSCommon.hlsli" />
-    <None Include="Scene.fbx" />
-    <None Include="Shader.dgsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="3DModel\Texture\dirt01.dds" />
