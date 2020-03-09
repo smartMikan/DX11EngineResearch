@@ -12,16 +12,18 @@ const float SCREEN_NEAR = 0.1f;
 
 #include <fstream>
 #include <stdio.h>
-#include "Engine/inputclass.h"
-#include "Engine/d3dclass.h"
-#include "Graphic/RasterTekObjects/ShaderManagerClass.h"
-#include "texturemanagerclass.h"
-#include "Engine/timerclass.h"
-#include "Engine/fpsclass.h"
-#include "Engine/cpuclass.h"
-#include "zoneclass.h"
-#include "Engine/soundclass.h"
-#include "ImGuiClass.h"
+
+#include "inputclass.h"
+#include "timerclass.h"
+#include "fpsclass.h"
+#include "cpuclass.h"
+#include "soundclass.h"
+#include "d3dclass.h"
+
+#include "../Graphic/RasterTekObjects/ShaderManagerClass.h"
+#include "../texturemanagerclass.h"
+#include "../zoneclass.h"
+#include "../ImGuiClass.h"
 
 class ApplicationClass
 {

@@ -2,7 +2,7 @@
 // Filename: texturemanagerclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "texturemanagerclass.h"
-
+#include "../../Utility/ErrorLoger.h"
 
 TextureManagerClass::TextureManagerClass()
 {
@@ -30,7 +30,8 @@ bool TextureManagerClass::Initialize(int count, ID3D11Device* device)
 	{
 		return false;
 	}
-	DirectX::CreateWICTextureFromFile(device, L"./Resources/tone_.png", nullptr, toneTexture.GetAddressOf());
+	HRESULT hr = DirectX::CreateWICTextureFromFile(device, L"./Resources/toon_.png", nullptr, toneTexture.GetAddressOf());
+	COM_ERROR_IF_FAILED(hr,"Failed to create toon texture.");
 
 	return true;
 }

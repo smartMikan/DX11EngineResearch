@@ -90,9 +90,6 @@
     <ClCompile Include="TextureManagerClass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ApplicationClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\ErrorLoger.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -116,9 +113,6 @@
     </ClCompile>
     <ClCompile Include="ImGuiClass.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphic\Vertex.cpp">
-      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
     <ClCompile Include="Graphic\Mesh.cpp">
       <Filter>ソース ファイル\Model\Assimp</Filter>
@@ -273,9 +267,6 @@
     <ClCompile Include="Engine\soundclass.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\systemclass.cpp">
-      <Filter>ソース ファイル\System</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\timerclass.cpp">
       <Filter>ソース ファイル\System</Filter>
     </ClCompile>
@@ -290,6 +281,12 @@
     </ClCompile>
     <ClCompile Include="Engine\TerrainCellClass.cpp">
       <Filter>ソース ファイル\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ApplicationClass.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="systemclass.cpp">
+      <Filter>ソース ファイル\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -309,9 +306,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="TextureManagerClass.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ApplicationClass.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Utility\ErrorLoger.h">
@@ -527,9 +521,6 @@
     <ClInclude Include="Engine\soundclass.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\systemclass.h">
-      <Filter>ヘッダー ファイル\System</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\timerclass.h">
       <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
@@ -544,6 +535,12 @@
     </ClInclude>
     <ClInclude Include="Engine\TerrainCellClass.h">
       <Filter>ヘッダー ファイル\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ApplicationClass.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="systemclass.h">
+      <Filter>ヘッダー ファイル\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

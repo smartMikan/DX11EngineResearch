@@ -1,26 +1,17 @@
 #pragma once
-////////////////////////////////////////////////////////////////////////////////
-// Filename: texturemanagerclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _TEXTUREMANAGERCLASS_H_
-#define _TEXTUREMANAGERCLASS_H_
 
 #include<string>
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
-#include "Graphic/RasterTekObjects/textureclass.h"
 #include<D3D11.h>
+#include<directxmath.h>
+#include <wrl/client.h>
 #include <d3dcompiler.h>
 #include"Macro.h"
 #include"Loader/DDSTextureLoader.h"
 #include"Loader/WICTextureLoader.h"
-#include<directxmath.h>
-#include <wrl/client.h>
+
+#include "Graphic/RasterTekObjects/textureclass.h"
+
 using namespace DirectX;
-////////////////////////////////////////////////////////////////////////////////
-// Class name: TextureManagerClass
-////////////////////////////////////////////////////////////////////////////////
 class TextureManagerClass
 {
 public:
@@ -49,5 +40,4 @@ private:
 
 };
 
-#endif
 

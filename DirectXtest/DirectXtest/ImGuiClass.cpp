@@ -34,6 +34,7 @@ void ImGuiClass::ShutDown()
 
 bool ImGuiClass::Frame(ZoneClass* zone)
 {
+	
 	static bool lighttype = false;
 	float lightRot[3];
 	float lightpos[3];
@@ -55,11 +56,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	diffusecolor[1] = zone->m_Light->GetDiffuseColor().y;
 	diffusecolor[2] = zone->m_Light->GetDiffuseColor().z;
 
-	/*float timepos;
-	timepos = zone->mCharacterInstance2.TimePos;*/
-
-
-
+	
 
 	//Start the Dear ImGui Frame
 	ImGui_ImplDX11_NewFrame();
@@ -75,8 +72,6 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::DragFloat3("Rotation X/Y/Z", zone->wallRotation, 0.1f);
 	ImGui::Text("WallScaling:");
 	ImGui::DragFloat3("Scale X/Y/Z", zone->wallScaling, 0.1f);
-
-
 
 	ImGui::End();
 
@@ -97,18 +92,40 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::DragFloat("Dynamic Light Attenuation Base", &zone->m_Light->dynamicLightAttenuation_a, 0.001, 0.1f, 1.0f);
 	ImGui::DragFloat("Dynamic Light Attenuation Distance", &zone->m_Light->dynamicLightAttenuation_b, 0.001, 0.0f, 1.0f);
 	ImGui::DragFloat("Dynamic Light Attenuation DistancePow", &zone->m_Light->dynamicLightAttenuation_c, 0.001, 0.0f, 1.0f);
-	ImGui::Checkbox("PointLight", &lighttype);
+	ImGui::Checkbox("PointLight(Test)", &lighttype);
 	zone->m_lightType = !lighttype ? 0 : 1;
-	ImGui::Checkbox("ToonShader", &zone->toonShading);
+	ImGui::Checkbox("ToonShader(Test)", &zone->toonShading);
 	ImGui::End();
 
 
+	////Create ImGui Test Window
+	ImGui::Begin("InputList");
 
+	ImGui::Text("UpArrow(or W):Move Forward");
+	ImGui::Text("DownArrow(or S):Move Back");
+	ImGui::Text("LeftArrow(or A):TurnLeft");
+	ImGui::Text("RightArrow(or D):TurnRight");
+	ImGui::Text("I (or Page Up):Look Up");
+	ImGui::Text("K (or Page Down):Look Down");
+	ImGui::Text("Space: Jump");
+	ImGui::Text("Left Control(or Left Mouse Button) :Attack");
+	ImGui::Text("");
+	ImGui::Text("F1:Hide/DisPlay  UI");
+	ImGui::Text("F2:Hide/DisPlay WireFrame");
+	ImGui::Text("F3:Hide/DisPlay TerrainCell Frame");
+	ImGui::Text("F6:Change SkyBox");
+
+	ImGui::End();
+
+	
+	
 	//Assemble Together Draw Data
 	ImGui::Render();
 
 	//Render Draw Data
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	
 
 
 	return true;

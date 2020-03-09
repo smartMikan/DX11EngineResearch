@@ -210,7 +210,7 @@ bool PixelShader::Initialize(Microsoft::WRL::ComPtr<ID3D11Device> &device, std::
 		return false;
 	}
 
-
+	return true;
 	//// Create the texture sampler state.
 	//result = device->CreateSamplerState(samplerDesc, m_samplerState.GetAddressOf());
 	//if (FAILED(result)) 

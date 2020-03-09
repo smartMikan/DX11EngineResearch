@@ -1,12 +1,10 @@
-/////////////////////////////
-// Filename: SystemClass.cpp
-/////////////////////////////
+
 #include "systemclass.h"
 #include "../resource.h"
 
 ///
-///コンストラクタ
-///オブジェクトポインタをNULLポインタとして初期化する
+///コンストラクタ;
+///オブジェクトポインタをNULLポインタとして初期化する;
 //In the class constructor I initialize the object pointers to null. 
 //This is important because if the initialization of these objects fail then the ProgramOver function further on will attempt to clean up those objects. 
 //If the objects are not null then it assumes they were valid created objects and that they need to be cleaned up. 

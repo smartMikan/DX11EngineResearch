@@ -64,7 +64,10 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	
 	//TODO: initialze it at engine layer other than scene layer
 	//Initialize Shaders
-	InitializeShaders();
+	if (!InitializeShaders()) {
+		MessageBoxW(hwnd, L"Could not initialize the Shaders.", L"Error", MB_OK);
+		return false;
+	};
 
 
 	// Create the user interface object.
@@ -142,7 +145,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the sky dome object.
-	result = m_DayLightSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./3DModel/Texture/daylight.jpg");
+	result = m_DayLightSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./Resources/Texture/daylight.jpg");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sky cube object.", L"Error", MB_OK);
@@ -158,9 +161,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	// Initialize the sky dome object.
 	result = m_SunsetSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), std::vector<std::wstring>{
-		L"./3DModel/Texture/sunset_posX.bmp", L"./3DModel/Texture/sunset_negX.bmp",
-			L"./3DModel/Texture/sunset_posY.bmp", L"./3DModel/Texture/sunset_negY.bmp",
-			L"./3DModel/Texture/sunset_posZ.bmp", L"./3DModel/Texture/sunset_negZ.bmp", });
+		L"./Resources/Texture/sunset_posX.bmp", L"./Resources/Texture/sunset_negX.bmp",
+			L"./Resources/Texture/sunset_posY.bmp", L"./Resources/Texture/sunset_negY.bmp",
+			L"./Resources/Texture/sunset_posZ.bmp", L"./Resources/Texture/sunset_negZ.bmp", });
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sunset sky cube object.", L"Error", MB_OK);
@@ -174,7 +177,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the sky dome object.
-	result = m_DesertSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./3DModel/Texture/desertcube1024.dds");
+	result = m_DesertSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./Resources/Texture/desertcube1024.dds");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the desert sky cube object.", L"Error", MB_OK);
@@ -188,9 +191,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 	// Initialize the sky dome object.
 	result = m_NebulaSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), std::vector<std::wstring>{
-		L"./SkyBoxVolume2/Stars01/rightImage.png", L"./SkyBoxVolume2/Stars01/leftImage.png",
-			L"./SkyBoxVolume2/Stars01/upImage.png", L"./SkyBoxVolume2/Stars01/downImage.png",
-			L"./SkyBoxVolume2/Stars01/backImage.png", L"./SkyBoxVolume2/Stars01/frontImage.png", });
+		L"./Resources/SkyBoxVolume2/Stars01/rightImage.png", L"./Resources/SkyBoxVolume2/Stars01/leftImage.png",
+			L"./Resources/SkyBoxVolume2/Stars01/upImage.png", L"./Resources/SkyBoxVolume2/Stars01/downImage.png",
+			L"./Resources/SkyBoxVolume2/Stars01/backImage.png", L"./Resources/SkyBoxVolume2/Stars01/frontImage.png", });
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sunset sky cube object.", L"Error", MB_OK);
@@ -204,9 +207,9 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 	// Initialize the sky dome object.
 	result = m_PlanetSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), std::vector<std::wstring>{
-		L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/leftImage.png", L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/rightImage.png",
-			L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/upImage.png", L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/downImage.png",
-			L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/frontImage.png", L"./SkyBoxVolume2/DeepSpaceBlueWithPlanet/backImage.png", });
+		L"./Resources/SkyBoxVolume2/DeepSpaceBlueWithPlanet/leftImage.png", L"./Resources/SkyBoxVolume2/DeepSpaceBlueWithPlanet/rightImage.png",
+			L"./Resources/SkyBoxVolume2/DeepSpaceBlueWithPlanet/upImage.png", L"./Resources/SkyBoxVolume2/DeepSpaceBlueWithPlanet/downImage.png",
+			L"./Resources/SkyBoxVolume2/DeepSpaceBlueWithPlanet/frontImage.png", L"./Resources/SkyBoxVolume2/DeepSpaceBlueWithPlanet/backImage.png", });
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sunset sky cube object.", L"Error", MB_OK);
@@ -222,7 +225,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	// Initialize the terrain object.
-	result = m_Terrain->Initialize(Direct3D->GetDevice(), ".//Terrain/Setup.txt");
+	result = m_Terrain->Initialize(Direct3D->GetDevice(), "./Resources/Terrain/Setup.txt");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the terrain object.", L"Error", MB_OK);
@@ -771,10 +774,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 
 	}
 
-	keyDown = Input->IsKeyPressed(DIK_PGUP) /*|| Input->GetVertical() < 0*/;
+	keyDown = Input->IsKeyPressed(DIK_PGUP) || Input->IsKeyPressed(DIK_I);
 	m_Position->LookUpward(keyDown);
 
-	keyDown = Input->IsKeyPressed(DIK_PGDN) /*|| Input->GetVertical() > 0*/;
+	keyDown = Input->IsKeyPressed(DIK_PGDN) || Input->IsKeyPressed(DIK_K);
 	m_Position->LookDownward(keyDown);
 
 	// Get the view point position/rotation.
@@ -792,6 +795,11 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 	//TODO: more smarter global directional shadowmap
 	if (m_lightType == 0) {
 		m_Light->position.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
+	}
+	if (m_lightType == 1)
+	{
+		XMFLOAT3 pos = m_Player->m_Position.GetPosition();
+		m_Light->position.SetPosition(pos.x, pos.y + 1.0f, pos.z - 10.0f);
 	}
 	
 	return;
@@ -832,8 +840,6 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	bool result;
 	XMFLOAT3 cameraPosition;
 
-	int i;
-
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
 
@@ -860,7 +866,6 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	result =  RenderSky(Direct3D, ShaderManager, worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
-		
 		return false;
 	}
 	// Reset the world matrix.
@@ -1185,23 +1190,30 @@ bool ZoneClass::InitializeShaders()
 	d3dvertexshader_nolight = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_nolight.cso");
 	d3dvertexshader_shadowmap = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_shadowmap.cso");
 	d3dvertexshader_shadowmap_anim = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_shadowmap_anim.cso");
-	if (!pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso"))
+	
+	bool result;
+	result = pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso");
+	if (!result)
 	{
 		return false;
 	}
-	if (!pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso"))
+	result = pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso");
+	if (!result)
 	{
 		return false;
 	}
-	if (!pixelshader_toonmapping.Initialize(this->device, shaderfolder + L"pixelshader_toonmapping.cso"))
+	result = pixelshader_toonmapping.Initialize(this->device, shaderfolder + L"pixelshader_toonmapping.cso");
+	if (!result)
 	{
 		return false;
 	}
-	if (!pixelshader_heightmapping.Initialize(this->device, shaderfolder + L"PixelShader_HeightMapping.cso"))
+	result = pixelshader_heightmapping.Initialize(this->device, shaderfolder + L"PixelShader_HeightMapping.cso");
+	if (!result)
 	{
 		return false;
 	}
-	if (!pixelshader_depthColor.Initialize(this->device, shaderfolder + L"PixelShader_Depth.cso"))
+	result = pixelshader_depthColor.Initialize(this->device, shaderfolder + L"PixelShader_Depth.cso");
+	if (!result)
 	{
 		return false;
 	}

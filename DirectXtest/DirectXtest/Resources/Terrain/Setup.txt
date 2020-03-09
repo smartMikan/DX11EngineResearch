@@ -1,0 +1,5 @@
+Terrain Filename: ./Resources/Terrain/JapanHeightMap3.bmp
+Terrain Height: 513
+Terrain Width: 513
+Terrain Scaling: 24.0
+Color Map Filename: ./Resources/Terrain/colormap4.bmp

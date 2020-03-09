@@ -40,7 +40,7 @@ bool MiniMapClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	}
 
 	// Initialize the mini-map bitmap object.
-	result = m_MiniMapBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, L"./Terrain/MiniMap/minimap.dds", 154, 154);
+	result = m_MiniMapBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, L"./Resources/Terrain/MiniMap/minimap.dds", 154, 154);
 	if (!result)
 	{
 		return false;
@@ -54,7 +54,7 @@ bool MiniMapClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	}
 
 	// Initialize the point bitmap object.
-	result = m_PointBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, L"./Terrain/MiniMap/point.dds", 3, 3);
+	result = m_PointBitmap->Initialize(device, deviceContext, screenWidth, screenHeight, L"./Resources/Terrain/MiniMap/point.dds", 3, 3);
 	if (!result)
 	{
 		return false;

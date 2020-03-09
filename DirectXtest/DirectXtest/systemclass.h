@@ -1,22 +1,14 @@
 #pragma once
-///システムクラス
-
-#ifndef _SYSTEMCLASS_H_
-#define _SYSTEMCLASS_H_
-
-///////////////////////////////
-// PRE-PROCESSING DIRECTIVES //
-///////////////////////////////
-// ここWIN32_LEAN_AND_MEANのマグロを定義によって、windows.hの一部だけ引用し、debugコンパイルのスピードを上がる
+///システムクラス;
+// ここWIN32_LEAN_AND_MEANのマグロを定義によって、windows.hの一部だけ引用し、debugコンパイルのスピードを上がる;
 // 参考:http://dosei.hatenadiary.jp/entry/20060605/p3
 // 中国語:https://blog.csdn.net/wanwancs/article/details/6065775
-// 英:Here we define WIN32_LEAN_AND_MEAN. We do this to speed up the build process, it reduces the size of the Win32 header files by excluding some of the less used APIs.
+// 英:Here we define WIN32_LEAN_AND_MEAN. We do this to speed up the build process, it reduces the size of the Win32 header files by excluding some of the less used APIs.;
 #define WIN32_LEAN_AND_MEAN
-
-
 #include <windows.h>
+
 #include "../Utility/StringHelper.h"
-#include "../applicationclass.h"
+#include "Engine/applicationclass.h"
 
 class SystemClass
 {
@@ -50,12 +42,9 @@ private:
 
 
 
-//プロトタイプ宣言
+//プロトタイプ宣言;
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
-//グロバル
+//グロバル;
 static SystemClass* ApplicationHandle = 0;
-
-
-#endif

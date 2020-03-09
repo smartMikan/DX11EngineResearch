@@ -50,7 +50,8 @@ public:
 	float wallScaling[3] = { 20.0f, 20.0f, 1.0f };
 	
 	int m_lightType = 0;
-	bool toonShading = false;
+	bool toonShading = true;
+	bool m_displayUI = false;
 
 	IVertexShader* CreateVertexShader(const std::string& filename);
 
@@ -112,7 +113,7 @@ private:
 
 	//bool m_particleFollow = true;
 
-	bool m_displayUI = false, m_wireFrame = false, m_cellLines = false, m_heightLocked = false;
+	bool m_wireFrame = false, m_cellLines = false, m_heightLocked = false;
 	int m_cubemapsky = 0;
 
 	XMMATRIX modelPosition;

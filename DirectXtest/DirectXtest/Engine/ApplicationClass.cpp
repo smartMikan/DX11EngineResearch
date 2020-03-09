@@ -105,15 +105,17 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd,bool fullscreen
 	}
 
 	// Load textures into the texture manager.
-	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./Terrain/Texture/dirt01d.tga", 0);
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./Resources/Terrain/Texture/dirt01d.tga", 0);
 	if (!result)
 	{
+		MessageBoxW(hwnd, L"Could not Load the texture.", L"Error", MB_OK);
 		return false;
 	}
 
-	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./Terrain/Texture/dirt01n.tga", 1);
+	result = m_TextureManager->LoadTexture(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), L"./Resources/Terrain/Texture/dirt01n.tga", 1);
 	if (!result)
 	{
+		MessageBoxW(hwnd, L"Could not Load the texture.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -322,7 +324,10 @@ bool ApplicationClass::Frame()
 	
 
 	result = m_ImGui->Frame(m_Zone);
-
+	if (!result)
+	{
+		return false;
+	}
 
 
 

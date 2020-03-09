@@ -31,6 +31,28 @@ PositionClass::PositionClass()
 
 PositionClass::PositionClass(const PositionClass &other)
 {
+	m_positionX = other.m_positionX;
+	m_positionY = other.m_positionY;
+	m_positionZ = other.m_positionZ;
+
+	m_rotationX = other.m_rotationX;
+	m_rotationY = other.m_rotationY;
+	m_rotationZ = other.m_rotationZ;
+
+	m_scaleX = other.m_scaleX;
+	m_scaleY = other.m_scaleY;
+	m_scaleZ = other.m_scaleZ;
+
+	m_frameTime = other.m_frameTime;
+
+	m_forwardSpeed = other.m_forwardSpeed;
+	m_backwardSpeed = other.m_backwardSpeed;
+	m_upwardSpeed = other.m_upwardSpeed;
+	m_downwardSpeed = other.m_downwardSpeed;
+	m_leftTurnSpeed = other.m_leftTurnSpeed;
+	m_rightTurnSpeed = other.m_rightTurnSpeed;
+	m_lookUpSpeed = other.m_lookUpSpeed;
+	m_lookDownSpeed = other.m_lookDownSpeed;
 }
 
 
@@ -54,6 +76,15 @@ void PositionClass::SetPosition(float x, float y, float z)
 	m_positionX = x;
 	m_positionY = y;
 	m_positionZ = z;
+	return;
+}
+
+void PositionClass::SetPosition(PositionClass other)
+{
+	XMFLOAT3 pos = other.GetPosition();
+	m_positionX = pos.x;
+	m_positionY = pos.y;
+	m_positionZ = pos.z;
 	return;
 }
 
