@@ -1,12 +1,10 @@
-﻿/////////////////////////////
-// Filename: SystemClass.cpp
-/////////////////////////////
+
 #include "systemclass.h"
-#include "resource.h"
+#include "../resource.h"
 
 ///
-///コンストラクタ
-///オブジェクトポインタをNULLポインタとして初期化する
+///コンストラクタ;
+///オブジェクトポインタをNULLポインタとして初期化する;
 //In the class constructor I initialize the object pointers to null. 
 //This is important because if the initialization of these objects fail then the ProgramOver function further on will attempt to clean up those objects. 
 //If the objects are not null then it assumes they were valid created objects and that they need to be cleaned up. 
@@ -33,9 +31,6 @@ SystemClass::~SystemClass()
 {
 }
 
-///
-///イニシャライザー
-///
 //The following Initialize function does all the setup for the application. 
 //It first calls InitializeWindows which will create the window for our application to use. 
 //It also creates and initializes both the input and graphics objects that the application will use for handling user input and rendering graphics to the screen.

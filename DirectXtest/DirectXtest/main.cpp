@@ -1,11 +1,3 @@
-﻿///mainFile
-///メインファイル
-///WindowsMain
-//このファイルは、メインプログラムセッション(MainSession)です
-////////////////////
-//FileName:main.cpp
-////////////////////
-
 #include "systemclass.h"
 
 
@@ -21,8 +13,8 @@
 ///中:https://baike.baidu.com/item/HINSTANCE/5123010?fr=aladdin
 ///英:https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
 
+////この関数はWindowsMessageLoopモデルで、"Program"をWindosシステムに生成する;
 
-//この関数はWindowsMessageLoopモデルで、"Program"をWindosシステムに生成する
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 	SystemClass* System;
@@ -30,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 
 	// Create the system object.
-	//システムオブジェクトを生成する
+	//システムオブジェクトを生成する;
 	System = new SystemClass;
 	if (!System)
 	{
@@ -39,18 +31,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	}
 
 	// Initialize and run the system object.
-	//初期化
+	//初期化;
 	result = System->Initialize(L"./config.txt");
 	if (result)
 	{
-		//成功する場合、Run()関数を実行
+		//成功する場合、Run()関数を実行;
 		System->Run();
 	}
 
 
-	//終了処理
+	//終了処理;
 	// Shutdown and release the system object.
-	//オブジェクト消す、メモリーリリース関数
+	//オブジェクト消す、メモリーリリース関数;
 	System->ProgramOver();
 	delete System;
 	System = 0;

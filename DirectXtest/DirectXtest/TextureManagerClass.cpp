@@ -2,7 +2,7 @@
 // Filename: texturemanagerclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "texturemanagerclass.h"
-
+#include "../../Utility/ErrorLoger.h"
 
 TextureManagerClass::TextureManagerClass()
 {
@@ -20,7 +20,7 @@ TextureManagerClass::~TextureManagerClass()
 }
 
 
-bool TextureManagerClass::Initialize(int count)
+bool TextureManagerClass::Initialize(int count, ID3D11Device* device)
 {
 	m_textureCount = count;
 
@@ -30,6 +30,8 @@ bool TextureManagerClass::Initialize(int count)
 	{
 		return false;
 	}
+	HRESULT hr = DirectX::CreateWICTextureFromFile(device, L"./Resources/toon_.png", nullptr, toneTexture.GetAddressOf());
+	COM_ERROR_IF_FAILED(hr,"Failed to create toon texture.");
 
 	return true;
 }
@@ -73,7 +75,12 @@ bool TextureManagerClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext*
 
 
 
-ID3D11ShaderResourceView* TextureManagerClass::GetTexture(int id)
+ID3D11ShaderResourceView *TextureManagerClass::GetTexture(int id)
 {
 	return m_TextureArray[id].GetTexture();
+}
+
+ID3D11ShaderResourceView * const * TextureManagerClass::GetToonTexture()
+{
+	return toneTexture.GetAddressOf();
 }

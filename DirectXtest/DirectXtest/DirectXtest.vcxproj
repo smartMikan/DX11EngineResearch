@@ -78,12 +78,12 @@
     <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\FBXSDK2018.1.1\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>F:\FBXSDK2018.1.1\lib\vs2015\x64\debug;C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,11 +94,11 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <AssemblerOutput>All</AssemblerOutput>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXtest\Loader\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x86\debug;$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TypeLibraryFile>
@@ -117,14 +117,15 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXtest\Loader\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>F:\FBXSDK2018.1.1\lib\vs2015\x64\debug;$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <ImportLibrary>D3D11.lib</ImportLibrary>
-      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -165,128 +166,117 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXtest\Loader\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x64\release;$(SolutionDir)DirectXtest\Libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)DirectXtest\Libs</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <ImportLibrary>D3D11.lib</ImportLibrary>
-      <AdditionalDependencies>libfbxsdk-mt.lib;d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApplicationClass.cpp" />
-    <ClCompile Include="AssimpSkinnedData.cpp" />
-    <ClCompile Include="AssimpSkinnedModel.cpp" />
-    <ClCompile Include="bitmapclass.cpp" />
-    <ClCompile Include="cameraclass.cpp" />
-    <ClCompile Include="CharacterClass.cpp" />
-    <ClCompile Include="ClipPlaneShaderClass.cpp" />
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="colorshaderclass.cpp" />
-    <ClCompile Include="Componet.cpp" />
-    <ClCompile Include="cpuclass.cpp" />
-    <ClCompile Include="d3dclass.cpp" />
-    <ClCompile Include="ddstextureClass.cpp" />
-    <ClCompile Include="debugwindowclass.cpp" />
-    <ClCompile Include="DeferredBuffersClass.cpp" />
-    <ClCompile Include="depthshaderclass.cpp" />
-    <ClCompile Include="fadebitmapclass.cpp" />
-    <ClCompile Include="fadeshaderclass.cpp" />
-    <ClCompile Include="fogshaderclass.cpp" />
-    <ClCompile Include="fontclass.cpp" />
-    <ClCompile Include="fontshaderclass.cpp" />
-    <ClCompile Include="fpsclass.cpp" />
-    <ClCompile Include="frustumclass.cpp" />
-    <ClCompile Include="GameObjectClass.cpp" />
+    <ClCompile Include="Engine\ApplicationClass.cpp" />
+    <ClCompile Include="Engine\Timer.cpp" />
+    <ClCompile Include="Graphic\AssimpSkinnedData.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\bitmapclass.cpp" />
+    <ClCompile Include="Engine\cameraclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\ClipPlaneShaderClass.cpp" />
+    <ClCompile Include="Engine\MemoryStream.cpp" />
+    <ClCompile Include="Graphic\Color.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\colorshaderclass.cpp" />
+    <ClCompile Include="Engine\Componet.cpp" />
+    <ClCompile Include="Engine\cpuclass.cpp" />
+    <ClCompile Include="Engine\d3dclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\ddstextureClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\debugwindowclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\DeferredBuffersClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\depthshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\fadebitmapclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\fadeshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\fogshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\fontclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\fontshaderclass.cpp" />
+    <ClCompile Include="Engine\fpsclass.cpp" />
+    <ClCompile Include="Engine\frustumclass.cpp" />
+    <ClCompile Include="Engine\GameObjectClass.cpp" />
     <ClCompile Include="ImGuiClass.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
     <ClCompile Include="ImGUI\imgui_impl_dx11.cpp" />
     <ClCompile Include="ImGUI\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
-    <ClCompile Include="inputclass.cpp" />
-    <ClCompile Include="lightclass.cpp" />
-    <ClCompile Include="lightshaderclass.cpp" />
+    <ClCompile Include="Engine\inputclass.cpp" />
+    <ClCompile Include="Engine\lightclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\lightshaderclass.cpp" />
     <ClCompile Include="Loader\DDSTextureLoader.cpp" />
     <ClCompile Include="Loader\WICTextureLoader.cpp" />
-    <ClCompile Include="M3dLoaderClass.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshGeometryClass.cpp" />
-    <ClCompile Include="MiniMapClass.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="modelclass.cpp" />
-    <ClCompile Include="modellistclass.cpp" />
-    <ClCompile Include="multitextureshaderclass.cpp" />
-    <ClCompile Include="ParticleShaderClass.cpp" />
-    <ClCompile Include="ParticleSystemClass.cpp" />
-    <ClCompile Include="positionclass.cpp" />
-    <ClCompile Include="reflectshaderclass.cpp" />
-    <ClCompile Include="rendertextureclass.cpp" />
-    <ClCompile Include="ShaderManagerClass.cpp" />
-    <ClCompile Include="Shaders.cpp" />
-    <ClCompile Include="shadowshaderclass.cpp" />
-    <ClCompile Include="SkeletalCharacterShaderClass.cpp" />
-    <ClCompile Include="SkinnedDataClass.cpp" />
-    <ClCompile Include="SkinnedModelClass.cpp" />
-    <ClCompile Include="SkyCubeClass.cpp" />
-    <ClCompile Include="SkyCubeShaderClass.cpp" />
-    <ClCompile Include="SkyDomeClass.cpp" />
-    <ClCompile Include="SkyDomeShaderClass.cpp" />
-    <ClCompile Include="soundclass.cpp" />
-    <ClCompile Include="System\IndexBuffer.cpp" />
-    <ClCompile Include="System\Vertex.cpp" />
-    <ClCompile Include="System\VertexBuffer.cpp" />
-    <ClCompile Include="TerrainCellClass.cpp" />
-    <ClCompile Include="TerrainShaderClass.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Graphic\Mesh.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\MiniMapClass.cpp" />
+    <ClCompile Include="Graphic\Model.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\multitextureshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\ParticleShaderClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\ParticleSystemClass.cpp" />
+    <ClCompile Include="Engine\positionclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\reflectshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\rendertextureclass.cpp" />
+    <ClCompile Include="Engine\ResourceManager.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\ShaderManagerClass.cpp" />
+    <ClCompile Include="Graphic\Shaders.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\shadowshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\SkyCubeClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\SkyCubeShaderClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\SkyDomeClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\SkyDomeShaderClass.cpp" />
+    <ClCompile Include="Engine\soundclass.cpp" />
+    <ClCompile Include="Engine\TerrainCellClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\TerrainShaderClass.cpp" />
+    <ClCompile Include="Graphic\Texture.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="systemclass.cpp" />
-    <ClCompile Include="TerrainClass.cpp" />
-    <ClCompile Include="textclass.cpp" />
-    <ClCompile Include="texturearrayclass.cpp" />
-    <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="Engine\TerrainClass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\textclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\texturearrayclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\textureclass.cpp" />
     <ClCompile Include="TextureManagerClass.cpp" />
-    <ClCompile Include="textureshaderclass.cpp" />
-    <ClCompile Include="timerclass.cpp" />
-    <ClCompile Include="translateshaderclass.cpp" />
-    <ClCompile Include="transparentshaderclass.cpp" />
-    <ClCompile Include="UserInterfaceClass.cpp" />
-    <ClCompile Include="Utility\VertexTypes.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\textureshaderclass.cpp" />
+    <ClCompile Include="Engine\timerclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\translateshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\transparentshaderclass.cpp" />
+    <ClCompile Include="Graphic\RasterTekObjects\UserInterfaceClass.cpp" />
     <ClCompile Include="ZoneClass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApplicationClass.h" />
-    <ClInclude Include="AssimpLoader.h" />
-    <ClInclude Include="AssimpSkinnedData.h" />
-    <ClInclude Include="AssimpSkinnedModel.h" />
-    <ClInclude Include="bitmapclass.h" />
-    <ClInclude Include="cameraclass.h" />
-    <ClInclude Include="CharacterClass.h" />
-    <ClInclude Include="ClipPlaneShaderClass.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="colorshaderclass.h" />
-    <ClInclude Include="CommonVertexFormat.h" />
-    <ClInclude Include="Componet.h" />
-    <ClInclude Include="cpuclass.h" />
-    <ClInclude Include="d3dclass.h" />
-    <ClInclude Include="ddstextureClass.h" />
-    <ClInclude Include="debugwindowclass.h" />
-    <ClInclude Include="DeferredBuffersClass.h" />
-    <ClInclude Include="depthshaderclass.h" />
-    <ClInclude Include="fadebitmapclass.h" />
-    <ClInclude Include="fadeshaderclass.h" />
-    <ClInclude Include="fogshaderclass.h" />
-    <ClInclude Include="fontclass.h" />
-    <ClInclude Include="fontshaderclass.h" />
-    <ClInclude Include="fpsclass.h" />
-    <ClInclude Include="frustumclass.h" />
-    <ClInclude Include="GameObjectClass.h" />
+    <ClInclude Include="Engine\ApplicationClass.h" />
+    <ClInclude Include="Engine\Timer.h" />
+    <ClInclude Include="Graphic\AssimpSkinnedData.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\bitmapclass.h" />
+    <ClInclude Include="Engine\cameraclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\ClipPlaneShaderClass.h" />
+    <ClInclude Include="Engine\MemoryStream.h" />
+    <ClInclude Include="Graphic\Color.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\colorshaderclass.h" />
+    <ClInclude Include="Engine\Componet.h" />
+    <ClInclude Include="Engine\cpuclass.h" />
+    <ClInclude Include="Engine\d3dclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\ddstextureClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\debugwindowclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\DeferredBuffersClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\depthshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\fadebitmapclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\fadeshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\fogshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\fontclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\fontshaderclass.h" />
+    <ClInclude Include="Engine\fpsclass.h" />
+    <ClInclude Include="Engine\frustumclass.h" />
+    <ClInclude Include="Engine\GameObjectClass.h" />
     <ClInclude Include="ImGuiClass.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
@@ -295,66 +285,62 @@
     <ClInclude Include="ImGUI\imstb_rectpack.h" />
     <ClInclude Include="ImGUI\imstb_textedit.h" />
     <ClInclude Include="ImGUI\imstb_truetype.h" />
-    <ClInclude Include="inputclass.h" />
-    <ClInclude Include="lightclass.h" />
-    <ClInclude Include="lightshaderclass.h" />
+    <ClInclude Include="Engine\inputclass.h" />
+    <ClInclude Include="Engine\lightclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\lightshaderclass.h" />
     <ClInclude Include="Loader\DDSTextureLoader.h" />
     <ClInclude Include="Loader\WICTextureLoader.h" />
-    <ClInclude Include="M3dLoaderClass.h" />
     <ClInclude Include="Macro.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshGeometryClass.h" />
-    <ClInclude Include="MiniMapClass.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="modelclass.h" />
-    <ClInclude Include="modellistclass.h" />
-    <ClInclude Include="multitextureshaderclass.h" />
-    <ClInclude Include="ParticleShaderClass.h" />
-    <ClInclude Include="ParticleSystemClass.h" />
-    <ClInclude Include="positionclass.h" />
+    <ClInclude Include="Graphic\Mesh.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\MiniMapClass.h" />
+    <ClInclude Include="Graphic\Model.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\multitextureshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\ParticleShaderClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\ParticleSystemClass.h" />
+    <ClInclude Include="Engine\positionclass.h" />
     <ClInclude Include="ProjectInfo.h" />
-    <ClInclude Include="reflectshaderclass.h" />
-    <ClInclude Include="rendertextureclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\reflectshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\rendertextureclass.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ShaderManagerClass.h" />
-    <ClInclude Include="Shaders.h" />
-    <ClInclude Include="shadowshaderclass.h" />
-    <ClInclude Include="SkeletalCharacterShaderClass.h" />
-    <ClInclude Include="SkinnedDataClass.h" />
-    <ClInclude Include="SkinnedModelClass.h" />
-    <ClInclude Include="SkyCubeClass.h" />
-    <ClInclude Include="SkyCubeShaderClass.h" />
-    <ClInclude Include="SkyDomeClass.h" />
-    <ClInclude Include="SkyDomeShaderClass.h" />
-    <ClInclude Include="soundclass.h" />
-    <ClInclude Include="System\ConstanBufferTypes.h" />
-    <ClInclude Include="System\ConstantBuffer.h" />
-    <ClInclude Include="System\IndexBuffer.h" />
-    <ClInclude Include="System\Vertex.h" />
-    <ClInclude Include="System\VertexBuffer.h" />
-    <ClInclude Include="TerrainCellClass.h" />
-    <ClInclude Include="TerrainShaderClass.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Engine\ResourceManager.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\ShaderManagerClass.h" />
+    <ClInclude Include="Graphic\Shaders.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\shadowshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\SkyCubeClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\SkyCubeShaderClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\SkyDomeClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\SkyDomeShaderClass.h" />
+    <ClInclude Include="Engine\soundclass.h" />
+    <ClInclude Include="Graphic\Buffers\ConstanBufferTypes.h" />
+    <ClInclude Include="Graphic\Buffers\ConstantBuffer.h" />
+    <ClInclude Include="Graphic\Buffers\IndexBuffer.h" />
+    <ClInclude Include="Graphic\Vertex.h" />
+    <ClInclude Include="Graphic\Buffers\VertexBuffer.h" />
+    <ClInclude Include="Engine\TerrainCellClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\TerrainShaderClass.h" />
+    <ClInclude Include="Graphic\Texture.h" />
+    <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Utility\ErrorLoger.h" />
-    <ClInclude Include="Utility\Geometry.h" />
-    <ClInclude Include="Utility\Light.h" />
-    <ClInclude Include="Utility\Material.h" />
+    <ClInclude Include="Graphic\Light.h" />
+    <ClInclude Include="Graphic\Material.h" />
+    <ClInclude Include="Utility\GraphicDebug.h" />
     <ClInclude Include="Utility\StringHelper.h" />
     <ClInclude Include="systemclass.h" />
-    <ClInclude Include="TerrainClass.h" />
-    <ClInclude Include="textclass.h" />
-    <ClInclude Include="texturearrayclass.h" />
-    <ClInclude Include="textureclass.h" />
+    <ClInclude Include="Engine\TerrainClass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\textclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\texturearrayclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\textureclass.h" />
     <ClInclude Include="TextureManagerClass.h" />
-    <ClInclude Include="textureshaderclass.h" />
-    <ClInclude Include="timerclass.h" />
-    <ClInclude Include="translateshaderclass.h" />
-    <ClInclude Include="transparentshaderclass.h" />
-    <ClInclude Include="UserInterfaceClass.h" />
-    <ClInclude Include="Utility\VertexTypes.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\textureshaderclass.h" />
+    <ClInclude Include="Engine\timerclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\translateshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\transparentshaderclass.h" />
+    <ClInclude Include="Graphic\RasterTekObjects\UserInterfaceClass.h" />
     <ClInclude Include="ZoneClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Graphic\Shaders\PSCommon.hlsli" />
+    <None Include="Graphic\Shaders\VSCommon.hlsli" />
     <None Include="Scene.fbx" />
     <None Include="Shader.dgsl" />
   </ItemGroup>
@@ -859,6 +845,108 @@
     <None Include="Shader\ProjectionVertexShader.hlsl">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Graphic\Shaders\PixelShader_Depth.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\pixelshader.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\PixelShader_HeightMapping.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\pixelshader_nolight.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\pixelshader_toonmapping.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\vertexShader.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VertexShaderAnim.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VS_nolight.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VS_shadowmap.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Graphic\Shaders\VS_shadowmap_anim.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
