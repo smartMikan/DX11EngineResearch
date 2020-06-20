@@ -1,5 +1,6 @@
 #include "GameObjectClass.h"
 
+
 GameObjectClass::GameObjectClass()
 {
 	m_Model = 0;
@@ -27,7 +28,7 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 	if (result == false) {
 		return false;
 	}
-	
+
 
 	// Set the initial position and rotation.
 	m_Position.SetPosition(10.0f, 0.0f, 10.0f);

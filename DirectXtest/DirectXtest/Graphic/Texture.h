@@ -191,7 +191,7 @@ public:
 
 	aiTextureType GetType();
 	ID3D11ShaderResourceView* const * GetShaderResourceView() const;
-	//ID3D11ShaderResourceView** GetTextureResourceViewAddress();
+	ID3D11ShaderResourceView** GetTextureResourceViewAddress();
 	ITexture* Get() { return m_pTexture.get(); }
 	const ITexture* Get() const { return m_pTexture.get(); }
 
@@ -201,10 +201,10 @@ public:
 
 private:
 	std::unique_ptr<ITexture> m_pTexture = nullptr;
-	/*void Initialize1x1ColorTexture(ID3D11Device* device, const Color& color, aiTextureType type);
+	void Initialize1x1ColorTexture(ID3D11Device* device, const Color& color, aiTextureType type);
 	void InitializeColorTexture(ID3D11Device* device, const Color* colorData, UINT width, UINT height, aiTextureType type);
 	Microsoft::WRL::ComPtr<ID3D11Resource> texture = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView = nullptr;
-	aiTextureType type = aiTextureType::aiTextureType_UNKNOWN;*/
+	aiTextureType type = aiTextureType::aiTextureType_UNKNOWN;
 };
 

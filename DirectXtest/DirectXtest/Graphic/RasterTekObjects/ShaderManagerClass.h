@@ -13,7 +13,7 @@
 #include "shadowshaderclass.h"
 #include "depthshaderclass.h"
 
-#include "../Shaders.h"
+
 #include "../Buffers/ConstantBuffer.h"
 #include "../Buffers/ConstanBufferTypes.h"
 
@@ -63,8 +63,7 @@ private:
 	DepthShaderClass* m_DepthShader;
 
 
-	VertexShader m_vertexShader;
-	PixelShader m_pixelShader;
+
 	ConstantBuffer<CB_VS_MatrixBuffer> m_MatrixBuffer;
 	//ConstantBuffer<CB_VS_Light_CameraBuffer> m_Light_CameraBuffer;
 	ConstantBuffer<CB_PS_LightBuffer> m_LightBuffer;

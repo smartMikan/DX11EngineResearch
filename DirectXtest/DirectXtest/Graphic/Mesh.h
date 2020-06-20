@@ -13,6 +13,8 @@
 #include "Texture.h"
 #include "Material.h"
 #include "../../Engine/ResourceManager.h"
+#include "../Engine/Component.h"
+
 
 struct MeshParameters
 {

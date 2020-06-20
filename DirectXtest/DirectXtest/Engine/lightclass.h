@@ -14,7 +14,7 @@ public:
 	LightClass(const LightClass&);
 	~LightClass();
 
-	PositionClass position;
+	Transform position;
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);

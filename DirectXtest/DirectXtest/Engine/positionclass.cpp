@@ -2,7 +2,7 @@
 
 
 //The class constructor initializes the private member variables to zero to start with.
-PositionClass::PositionClass()
+Transform::Transform()
 {
 	m_positionX = 0.0f;
 	m_positionY = 0.0f;
@@ -29,7 +29,7 @@ PositionClass::PositionClass()
 
 }
 
-PositionClass::PositionClass(const PositionClass &other)
+Transform::Transform(const Transform &other)
 {
 	m_positionX = other.m_positionX;
 	m_positionY = other.m_positionY;
@@ -56,22 +56,22 @@ PositionClass::PositionClass(const PositionClass &other)
 }
 
 
-PositionClass::~PositionClass()
+Transform::~Transform()
 {
 }
 
 //The SetFrameTime function is used to set the frame speed in this class. 
-//PositionClass will use that frame time speed to calculate how fast the viewer should be moving and rotating. 
+//Transform will use that frame time speed to calculate how fast the viewer should be moving and rotating. 
 //This function should always be called at the beginning of each frame before using this class to move the viewing position.
 
-void PositionClass::SetFrameTime(float time)
+void Transform::SetFrameTime(float time)
 {
 	m_frameTime = time;
 }
 
 
 //The SetPosition and SetRotation functions are used for setting the position and rotation of the viewer/camera. These functions are generally used to initialize the position of the camera other than at the origin. In this tutorial the camera will be set slightly back from the grid and in the center of it.
-void PositionClass::SetPosition(float x, float y, float z)
+void Transform::SetPosition(float x, float y, float z)
 {
 	m_positionX = x;
 	m_positionY = y;
@@ -79,7 +79,7 @@ void PositionClass::SetPosition(float x, float y, float z)
 	return;
 }
 
-void PositionClass::SetPosition(PositionClass other)
+void Transform::SetPosition(Transform other)
 {
 	XMFLOAT3 pos = other.GetPosition();
 	m_positionX = pos.x;
@@ -89,7 +89,7 @@ void PositionClass::SetPosition(PositionClass other)
 }
 
 
-void PositionClass::SetRotation(float x, float y, float z)
+void Transform::SetRotation(float x, float y, float z)
 {
 	m_rotationX = x;
 	m_rotationY = y;
@@ -97,7 +97,7 @@ void PositionClass::SetRotation(float x, float y, float z)
 	return;
 }
 
-void PositionClass::SetScale(float x, float y, float z)
+void Transform::SetScale(float x, float y, float z)
 {
 	m_scaleX = x;
 	m_scaleY = y;
@@ -109,7 +109,7 @@ void PositionClass::SetScale(float x, float y, float z)
 
 
 //The GetPosition and GetRotation functions return the current position and rotation of the camera location. In this tutorial these functions are called to provide the location and rotation of the camera for display purposes. We will draw the position/rotation as text strings on the left side of the screen. This is very useful for debugging.
-void PositionClass::GetPosition(float& x, float& y, float& z)
+void Transform::GetPosition(float& x, float& y, float& z)
 {
 	x = m_positionX;
 	y = m_positionY;
@@ -117,17 +117,17 @@ void PositionClass::GetPosition(float& x, float& y, float& z)
 	return;
 }
 
-XMFLOAT3 PositionClass::GetPosition()
+XMFLOAT3 Transform::GetPosition()
 {
 	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
 }
 
-XMMATRIX PositionClass::GetPositionMatrix()
+XMMATRIX Transform::GetPositionMatrix()
 {
 	return XMMatrixTranslation(m_positionX, m_positionY, m_positionZ);
 }
 
-void PositionClass::GetRotation(float& x, float& y, float& z)
+void Transform::GetRotation(float& x, float& y, float& z)
 {
 	x = m_rotationX;
 	y = m_rotationY;
@@ -135,12 +135,12 @@ void PositionClass::GetRotation(float& x, float& y, float& z)
 	return;
 }
 
-XMFLOAT3 PositionClass::GetRotation()
+XMFLOAT3 Transform::GetRotation()
 {
 	return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
 }
 
-XMMATRIX PositionClass::GetRotationMatrix()
+XMMATRIX Transform::GetRotationMatrix()
 {
 	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rotationX), XMConvertToRadians(m_rotationY+180.0f), XMConvertToRadians(m_rotationZ));
 }
@@ -148,34 +148,34 @@ XMMATRIX PositionClass::GetRotationMatrix()
 
 
 //GetRotation returns the Y-axis rotation of the viewer. 
-void PositionClass::GetRotation(float & y)
+void Transform::GetRotation(float & y)
 {
 	y = m_rotationY;
 }
 
-float PositionClass::GetRotationY()
+float Transform::GetRotationY()
 {
 	return m_rotationY;
 }
 
-void PositionClass::GetScale(float & x, float & y, float & z)
+void Transform::GetScale(float & x, float & y, float & z)
 {
 	x = m_scaleX;
 	y = m_scaleY;
 	z = m_scaleZ;
 }
 
-XMFLOAT3 PositionClass::GetScale()
+XMFLOAT3 Transform::GetScale()
 {
 	return XMFLOAT3(m_scaleX, m_scaleY, m_scaleZ);
 }
 
-XMMATRIX PositionClass::GetScaleMatrix()
+XMMATRIX Transform::GetScaleMatrix()
 {
 	return  XMMatrixScaling(m_scaleX, m_scaleY, m_scaleZ);
 }
 
-XMMATRIX PositionClass::GetWorldMatrix()
+XMMATRIX Transform::GetWorldMatrix()
 {
 	return GetScaleMatrix() * GetRotationMatrix() * GetPositionMatrix();
 }
@@ -191,7 +191,7 @@ XMMATRIX PositionClass::GetWorldMatrix()
 //Each function then uses some basic math to calculate the new position of the viewer/camera.
 
 //This function calculates the forward speed and movement of the viewer / camera.
-void PositionClass::MoveForward(bool keydown)
+void Transform::MoveForward(bool keydown)
 {
 	float radians;
 
@@ -226,7 +226,7 @@ void PositionClass::MoveForward(bool keydown)
 }
 
 //This function calculates the backward speed and movement of the viewer/camera.
-void PositionClass::MoveBackward(bool keydown)
+void Transform::MoveBackward(bool keydown)
 {
 	float radians;
 
@@ -261,7 +261,7 @@ void PositionClass::MoveBackward(bool keydown)
 	return;
 }
 
-void PositionClass::MoveUpward(bool keydown)
+void Transform::MoveUpward(bool keydown)
 {
 	// Update the upward speed movement based on the frame time and whether the user is holding the key down or not.
 	if (keydown)
@@ -289,7 +289,7 @@ void PositionClass::MoveUpward(bool keydown)
 	return;
 }
 
-void PositionClass::MoveDownward(bool keydown)
+void Transform::MoveDownward(bool keydown)
 {
 	// Update the downward speed movement based on the frame time and whether the user is holding the key down or not.
 	if (keydown)
@@ -327,7 +327,7 @@ void PositionClass::MoveDownward(bool keydown)
 //Likewise if the user releases the key and the keydown variable is false it will then smoothly slow down each frame until the speed hits zero. 
 //The speed is calculated against the frame time to ensure the movement speed remains the same regardless of the frame rate. 
 //Each function then uses some basic math to calculate the new position of the camera.
-void PositionClass::TurnLeft(bool keydown)
+void Transform::TurnLeft(bool keydown)
 {
 	// If the key is pressed increase the speed at which the camera turns left.  If not slow down the turn speed.
 	if (keydown) {
@@ -353,7 +353,7 @@ void PositionClass::TurnLeft(bool keydown)
 	
 }
 
-void PositionClass::TurnRight(bool keydown)
+void Transform::TurnRight(bool keydown)
 {
 	// If the key is pressed increase the speed at which the camera turns right.  If not slow down the turn speed.
 	if (keydown) {
@@ -378,7 +378,7 @@ void PositionClass::TurnRight(bool keydown)
 	return;
 }
 
-void PositionClass::LookUpward(bool keydown)
+void Transform::LookUpward(bool keydown)
 {
 	// Update the upward rotation speed movement based on the frame time and whether the user is holding the key down or not.
 	if (keydown)
@@ -412,7 +412,7 @@ void PositionClass::LookUpward(bool keydown)
 	return;
 }
 
-void PositionClass::LookDownward(bool keydown)
+void Transform::LookDownward(bool keydown)
 {
 	// Update the downward rotation speed movement based on the frame time and whether the user is holding the key down or not.
 	if (keydown)
@@ -446,7 +446,7 @@ void PositionClass::LookDownward(bool keydown)
 	return;
 }
 
-void PositionClass::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
+void Transform::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
 {
 	if (!isleft) {
 		// If the key is pressed increase the speed at which the camera turns right.  If not slow down the turn speed.

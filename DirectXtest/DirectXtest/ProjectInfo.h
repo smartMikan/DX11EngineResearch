@@ -10,7 +10,7 @@
 				  _____________|____________________________________________________________________________________________________________________________________
 				 |					 |							|							|						|						|						|
 				 |					 |							|							|						|						|						|
-			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass				PositionClass
+			InputClass			GraphicClass				SoundClass					FPSClass				CPUClass				TimerClass				Transform
 									 |
 		  ___________________________|___________________________________________________________________________________________________________________________________________________________________________________
 		  |				|		        |                 |						    |                   |				|				       |					    |						|        				|	
@@ -44,7 +44,7 @@ Terrain:
 									 |
 		  ___________________________|__________________________________________________________________________
 		  |				|		        |                  |						         |					|
-	 CameraClass    PositionClass	  TerrainClass		UserInterfaceClass	          LightClass			ParticleSystemClass
+	 CameraClass    Transform	  TerrainClass		UserInterfaceClass	          LightClass			ParticleSystemClass
 |															|				       
 |													 _______|_______
                                  					 |			   |
@@ -78,7 +78,7 @@ Terrain:
 	RenderState																			|									  |
 																						|									  |
 																						l									  |
-																					Object<<<<<<Transform<<<<<<Componet	      |
+																					Object<<<<<<Transform<<<<<<Component	      |
 																			____________|________________					  |
 																		Camera						GameObject<<Update()	  |
 																										|					  |

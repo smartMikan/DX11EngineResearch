@@ -5,11 +5,11 @@
 #include<directxmath.h>
 #include <wrl/client.h>
 #include <d3dcompiler.h>
-#include"Macro.h"
-#include"Loader/DDSTextureLoader.h"
-#include"Loader/WICTextureLoader.h"
+#include"../../Macro.h"
+#include<DDSTextureLoader.h>
+#include<WICTextureLoader.h>
 
-#include "Graphic/RasterTekObjects/textureclass.h"
+#include "RasterTekObjects/textureclass.h"
 
 using namespace DirectX;
 class TextureManagerClass

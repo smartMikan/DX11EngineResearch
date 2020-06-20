@@ -120,7 +120,7 @@ private:
 class VertexShader
 {
 public:
-	bool Initialize(ID3D11Device* device, std::wstring shaderPath, D3D11_INPUT_ELEMENT_DESC* layoutdesc,UINT elementCount);
+	bool Initialize(Microsoft::WRL::ComPtr<ID3D11Device>& device, std::wstring shaderPath, D3D11_INPUT_ELEMENT_DESC* layoutdesc,UINT elementCount);
 	ID3D11VertexShader* GetShder();
 	ID3D10Blob* GetBuffer();
 	ID3D11InputLayout* GetInputLayout() {

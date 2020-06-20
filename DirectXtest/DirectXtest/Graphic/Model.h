@@ -10,6 +10,9 @@
 #include "Mesh.h"
 #include "AssimpSkinnedData.h"
 #include "../Engine/positionclass.h"
+#include "Renderer/RendererBase.h"
+
+
 
 using namespace DirectX;
 using namespace AssimpModel;

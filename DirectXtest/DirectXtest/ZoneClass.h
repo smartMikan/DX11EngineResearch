@@ -5,27 +5,25 @@ const int SHADOWMAP_HEIGHT = 1024;
 const float SHADOWMAP_DEPTH = 50.0f;
 const float SHADOWMAP_NEAR = 1.0f;
 
-#include<memory>
-
+#include "Graphic/RasterTekObjects/shadermanagerclass.h"
+#include "Graphic/RasterTekObjects/userinterfaceclass.h"
+#include "Graphic/RasterTekObjects/skydomeclass.h"
+#include "Graphic/RasterTekObjects/skycubeclass.h"
+#include "Graphic/RasterTekObjects/particlesystemclass.h"
+#include "Graphic/RasterTekObjects/rendertextureclass.h"
+#include "Graphic/texturemanagerclass.h"
+#include "Graphic/ShaderManager.h"
 #include "Engine/d3dclass.h"
 #include "Engine/inputclass.h"
-#include "Graphic/RasterTekObjects/shadermanagerclass.h"
-#include "texturemanagerclass.h"
 #include "Engine/timerclass.h"
-#include "Graphic/RasterTekObjects/userinterfaceclass.h"
 #include "Engine/cameraclass.h"
 #include "Engine/positionclass.h"
 #include "Engine/GameObjectClass.h"
 #include "Engine/TerrainClass.h"
 #include "Engine/frustumclass.h"
-#include "Graphic/RasterTekObjects/skydomeclass.h"
-#include "Graphic/RasterTekObjects/skycubeclass.h"
 #include "Engine/lightclass.h"
-#include "Graphic/RasterTekObjects/particlesystemclass.h"
 
 
-#include "Graphic/RasterTekObjects/rendertextureclass.h"
-#include "Graphic/Shaders.h"
 
 class ZoneClass
 {
@@ -53,7 +51,7 @@ public:
 	bool toonShading = true;
 	bool m_displayUI = false;
 
-	IVertexShader* CreateVertexShader(const std::string& filename);
+	
 
 	LightClass* m_Light;
 	//SkinnedModelInstance mCharacterInstance2;
@@ -79,7 +77,7 @@ private:
 	bool RenderAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
 	bool RenderNonAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
 
-	bool InitializeShaders();
+	//bool InitializeShaders();
 	void SetLight(int lightType);
 private:
 	ComPtr<ID3D11Device> device;
@@ -87,7 +85,7 @@ private:
 
 	UserInterfaceClass * m_UserInterface;
 	CameraClass* m_Camera;
-	PositionClass* m_Position;
+	Transform* m_Position;
 	TerrainClass* m_Terrain;
 	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;
@@ -118,18 +116,8 @@ private:
 
 	XMMATRIX modelPosition;
 
-	// shaders
-	std::unique_ptr<D3DVertexShader> d3dvertexshader;
-	std::unique_ptr<D3DVertexShader> d3dvertexshader_animation;
-	std::unique_ptr<D3DVertexShader> d3dvertexshader_nolight;
-	std::unique_ptr<D3DVertexShader> d3dvertexshader_shadowmap;
-	std::unique_ptr<D3DVertexShader> d3dvertexshader_shadowmap_anim;
-	PixelShader pixelshader;
-	PixelShader pixelshader_nolight;
-	PixelShader pixelshader_toonmapping;
-	PixelShader pixelshader_heightmapping;
-	PixelShader pixelshader_depthColor;
-
+	
+	ShaderManager shaders;
 	
 	// c_buffers
 	ConstantBuffer<CB_VS_MatrixBuffer> cb_vs_wvpBuffer;

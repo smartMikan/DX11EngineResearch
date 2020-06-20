@@ -6,18 +6,18 @@ using namespace DirectX;
 
 
 
-class PositionClass
+class Transform
 {
 public:
-	PositionClass();
-	PositionClass(const PositionClass&other);
-	~PositionClass();
+	Transform();
+	Transform(const Transform&other);
+	~Transform();
 
 	void SetFrameTime(float time);
 
 
 	void SetPosition(float, float, float);
-	void SetPosition(PositionClass other);
+	void SetPosition(Transform other);
 	void SetRotation(float, float, float);
 	void SetScale(float, float, float);
 

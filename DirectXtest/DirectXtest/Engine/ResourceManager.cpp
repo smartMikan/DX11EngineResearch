@@ -61,18 +61,18 @@ Resource<Texture> ResourceManager::GetTexture(ID3D11Device * device, const std::
 	return it->second;
 }
 
-//Resource<IVertexShader> ResourceManager::GetVertexShader(const std::string& filename, ZoneClass& gfx)
-//{
-//	auto it = g_mapVShaders.find(filename);
-//	if (it == g_mapVShaders.end())
-//	{
-//		auto pResource = std::shared_ptr<IVertexShader>(gfx.CreateVertexShader(filename));
-//		g_mapVShaders[filename] = pResource;
-//		return pResource;
-//	}
-//
-//	return it->second;
-//}
+Resource<IVertexShader> ResourceManager::GetVertexShader(const std::string& filename, ShaderManager& shaders)
+{
+	auto it = g_mapVShaders.find(filename);
+	if (it == g_mapVShaders.end())
+	{
+		auto pResource = std::shared_ptr<IVertexShader>(shaders.CreateVertexShader(filename));
+		g_mapVShaders[filename] = pResource;
+		return pResource;
+	}
+
+	return it->second;
+}
 
 template <typename T>
 static void CleanUpResources(std::unordered_map<std::string, std::shared_ptr<T>>& resource_map)

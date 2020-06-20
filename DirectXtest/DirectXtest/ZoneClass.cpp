@@ -64,7 +64,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	
 	//TODO: initialze it at engine layer other than scene layer
 	//Initialize Shaders
-	if (!InitializeShaders()) {
+	if (!shaders.InitializeShaders(device)) {
 		MessageBoxW(hwnd, L"Could not initialize the Shaders.", L"Error", MB_OK);
 		return false;
 	};
@@ -101,7 +101,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Camera->RenderBaseViewMatrix();
 
 	// Create the position object.
-	m_Position = new PositionClass;
+	m_Position = new Transform;
 	if (!m_Position)
 	{
 		return false;
@@ -242,7 +242,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	//Initialize the model object
-	result = m_sword->Initialize("./3DModel/aaa.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	result = m_sword->Initialize("./3DModel/tianyi_idle.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, shaders.d3dvertexshader_animation.get());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize tianyi model object.", L"Error", MB_OK);
@@ -250,7 +250,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 	m_sword->InitAnimation(cb_bones);
-	m_sword->AddAnimation("./3DModel/aaa.fbx");
+	m_sword->AddAnimation("./3DModel/tianyi_idle.fbx");
 	m_sword->SwitchAnim(1);
 	m_sword->m_Position.SetScale(2.02f, 2.02f, 2.02f);
 	m_sword->m_Position.SetRotation(90.0f, 180.0f, 0.0f);
@@ -262,7 +262,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	//Initialize the model object
-	result = m_tianyi->Initialize("./3DModel/bbb.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	result = m_tianyi->Initialize("./3DModel/fighter.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, shaders.d3dvertexshader_animation.get());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize tianyi model object.", L"Error", MB_OK);
@@ -271,7 +271,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	//Initialize animatior
 	m_tianyi->InitAnimation(cb_bones);
-	m_tianyi->AddAnimation("./3DModel/bbb.fbx");
+	m_tianyi->AddAnimation("./3DModel/fighter.fbx");
 	m_tianyi->SwitchAnim(1);
 	m_tianyi->m_Position.SetScale(0.02f, 0.02f, 0.02f);
 
@@ -283,7 +283,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	//Initialize the model object.
-	result = m_AnimModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	result = m_AnimModel->Initialize("./3DModel/Hip_Hop_Dancing.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, shaders.d3dvertexshader_animation.get());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the hiphop dancing mesh model object.", L"Error", MB_OK);
@@ -306,7 +306,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	//Initialize the model object.
-	result = m_Player->Initialize("./3DModel/SwordPack/xbot.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader_animation.get());
+	result = m_Player->Initialize("./3DModel/SwordPack/xbot.fbx", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, shaders.d3dvertexshader_animation.get());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the player model object.", L"Error", MB_OK);
@@ -330,7 +330,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	{
 		return false;
 	}
-	result = m_UnMoveModel->Initialize("./3DModel/brick_wall/brick_wall.obj", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, d3dvertexshader.get());
+	result = m_UnMoveModel->Initialize("./3DModel/brick_wall/brick_wall.obj", Direct3D->GetDevice(), Direct3D->GetDeviceContext(), cb_vs_wvpBuffer, cb_ps_material, shaders.d3dvertexshader.get());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the brick wall model object.", L"Error", MB_OK);
@@ -819,9 +819,9 @@ bool ZoneClass::RenderShadowMap(D3DClass* Direct3D, const XMMATRIX& lightViewMat
 
 	deviceContext->PSSetShader(NULL, NULL, 0);
 	//animModels
-	RenderAnimationGameObjects(d3dvertexshader_shadowmap_anim.get(), lightViewMatrix, lightProjMatrix);
+	RenderAnimationGameObjects(shaders.d3dvertexshader_shadowmap_anim.get(), lightViewMatrix, lightProjMatrix);
 	//noanimModels
-	RenderNonAnimationGameObjects(d3dvertexshader_shadowmap.get(), lightViewMatrix, lightProjMatrix);
+	RenderNonAnimationGameObjects(shaders.d3dvertexshader_shadowmap.get(), lightViewMatrix, lightProjMatrix);
 
 
 	// Reset the render target back to the original back buffer and not the render to texture anymore.
@@ -886,12 +886,12 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 	//check toonshader
 	if (toonShading) {
-		deviceContext->PSSetShader(pixelshader_toonmapping.GetShader(), NULL, 0);
+		deviceContext->PSSetShader(shaders.pixelshader_toonmapping.GetShader(), NULL, 0);
 		deviceContext->PSSetShaderResources(5, 1, TextureManager->GetToonTexture());
 	}
 	else
 	{
-		deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
+		deviceContext->PSSetShader(shaders.pixelshader.GetShader(), NULL, 0);
 	}
 	deviceContext->PSSetSamplers(1, 1, m_RenderTexture->shadowSampler.GetAddressOf());
 	deviceContext->PSSetShaderResources(4, 1, m_RenderTexture->GetShadowShaderResourceViewAddress());
@@ -900,10 +900,10 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	SetLight(m_lightType);
 
 	//WithAnim
-	RenderAnimationGameObjects(d3dvertexshader_animation.get(), viewMatrix, projectionMatrix);
+	RenderAnimationGameObjects(shaders.d3dvertexshader_animation.get(), viewMatrix, projectionMatrix);
 
 	//NoAnim
-	RenderNonAnimationGameObjects(d3dvertexshader.get(), viewMatrix, projectionMatrix);
+	RenderNonAnimationGameObjects(shaders.d3dvertexshader.get(), viewMatrix, projectionMatrix);
 
 	//reset worldmatrix
 	Direct3D->GetWorldMatrix(worldMatrix);
@@ -1164,66 +1164,63 @@ bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, con
 
 
 
-bool ZoneClass::InitializeShaders()
-{
-	std::wstring shaderfolder = L"";
-#pragma region DetermineShaderPath
-	if (IsDebuggerPresent())
-	{
-#ifdef _DEBUG // Debug Mode
-#ifdef _WIN64 // x64
-		shaderfolder = L"..\\x64\\Debug\\";
-#else	// x86
-		shaderfolder = L"..\\Debug\\";
-#endif
-#else	// Release Mode
-#ifdef _WIN64
-		shaderfolder = L"..\\x64\\Release\\";
-#else	// x86
-		shaderfolder = L"..\\Release\\";
-#endif
-#endif
-	}
+//bool ZoneClass::InitializeShaders()
+//{
+//	std::wstring shaderfolder = L"";
+//#pragma region DetermineShaderPath
+//	if (IsDebuggerPresent())
+//	{
+//#ifdef _DEBUG // Debug Mode
+//#ifdef _WIN64 // x64
+//		shaderfolder = L"..\\x64\\Debug\\";
+//#else	// x86
+//		shaderfolder = L"..\\Debug\\";
+//#endif
+//#else	// Release Mode
+//#ifdef _WIN64
+//		shaderfolder = L"..\\x64\\Release\\";
+//#else	// x86
+//		shaderfolder = L"..\\Release\\";
+//#endif
+//#endif
+//	}
+//
+//	d3dvertexshader = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "vertexShader.cso");
+//	d3dvertexshader_animation = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VertexShaderAnim.cso");
+//	d3dvertexshader_nolight = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VS_nolight.cso");
+//	d3dvertexshader_shadowmap = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VS_shadowmap.cso");
+//	d3dvertexshader_shadowmap_anim = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VS_shadowmap_anim.cso");
+//	
+//	bool result;
+//	result = pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso");
+//	if (!result)
+//	{
+//		return false;
+//	}
+//	result = pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso");
+//	if (!result)
+//	{
+//		return false;
+//	}
+//	result = pixelshader_toonmapping.Initialize(this->device, shaderfolder + L"pixelshader_toonmapping.cso");
+//	if (!result)
+//	{
+//		return false;
+//	}
+//	result = pixelshader_heightmapping.Initialize(this->device, shaderfolder + L"PixelShader_HeightMapping.cso");
+//	if (!result)
+//	{
+//		return false;
+//	}
+//	result = pixelshader_depthColor.Initialize(this->device, shaderfolder + L"PixelShader_Depth.cso");
+//	if (!result)
+//	{
+//		return false;
+//	}
+//	return true;
+//}
 
-	d3dvertexshader = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "vertexShader.cso");
-	d3dvertexshader_animation = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VertexShaderAnim.cso");
-	d3dvertexshader_nolight = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_nolight.cso");
-	d3dvertexshader_shadowmap = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_shadowmap.cso");
-	d3dvertexshader_shadowmap_anim = std::make_unique<D3DVertexShader>(device.Get(), StringHelper::WideToString(shaderfolder) + "VS_shadowmap_anim.cso");
-	
-	bool result;
-	result = pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso");
-	if (!result)
-	{
-		return false;
-	}
-	result = pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso");
-	if (!result)
-	{
-		return false;
-	}
-	result = pixelshader_toonmapping.Initialize(this->device, shaderfolder + L"pixelshader_toonmapping.cso");
-	if (!result)
-	{
-		return false;
-	}
-	result = pixelshader_heightmapping.Initialize(this->device, shaderfolder + L"PixelShader_HeightMapping.cso");
-	if (!result)
-	{
-		return false;
-	}
-	result = pixelshader_depthColor.Initialize(this->device, shaderfolder + L"PixelShader_Depth.cso");
-	if (!result)
-	{
-		return false;
-	}
-	return true;
-}
 
-IVertexShader* ZoneClass::CreateVertexShader(const std::string& filename)
-{
-	return new D3DVertexShader(device.Get(), filename);
-}
 
 //update light PS shader buffers 
 void ZoneClass::SetLight(int lightType)

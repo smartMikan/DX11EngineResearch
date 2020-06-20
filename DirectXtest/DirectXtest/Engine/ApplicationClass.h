@@ -21,7 +21,7 @@ const float SCREEN_NEAR = 0.1f;
 #include "d3dclass.h"
 
 #include "../Graphic/RasterTekObjects/ShaderManagerClass.h"
-#include "../texturemanagerclass.h"
+#include "../Graphic/texturemanagerclass.h"
 #include "../zoneclass.h"
 #include "../ImGuiClass.h"
 

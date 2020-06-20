@@ -4,6 +4,8 @@
 #include "positionclass.h"
 #include "../Graphic/Model.h"
 #include "Timer.h"
+#include "Component.h"
+
 
 class GameObjectClass
 {
@@ -29,10 +31,14 @@ public:
 	void StartAnim(int index);
 
 
+
+
+
+
 	XMMATRIX GetWorldMatrix();
 	bool SetWorldMatrix(XMMATRIX world);
 
-	PositionClass m_Position;
+	Transform m_Position;
 	Model* m_Model;
 
 	bool isJump;
@@ -44,9 +50,12 @@ public:
 
 
 private:
-	ID3D11DeviceContext* deviceContext;
 
+	ID3D11DeviceContext* deviceContext;
 	std::vector<Timer*>  mAnimTimers;
+	
+
+	
 	Timer m_jumpTimer;
 	//Timer mAnimTimer;
 	float mAnimTimeScale = 1.0f;
