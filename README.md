@@ -1,2 +1,2 @@
 # DX11Test
-DX11Test
+CoreFile:DirectXTest
