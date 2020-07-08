@@ -59,6 +59,8 @@ private:
 	VertexBuffer<DirectX::XMFLOAT4> m_BoneWeights;
 	IndexBuffer m_indexBuffer;
 
+
+
 	ConstantBuffer<CB_PS_Material>* cb_ps_material;
 
 	ID3D11Device* m_device;

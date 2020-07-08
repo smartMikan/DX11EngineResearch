@@ -61,7 +61,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	this->device = Direct3D->GetDevice();
 	this->deviceContext = Direct3D->GetDeviceContext();
-	
+
 	//TODO: initialze it at engine layer other than scene layer
 	//Initialize Shaders
 	if (!shaders.InitializeShaders(device)) {
@@ -232,7 +232,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 
-	
+
 
 	// Create the model object.
 	m_sword = new GameObjectClass;
@@ -289,18 +289,22 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		MessageBoxW(hwnd, L"Could not initialize the hiphop dancing mesh model object.", L"Error", MB_OK);
 		return false;
 	}
-	
+
 	//Initialize animatior
 	m_AnimModel->InitAnimation(cb_bones);
 	m_AnimModel->AddAnimation("./3DModel/Bellydancing.fbx");
 	m_AnimModel->AddAnimation("./3DModel/Boxing.fbx");
 	m_AnimModel->AddAnimation("./3DModel/Hip_Hop_Dancing.fbx");
+	m_AnimModel->AddAnimation("./3DModel/SwordPack/swordandshieldidle.fbx");
+	m_AnimModel->AddAnimation("./3DModel/SwordPack/swordandshieldrun.fbx", true);
+	m_AnimModel->AddAnimation("./3DModel/SwordPack/swordandshieldslash.fbx", true);
+
 
 	m_AnimModel->m_Position.SetScale(0.02f, 0.02f, 0.02f);
 	m_AnimModel->m_Position.SetRotation(0, 180, 0);
 
 	// Create the model object.
-	m_Player = new GameObjectClass;
+	m_Player = new Player;
 	if (!m_Player)
 	{
 		return false;
@@ -313,14 +317,13 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 		return false;
 	}
 	//Initialize animatior
-	m_Player->InitAnimation(cb_bones);
-	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldidle.fbx");
-	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldrun.fbx", true);
-	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldslash.fbx", true);
-	m_Player->AddAnimation("./3DModel/SwordPack/swordandshieldjump.fbx", true);
-	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield run (2).fbx", true);
-	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield 180 turn.fbx", false, true);
-	m_Player->AddAnimation("./3DModel/SwordPack/sword and shield 180 turn (2).fbx", false, true);
+	result = m_Player->InitialAnimations(cb_bones);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize the player Animation!.", L"Error", MB_OK);
+		return false;
+	}
+
 
 	m_Player->m_Position.SetScale(0.02f, 0.02f, 0.02f);
 
@@ -615,7 +618,20 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 			//m_Camera->SetPosition(posX, height, posZ);
 			m_Player->m_Position.SetPosition(posX, height + m_Player->GetJumpHeight(), posZ);
 		}
+
+
+
 	}
+
+	
+
+	//EnemyMove
+	for (auto enemy : m_enemies)
+	{
+		enemy->Frame(frameTime);
+	}
+
+
 
 	// Run the frame processing for the particle system.
 	m_ParticleSystem->Frame(frameTime, Direct3D->GetDeviceContext());
@@ -644,6 +660,45 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 	return true;
 }
+
+/// <summary>
+/// Add a Enemy
+/// </summary>
+bool ZoneClass::CreateEnemy()
+{
+
+	//Initialize the model object.
+	auto enemy = new Enemy(m_AnimModel, m_enemies.size());
+	m_enemies.emplace_back(enemy);
+	return true;
+}
+
+bool ZoneClass::CreateEnemyAtPositon(float pos[3])
+{
+	//Initialize the model object.
+	auto enemy = new Enemy(m_AnimModel, pos, m_enemies.size());
+	m_enemies.emplace_back(enemy);
+
+	return true;
+}
+
+bool ZoneClass::RemoveEnemy(int enemyID)
+{
+	if (m_enemies.empty())
+		return false;
+	auto it = m_enemies.begin();
+	advance(it, enemyID);
+	if (it != m_enemies.end()) {
+		it._Ptr->_Myval->ShutDown();
+		m_enemies.erase(it);
+		return true;
+	}
+	return false;
+}
+
+
+
+
 void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fps)
 {
 	//TODO: Update Inpot in a List of GameObject rather than in scene layer
@@ -671,7 +726,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 	//	m_heightLocked = !m_heightLocked;
 	//}
 
-	
+
 
 	//Switch Sky Cube
 	if (Input->IsKeyToggled(DIK_F6))
@@ -694,86 +749,12 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 		m_Player->SwitchAnim(1);
 	}
 
-	// Handle the input.
+	// Handle player input.
+	m_Player->HandleInput(Input,frameTime,fps,m_Position);
 
-	//left
-	keyDown = Input->IsKeyPressed(DIK_LEFT) || Input->IsKeyPressed(DIK_A);
-	m_Player->m_Position.TurnLeft(keyDown);
-	m_Position->Orbit(keyDown, true, orbitposition);
+	
 
-	if (keyDown && !m_Player->isJump) {
-		//switch the model animation to turnleft & reset idle animation
-		m_Player->StartAnim(1);
-		m_Player->SwitchAnim(6);
-		m_Player->isAttack = false;
-	}
-
-	//right
-	keyDown = Input->IsKeyPressed(DIK_RIGHT) || Input->IsKeyPressed(DIK_D);
-	m_Player->m_Position.TurnRight(keyDown);
-	m_Position->Orbit(keyDown, false, orbitposition);
-
-	if (keyDown && !m_Player->isJump) {
-		//switch the model animation to turnright & reset idle animation
-		m_Player->StartAnim(1);
-		m_Player->SwitchAnim(6);
-		m_Player->isAttack = false;
-	}
-
-	//forward
-	keyDown = Input->IsKeyPressed(DIK_UP) || Input->IsKeyPressed(DIK_W);
-	m_Player->m_Position.MoveForward(keyDown);
-
-	if (keyDown && !m_Player->isJump) {
-		//switch the model animation to moveforward & reset idle animation
-		m_Player->StartAnim(1);
-		m_Player->SwitchAnim(2);
-		m_Player->isAttack = false;
-	}
-
-	//back
-	keyDown = Input->IsKeyPressed(DIK_DOWN) || Input->IsKeyPressed(DIK_S);
-	m_Player->m_Position.MoveBackward(keyDown);
-
-	if (keyDown && !m_Player->isJump) {
-
-		//switch the model animation to movebackward & reset idle animation
-		m_Player->StartAnim(1);
-		m_Player->SwitchAnim(5);
-		m_Player->isAttack = false;
-	}
-
-	//jump
-	if (Input->IsKeyToggled(DIK_SPACE) && !m_Player->isJump)
-	{
-		//switch the model animation to jump & reset idle animation
-		m_Player->StartAnim(1);
-		m_Player->SwitchAnim(4);
-		m_Player->isAttack = false;
-		m_Player->Jump(10, 25);
-	}
-
-
-	//attack
-	keyDown = Input->GetMouseButtonDown(0) || Input->IsKeyPressed(DIK_LCONTROL);
-	if (keyDown) {
-		//switch the model animation to attack
-		m_Player->StartAnim(1);
-
-		//if is attacking,continue the animation
-		if (m_Player->isAttack) {
-			m_Player->SwitchAnim(3);
-		}
-		else
-		{
-			//reset attack animation
-			m_Player->StartAnim(3);
-			m_Player->isAttack = true;
-		}
-
-
-	}
-
+	//Camera Input
 	keyDown = Input->IsKeyPressed(DIK_PGUP) || Input->IsKeyPressed(DIK_I);
 	m_Position->LookUpward(keyDown);
 
@@ -789,6 +770,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 	m_Camera->SetRotation(rotX, rotY, rotZ);
 
 	//Sync the model rotation with camera
+
 	m_Player->m_Position.SetRotation(0, rotY, 0);
 
 	//if is Directionlight set lightpos with camera pos
@@ -801,7 +783,11 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 		XMFLOAT3 pos = m_Player->m_Position.GetPosition();
 		m_Light->position.SetPosition(pos.x, pos.y + 1.0f, pos.z - 10.0f);
 	}
-	
+
+
+
+
+
 	return;
 }
 
@@ -863,7 +849,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	worldMatrix = XMMatrixTranslation(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
 	//RenderSkyCube or SkyDome (using Camera position)
-	result =  RenderSky(Direct3D, ShaderManager, worldMatrix, viewMatrix, projectionMatrix);
+	result = RenderSky(Direct3D, ShaderManager, worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
 		return false;
@@ -878,7 +864,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	}
 
 	//render terrain
-	result = RenderTerrain(Direct3D, ShaderManager,TextureManager, worldMatrix, viewMatrix, projectionMatrix);
+	result = RenderTerrain(Direct3D, ShaderManager, TextureManager, worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
 		return false;
@@ -944,7 +930,7 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 	return true;
 }
 
-bool ZoneClass::RenderSky(D3DClass * Direct3D, ShaderManagerClass * ShaderManager, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
+bool ZoneClass::RenderSky(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, const XMMATRIX& worldMatrix, const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
 {
 	bool result;
 	//TODO:use one skycube object to hold different cubemaps rather than create skycube class for each different cubemap
@@ -1100,7 +1086,7 @@ bool ZoneClass::RenderTerrain(D3DClass* Direct3D, ShaderManagerClass* ShaderMana
 	return true;
 }
 
-bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const XMMATRIX & viewMatrix, const XMMATRIX & projMatrix)
+bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
 {
 	deviceContext->VSSetShader(vertexshader->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(vertexshader->GetLayout());
@@ -1131,10 +1117,20 @@ bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const 
 
 	//rander player;
 	m_Player->Render(viewMatrix, projMatrix);
+
+
+	//render enemy
+	for (auto enemy : m_enemies)
+	{
+		enemy->Draw(viewMatrix, projMatrix);
+	}
+
+
+
 	return true;
 }
 
-bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, const XMMATRIX & viewMatrix, const XMMATRIX & projMatrix)
+bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
 {
 	deviceContext->VSSetShader(vertexshader->GetShader(device.Get()), NULL, 0);
 	deviceContext->IASetInputLayout(vertexshader->GetLayout());

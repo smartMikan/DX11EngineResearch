@@ -496,3 +496,41 @@ void Transform::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
 
 }
 
+bool Transform::MoveTowardsPoint(float x, float y, float z)
+{
+	bool reached;
+	float delta_x = x - m_positionX;
+	float delta_y = y - m_positionY;
+	float delta_z = z - m_positionZ;
+
+	
+	XMVECTOR dir = XMLoadFloat3(&XMFLOAT3(delta_x, delta_y, delta_z));
+	XMFLOAT3 dirData;
+	XMStoreFloat3(&dirData, XMVector3LengthEst(dir));
+
+	if (dirData.x <= 1.0f) {
+		
+		return true;
+	}
+
+	XMStoreFloat3(&dirData, XMVector3Normalize(dir));
+
+	m_positionX += m_frameTime * dirData.x;
+	m_positionY += m_frameTime * dirData.y;
+	m_positionZ += m_frameTime * dirData.z;
+
+	return false;
+}
+
+bool Transform::MoveTowardsPoint(XMFLOAT3 targetpsotion)
+{
+ 	return MoveTowardsPoint(targetpsotion.x, targetpsotion.y, targetpsotion.z);
+}
+
+
+
+
+
+
+
+

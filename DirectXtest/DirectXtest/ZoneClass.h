@@ -22,7 +22,8 @@ const float SHADOWMAP_NEAR = 1.0f;
 #include "Engine/TerrainClass.h"
 #include "Engine/frustumclass.h"
 #include "Engine/lightclass.h"
-
+#include "Enemy.h"
+#include "Player.h"
 
 
 class ZoneClass
@@ -41,6 +42,10 @@ public:
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
 
+	bool CreateEnemy();
+	bool CreateEnemyAtPositon(float pos[3]);
+	bool RemoveEnemy(int enemyID);
+
 
 public:
 	float wallTranslation[3] = { 12.0f,0.1f,33.0f };
@@ -57,9 +62,12 @@ public:
 	//SkinnedModelInstance mCharacterInstance2;
 	GameObjectClass* m_AnimModel;
 	GameObjectClass* m_UnMoveModel;
-	GameObjectClass* m_Player;
+	Player* m_Player;
 	GameObjectClass* m_tianyi;
 	GameObjectClass* m_sword;
+
+	list<Enemy*> m_enemies;
+
 	
 private:
 	void HandleMovementInput(InputClass*, float frameTime,float fps);

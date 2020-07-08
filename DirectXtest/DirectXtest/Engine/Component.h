@@ -46,7 +46,7 @@ public:
 	
 
 	Component<T>& operator = (const Component<T>& rhs) {
-		this->Value = a.Value;
+		this->Value = rhs.Value;
 		return *this;
 	}
 	

@@ -34,7 +34,10 @@ void ImGuiClass::ShutDown()
 
 bool ImGuiClass::Frame(ZoneClass* zone)
 {
-	
+	static float createEnemyPos[3] = { 0,0,0 };
+	int EnemyCount;
+
+
 	static bool lighttype = false;
 	float lightRot[3];
 	float lightpos[3];
@@ -67,7 +70,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::Begin("WallPos");
 
 	ImGui::Text("WallPosition:");
-	ImGui::DragFloat3("Translation X/Y/Z", zone->wallTranslation, 0.1f);
+	ImGui::DragFloat3("Position X/Y/Z", zone->wallTranslation, 0.1f);
 	ImGui::Text("WallRotation:");
 	ImGui::DragFloat3("Rotation X/Y/Z", zone->wallRotation, 0.1f);
 	ImGui::Text("WallScaling:");
@@ -118,6 +121,26 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::End();
 
 	
+
+	////Create Enemy!
+	ImGui::Begin("CreateEnemy");
+	ImGui::DragFloat3("Position X/Y/Z", createEnemyPos, 0.1f);
+	if (ImGui::Button("CreateEnemy!")) 
+	{
+		zone->CreateEnemyAtPositon(createEnemyPos);
+	}
+	EnemyCount = zone->m_enemies.size();
+	ImGui::Text("EnemyCount: ");
+	ImGui::Text(to_string(EnemyCount).c_str());
+	if (ImGui::Button("RemoveEnemy!"))
+	{
+		zone->RemoveEnemy(EnemyCount-1);
+	}
+
+
+	ImGui::End();
+
+
 	
 	//Assemble Together Draw Data
 	ImGui::Render();

@@ -1,20 +1,22 @@
 #include "Component.h"
 
 
-
-Component::Component()
+template<typename T>
+Component<T>::Component()
 {
 	
 }
 
 
-
-Component::~Component()
+template<typename T>
+Component<T>::~Component()
 {
 }
 
-void Component::Frame()
+template<typename T>
+void Component<T>::Frame()
 {
+	
 }
 
 

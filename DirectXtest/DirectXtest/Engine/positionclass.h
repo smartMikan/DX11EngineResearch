@@ -45,8 +45,13 @@ public:
 	void LookUpward(bool keydown);
 	void LookDownward(bool keydown);
 
+
 	void Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion);
 	
+
+	bool MoveTowardsPoint(float, float, float);
+	bool MoveTowardsPoint(XMFLOAT3 targetpsotion);
+
 
 private:
 	float m_positionX, m_positionY, m_positionZ;

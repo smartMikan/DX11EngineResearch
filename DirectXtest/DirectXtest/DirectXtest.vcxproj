@@ -180,6 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Engine\ApplicationClass.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
     <ClCompile Include="Graphic\AssimpSkinnedData.cpp" />
@@ -240,6 +241,7 @@
     <ClCompile Include="Graphic\Renderer\RendererBase.cpp" />
     <ClCompile Include="Graphic\ShaderManager.cpp" />
     <ClCompile Include="Engine\Core\Object.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="systemclass.cpp" />
@@ -256,6 +258,7 @@
     <ClCompile Include="ZoneClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine\ApplicationClass.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Graphic\AssimpSkinnedData.h" />
@@ -302,6 +305,7 @@
     <ClInclude Include="Graphic\RasterTekObjects\ParticleSystemClass.h" />
     <ClInclude Include="Engine\positionclass.h" />
     <ClInclude Include="Engine\Core\Object.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectInfo.h" />
     <ClInclude Include="Graphic\RasterTekObjects\reflectshaderclass.h" />
     <ClInclude Include="Graphic\RasterTekObjects\rendertextureclass.h" />
