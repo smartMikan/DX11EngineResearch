@@ -81,27 +81,41 @@ void GameObjectClass::Frame(InputClass* input)
 
 }
 
-void GameObjectClass::Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
-{
-	Draw(m_Position.GetWorldMatrix(), viewMatrix, projectionMatrix);
+double GameObjectClass::Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
+{	
+	return Draw(m_Position.GetWorldMatrix(), viewMatrix, projectionMatrix,sameanim);
 }
 
-void GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
+double GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
 {
+	double drawTime, calanimtime;
+
+	LARGE_INTEGER t1,t2,tc;
+    QueryPerformanceFrequency(&tc);
+    QueryPerformanceCounter(&t1);
+
 	int index = mAnimator.GetCurrentAnimationIndex();
-	if (mPlayAnimtion)
-	{
-		if ((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
-			mAnimTimers[index]->Restart();
-		mAnimator.SetTimpPos((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
-		
-		const AnimationChannel* channel = mAnimComp->GetCurrentChannel();
-		if (channel)
+	if (!sameanim) {
+		if (mPlayAnimtion)
 		{
-			mAnimator.Bind(deviceContext);
+			if ((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
+				mAnimTimers[index]->Restart();
+			mAnimator.SetTimpPos((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
+
+			const AnimationChannel* channel = mAnimComp->GetCurrentChannel();
+			if (channel)
+			{
+				mAnimator.Bind(deviceContext);
+			}
 		}
 	}
-	m_Model->Draw(worldMatrix, viewMatrix, projectionMatrix);
+
+    QueryPerformanceCounter(&t2);
+	calanimtime =(double)(t2.QuadPart-t1.QuadPart)/(double)tc.QuadPart;
+    
+	drawTime = m_Model->Draw(worldMatrix, viewMatrix, projectionMatrix);
+
+	return calanimtime > drawTime ? calanimtime: drawTime;
 }
 
 void GameObjectClass::SwitchAnim(int index)

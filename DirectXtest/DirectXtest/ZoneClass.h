@@ -44,7 +44,7 @@ public:
 
 	bool CreateEnemy();
 	bool CreateEnemyAtPositon(float pos[3]);
-	bool RemoveEnemy(int enemyID);
+	bool RemoveEnemyFromRender(int enemyID);
 
 
 public:
@@ -55,7 +55,7 @@ public:
 	int m_lightType = 0;
 	bool toonShading = true;
 	bool m_displayUI = false;
-
+	double rendertime;
 	
 
 	LightClass* m_Light;
@@ -66,7 +66,7 @@ public:
 	GameObjectClass* m_tianyi;
 	GameObjectClass* m_sword;
 
-	list<Enemy*> m_enemies;
+	Enemy* m_enemies;
 
 	
 private:

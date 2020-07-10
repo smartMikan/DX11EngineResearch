@@ -47,7 +47,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	lightpos[0] = zone->m_Light->position.GetPosition().x;
 	lightpos[1] = zone->m_Light->position.GetPosition().y;
 	lightpos[2] = zone->m_Light->position.GetPosition().z;
-	
+
 
 	float ambientcolor[3];
 	ambientcolor[0] = zone->m_Light->GetAmbientColor().x;
@@ -59,7 +59,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	diffusecolor[1] = zone->m_Light->GetDiffuseColor().y;
 	diffusecolor[2] = zone->m_Light->GetDiffuseColor().z;
 
-	
+
 
 	//Start the Dear ImGui Frame
 	ImGui_ImplDX11_NewFrame();
@@ -87,9 +87,9 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::ColorEdit3("Light Ambient", ambientcolor);
 	ImGui::ColorEdit3("Light Diffuse", diffusecolor);
 	zone->m_Light->position.SetRotation(lightRot[0], lightRot[1], lightRot[2]);
-	zone->m_Light->position.SetPosition(lightpos[0],lightpos[1],lightpos[2]);
-	zone->m_Light->SetAmbientColor(ambientcolor[0], ambientcolor[1], ambientcolor[2],1.0f);
-	zone->m_Light->SetDiffuseColor(diffusecolor[0],diffusecolor[1],diffusecolor[2],1.0f);
+	zone->m_Light->position.SetPosition(lightpos[0], lightpos[1], lightpos[2]);
+	zone->m_Light->SetAmbientColor(ambientcolor[0], ambientcolor[1], ambientcolor[2], 1.0f);
+	zone->m_Light->SetDiffuseColor(diffusecolor[0], diffusecolor[1], diffusecolor[2], 1.0f);
 	ImGui::DragFloat("AmbientStrength", &zone->m_Light->ambientLightStrength, 0.01, 0.0f, 1.0f);
 	ImGui::DragFloat("Dynamic Light Strength", &zone->m_Light->dynamicLightStrength, 0.01, 0.0f, 10.0f);
 	ImGui::DragFloat("Dynamic Light Attenuation Base", &zone->m_Light->dynamicLightAttenuation_a, 0.001, 0.1f, 1.0f);
@@ -97,7 +97,7 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::DragFloat("Dynamic Light Attenuation DistancePow", &zone->m_Light->dynamicLightAttenuation_c, 0.001, 0.0f, 1.0f);
 	ImGui::Checkbox("PointLight(Test)", &lighttype);
 	zone->m_lightType = !lighttype ? 0 : 1;
-	ImGui::Checkbox("ToonShader(Test)", &zone->toonShading);
+	ImGui::Checkbox("ToneMap", &zone->toonShading);
 	ImGui::End();
 
 
@@ -120,35 +120,40 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 
 	ImGui::End();
 
-	
+
 
 	////Create Enemy!
 	ImGui::Begin("CreateEnemy");
 	ImGui::DragFloat3("Position X/Y/Z", createEnemyPos, 0.1f);
-	if (ImGui::Button("CreateEnemy!")) 
+	if (ImGui::Button("CreateEnemy!"))
 	{
 		zone->CreateEnemyAtPositon(createEnemyPos);
 	}
-	EnemyCount = zone->m_enemies.size();
+	EnemyCount = zone->m_enemies->GetRenderedEnemyCounts();
 	ImGui::Text("EnemyCount: ");
 	ImGui::Text(to_string(EnemyCount).c_str());
 	if (ImGui::Button("RemoveEnemy!"))
 	{
-		zone->RemoveEnemy(EnemyCount-1);
+		zone->RemoveEnemyFromRender(EnemyCount-1);
 	}
-
+	ImGui::Text("RenderTimeofLastEnemy:");
+	ImGui::Text(EnemyCount > 1 ? to_string(zone->m_enemies->GetEnemyRenderTime(EnemyCount-1)).c_str() : "0");
+	ImGui::Text("RenderTimeofAllEnemy:");
+	ImGui::Text(to_string(zone->rendertime).c_str());
+	
+	ImGui::Checkbox("ToggleIfRenderSameAnim", &zone->m_enemies->SameAnim);
 
 	ImGui::End();
 
 
-	
+
 	//Assemble Together Draw Data
 	ImGui::Render();
 
 	//Render Draw Data
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	
+
 
 
 	return true;

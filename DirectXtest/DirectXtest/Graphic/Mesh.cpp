@@ -185,12 +185,21 @@ void Mesh::SetData(MeshParameters& params)
 	}
 }
 
-void Mesh::Draw(IVertexShader* pVertexShader)
+double Mesh::Draw(IVertexShader* pVertexShader)
 {
 	BindMaterial();
 	Bind(pVertexShader);
 	this->m_deviceContext->IASetIndexBuffer(this->m_indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
+
+	LARGE_INTEGER t1, t2, tc;
+	QueryPerformanceFrequency(&tc);
+	QueryPerformanceCounter(&t1);
+
 	this->m_deviceContext->DrawIndexed(this->m_indexBuffer.IndexCount(), 0, 0);
+	QueryPerformanceCounter(&t2);
+	
+	double time = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
+	return time;
 }
 
 int Mesh::GetIndexSize()

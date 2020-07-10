@@ -1,6 +1,8 @@
 #pragma once
 #include "./Engine/GameObjectClass.h"
 
+const int MAX_ENEMY = 100;
+
 enum EnemyState
 {
 	idle = 4,
@@ -8,31 +10,75 @@ enum EnemyState
 	attack = 6,
 };
 
-
-
-
-class Enemy
+typedef struct EnemyInstancesData
 {
-public:
-	Enemy(GameObjectClass* obj);
-	Enemy(GameObjectClass* obj,int instID);
-	Enemy(GameObjectClass* obj, const float* pos);
-	Enemy(GameObjectClass* obj, const float* pos,int instID);
-	Enemy(const Enemy& rhs);
-	~Enemy();
+	float m_Position[3] = { 0.0f,0.0f,0.0f };
+	EnemyState m_state = idle;
+	float m_TimePos = 0.0f;
 
-	void Instantiate(GameObjectClass* obj);
-	void Instantiate(GameObjectClass* obj,int instanceID);
+	//
+	float targetPosition[3] = { 0.0f,0.0f,0.0f };
+	//
+	int m_InstanceID;
+	bool ifRender = true;
+	double rendertime = 0.0;
 
-	void ShutDown();
+	EnemyInstancesData(int instanceID)
+	{
+		m_state = idle;
+		targetPosition[0] = m_Position[0];
+		targetPosition[1] = m_Position[1];
+		targetPosition[2] = m_Position[2];
+		m_InstanceID = instanceID;
+	}
+
+	EnemyInstancesData(int instanceID, float pos[3])
+	{
+		m_state = idle;
+		m_Position[0] = pos[0];
+		m_Position[1] = pos[1];
+		m_Position[2] = pos[2];
+
+		targetPosition[0] = pos[0];
+		targetPosition[1] = pos[1];
+		targetPosition[2] = pos[2];
+		m_InstanceID = instanceID;
+	}
+
+	EnemyInstancesData(int instanceID, float pos[3], EnemyState state = idle)
+	{
+
+		m_state = state;
+
+		m_Position[0] = pos[0];
+		m_Position[1] = pos[1];
+		m_Position[2] = pos[2];
+		targetPosition[0] = pos[0];
+		targetPosition[1] = pos[1];
+		targetPosition[2] = pos[2];
+		m_InstanceID = instanceID;
+	}
+
+	EnemyInstancesData(int instanceID, float pos[3], EnemyState state = idle, float timepos = 0.0f)
+	{
+
+		m_state = state;
+
+		m_Position[0] = pos[0];
+		m_Position[1] = pos[1];
+		m_Position[2] = pos[2];
+		targetPosition[0] = pos[0];
+		targetPosition[1] = pos[1];
+		targetPosition[2] = pos[2];
+		m_InstanceID = instanceID;
+
+		m_TimePos = timepos;
+	}
 
 
-	void SetPosition(const float* pos);
-
-
-	void Draw(const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix);
-
-	void Frame(float frametime);
+	void SwitchState(EnemyState state) {
+		m_state = state;
+	}
 
 	bool MoveTowardsPoint(float x, float y, float z, float frametime)
 	{
@@ -65,23 +111,65 @@ public:
 		return MoveTowardsPoint(targetpsotion.x, targetpsotion.y, targetpsotion.z, frametime);
 	}
 
-	void AddRandomOffset();
 
-	void MoveToRandomPoint(float* target,float frametime);
-
-	void SwitchState(EnemyState state) {
-		Animnum = state;
+	void AddRandomOffset()
+	{
+		srand(time(NULL));
+		targetPosition[0] = m_Position[0] + ((rand() % 20) - 10);
+		targetPosition[2] = m_Position[2] + ((rand() % 20) - 10);
 	}
 
-	float m_Position[3] = { 12.0f,0.1f,33.0f };
-	int Animnum = 0;
-	EnemyState state = idle;
-	GameObjectClass* m_object;
-	
-	float targetPosition[3] = { 0.0f,0.0f,0.0f };
-	int m_InstanceID;
+	void MoveToRandomPoint(float frametime)
+	{
+		if (MoveTowardsPoint(targetPosition[0], m_Position[1], targetPosition[2], frametime))
+		{
+			AddRandomOffset();
+		}
+	}
+}EnemyInst;
+
+
+class Enemy
+{
+public:
+	Enemy(GameObjectClass* obj);
+	Enemy(const Enemy& rhs);
+	~Enemy();
+
+	bool SameAnim = true;
+	bool SwitchSameAnim() {
+		SameAnim = !SameAnim;
+		return SameAnim;
+	}
+	//
+	EnemyInstancesData Instantiate(float pos[3], EnemyState state = idle, float m_TimePos = 0.0f);
+
+	bool RemoveFromRender(int enemyID);
+
+	int GetRenderedEnemyCounts() { return RenderedEnemyCount; }
+	int GetAllEnemyCounts() { return EnemyCount; }
+	int GetHideEnemyCounts() { return EnemyCount - RenderedEnemyCount; }
+
+	//ฝKมห
+	void ShutDown();
+
+	//
+	void SetPosition(int enemyID, const float pos[3]);
+
+
+	double Draw(const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix);
+
+	void Frame(float frametime);
+
+	double GetEnemyRenderTime(int enemyID);
+
 
 private:
-	Enemy(const Enemy&& rhs){}
+	Enemy(const Enemy&& rhs) {}
+	int EnemyCount = 0, RenderedEnemyCount = 0;
+
+	std::vector<EnemyInstancesData> m_instances;
+	GameObjectClass* m_instobj;
+
 };
 

@@ -38,7 +38,7 @@ public:
 	
 	//void Update(float timepos);
 
-	void Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
+	double Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
 	bool InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator* animator_out, AnimationComponent* animComp);
 	bool AddAnimation(const std::string& filePath,Animator* animator_out, AnimationComponent* animComp, bool disablerootTrans,bool disablerootRot, bool disablerootScale);
 

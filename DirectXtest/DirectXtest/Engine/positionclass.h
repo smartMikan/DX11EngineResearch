@@ -17,6 +17,7 @@ public:
 
 
 	void SetPosition(float, float, float);
+	void SetPosition(float pos[3]);
 	void SetPosition(Transform other);
 	void SetRotation(float, float, float);
 	void SetScale(float, float, float);

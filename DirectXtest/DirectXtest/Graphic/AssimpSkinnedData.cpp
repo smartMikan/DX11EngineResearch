@@ -18,7 +18,7 @@ namespace AssimpModel {
 		}
 	}
 
-	static DirectX::XMFLOAT3 InterpolatePosKeyFrame(const PositionKeyFrame& prev_key, const PositionKeyFrame& next_key, float timePos) 
+	static DirectX::XMFLOAT3 InterpolatePosKeyFrame(const PositionKeyFrame& prev_key, const PositionKeyFrame& next_key, float timePos)
 	{
 		const float range = next_key.timePos - prev_key.timePos;
 		const float dt = (timePos - prev_key.timePos) / range;
@@ -132,23 +132,45 @@ namespace AssimpModel {
 		last_scale_index = 0;
 	}
 
-	std::vector<DirectX::XMMATRIX> AnimationClip ::GetSample(float timePos, const std::vector<BoneNode>& nodeAvatar) const
+	std::vector<DirectX::XMMATRIX> AnimationClip::GetSample(float timePos, const std::vector<BoneNode>& nodeAvatar) const
 	{
+
+		double time;
+		LARGE_INTEGER t1, t2, tc;
+		QueryPerformanceFrequency(&tc);
+
+
 		std::vector<DirectX::XMMATRIX> node_localtransforms;
 		node_localtransforms.reserve(nodeAvatar.size());
+
+
 		std::transform(nodeAvatar.begin(), nodeAvatar.end(), std::back_inserter(node_localtransforms), [](const BoneNode& node)
 		{
 			return DirectX::XMMatrixIdentity();
 
 		});
 
-		for (const AnimationChannel& channel : channels)
+		
+		
+
+		QueryPerformanceCounter(&t1);
+
+		/*for (const AnimationChannel& channel : channels)
 		{
 			node_localtransforms[channel.node_index] = channel.GetChannelKeyFrameSample(timePos);
+		}*/
+		
+		for (int i = 0,ie = channels.size();i<ie;i++)
+		{
+			node_localtransforms[channels[i].node_index] = channels[i].GetChannelKeyFrameSample(timePos);
 		}
+		QueryPerformanceCounter(&t2);
+		time = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
 
 		//
 		//all BoneNode WillGet OffsetTransformMatrix At keyFrame and Non-BoneNode will get XMMatrixIdentity();
+		ErrorLoger::Log(std::to_string(time) + "ms");
+
 
 		return node_localtransforms;
 	}
@@ -173,32 +195,49 @@ namespace AssimpModel {
 		return nullptr;
 	}
 
-	void Animator::AddAnim(AnimationClip & anim)
+	void Animator::AddAnim(AnimationClip& anim)
 	{
 		m_Animations.push_back(anim);
 	}
 
 	void Animator::GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos) const
 	{
+		/*double time;
+		LARGE_INTEGER t1, t2, tc;
+		QueryPerformanceFrequency(&tc);*/
+
 		assert(m_Bones.size() <= MAX_BONES, "bone num out of limit");
+
+
+
 
 		//Contarins All Node include Non-Bone Nodes
 		std::vector<DirectX::XMMATRIX> node_localtransforms = animation.GetSample(timePos, m_AllNodeAvator);
 
-		for (size_t i = 1; i < node_localtransforms.size(); i++)
+
+		//QueryPerformanceCounter(&t1);
+		for (int i = 1, ie = node_localtransforms.size(); i < ie; i++)
 		{
 			//For This is an Top-Down Three(Such as node[i].parentIndex will actually less than i)
 			//so All Nodes Front Should Get Correct Transform to root Before Nodes Back 
 			//then these back nodes can just multiply front nodes transfrom to get correct final transform  
 			node_localtransforms[i] = node_localtransforms[i] * node_localtransforms[m_AllNodeAvator[i].parent_index];
+
 		}
-		for (size_t i = 0; i < m_Bones.size(); i++)
+
+
+		for (int i = 0; i < m_Bones.size(); i++)
 		{
 			//Only Return Bone-Node Data, m_Bones[i].inverse_transform has store the Bones initial offset to rootNode so that we don't need to get localtrans for that bones again like meshes
 			out[i] = XMMatrixTranspose(m_Bones[i].inverse_transform * node_localtransforms[m_Bones[i].index]);
 		}
 
-		
+		//QueryPerformanceCounter(&t2);
+
+
+		//time = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
+		//ErrorLoger::Log(std::to_string(time) + "ms");
+		//ErrorLoger::Log(std::to_string(m_Bones.size()));
 	}
 
 }

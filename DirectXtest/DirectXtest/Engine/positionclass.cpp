@@ -79,6 +79,13 @@ void Transform::SetPosition(float x, float y, float z)
 	return;
 }
 
+void Transform::SetPosition(float pos[3])
+{
+	m_positionX = pos[0];
+	m_positionY = pos[1];
+	m_positionZ = pos[2];
+}
+
 void Transform::SetPosition(Transform other)
 {
 	XMFLOAT3 pos = other.GetPosition();

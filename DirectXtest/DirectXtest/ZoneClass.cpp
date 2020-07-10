@@ -414,6 +414,14 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_cubemapsky = false;
 
 
+	//Initialize Enemies
+	m_enemies = new Enemy(m_AnimModel);
+	if (!m_enemies) 
+	{
+		return false;
+	}
+
+
 
 	HRESULT hr;
 	//initialize constant buffer
@@ -445,6 +453,10 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	this->cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	this->cb_ps_light.data.ambientLightStrength = 0.3f;
+
+
+
+
 
 
 	return true;
@@ -581,6 +593,16 @@ void ZoneClass::Shutdown()
 		m_UserInterface = 0;
 	}
 
+
+
+	if (m_enemies) 
+	{
+		m_enemies->ShutDown();
+		delete m_enemies;
+		m_enemies = nullptr;
+	}
+
+
 	return;
 }
 bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass* ShaderManager, TextureManagerClass* TextureManager, float frameTime, int fps, int cpu)
@@ -623,13 +645,10 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 
 	}
 
-	
+
 
 	//EnemyMove
-	for (auto enemy : m_enemies)
-	{
-		enemy->Frame(frameTime);
-	}
+	m_enemies->Frame(frameTime);
 
 
 
@@ -666,34 +685,21 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 /// </summary>
 bool ZoneClass::CreateEnemy()
 {
-
-	//Initialize the model object.
-	auto enemy = new Enemy(m_AnimModel, m_enemies.size());
-	m_enemies.emplace_back(enemy);
+	float pos[3] = {0, 0, 0};
+	m_enemies->Instantiate(pos);
 	return true;
 }
 
 bool ZoneClass::CreateEnemyAtPositon(float pos[3])
 {
 	//Initialize the model object.
-	auto enemy = new Enemy(m_AnimModel, pos, m_enemies.size());
-	m_enemies.emplace_back(enemy);
-
+	m_enemies->Instantiate(pos);
 	return true;
 }
 
-bool ZoneClass::RemoveEnemy(int enemyID)
+bool ZoneClass::RemoveEnemyFromRender(int enemyID)
 {
-	if (m_enemies.empty())
-		return false;
-	auto it = m_enemies.begin();
-	advance(it, enemyID);
-	if (it != m_enemies.end()) {
-		it._Ptr->_Myval->ShutDown();
-		m_enemies.erase(it);
-		return true;
-	}
-	return false;
+	return m_enemies->RemoveFromRender(enemyID);
 }
 
 
@@ -750,9 +756,9 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 	}
 
 	// Handle player input.
-	m_Player->HandleInput(Input,frameTime,fps,m_Position);
+	m_Player->HandleInput(Input, frameTime, fps, m_Position);
 
-	
+
 
 	//Camera Input
 	keyDown = Input->IsKeyPressed(DIK_PGUP) || Input->IsKeyPressed(DIK_I);
@@ -1119,12 +1125,9 @@ bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const 
 	m_Player->Render(viewMatrix, projMatrix);
 
 
-	//render enemy
-	for (auto enemy : m_enemies)
-	{
-		enemy->Draw(viewMatrix, projMatrix);
-	}
 
+	//render enemy
+	rendertime = m_enemies->Draw(viewMatrix, projMatrix);
 
 
 	return true;

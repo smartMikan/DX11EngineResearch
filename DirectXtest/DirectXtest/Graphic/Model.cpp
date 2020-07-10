@@ -31,8 +31,9 @@ bool Model::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11
 
 
 
-void Model::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
+double Model::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix)
 {
+	double holetime = 0.0,drawtime;
 	//VsSetConstantbuffer
 	this->m_deviceContext->VSSetConstantBuffers(0, 1, this->m_wvpMatrixBuffer->GetAddress());
 
@@ -42,8 +43,10 @@ void Model::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, cons
 	{
 		this->m_wvpMatrixBuffer->data.world = XMMatrixTranspose(m_meshes[i].GetTransformMatrix() * worldMatrix); 
 		this->m_wvpMatrixBuffer->ApplyChanges();
-		m_meshes[i].Draw(pVertexShader);
+		drawtime = m_meshes[i].Draw(pVertexShader);
+		holetime += drawtime;
 	}
+	return holetime;
 }
 
 bool Model::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator* animator_out, AnimationComponent* animComp)

@@ -1,100 +1,89 @@
 #include "Enemy.h"
 
-
 Enemy::Enemy(GameObjectClass* obj)
 {
-	Instantiate(obj);
+	m_instobj = obj;
 }
 
-Enemy::Enemy(GameObjectClass* obj, int instID)
-{
-	Instantiate(obj,instID);
-}
 
-Enemy::Enemy(GameObjectClass* obj, const float* pos)
-{
-	Instantiate(obj);
-	SetPosition(pos);
-}
-
-Enemy::Enemy(GameObjectClass* obj, const float* pos, int instID)
-{
-	Instantiate(obj,instID);
-	SetPosition(pos);
-}
 
 Enemy::Enemy(const Enemy& rhs)
 {
-	m_object = rhs.m_object;
-	m_Position[0] = rhs.m_Position[0];
-	m_Position[1] = rhs.m_Position[1];
-	m_Position[2] = rhs.m_Position[2];
-	Animnum = rhs.Animnum;
-	state = rhs.state;
-	m_InstanceID = rhs.m_InstanceID;
+	m_instances = rhs.m_instances;
+	m_instobj = rhs.m_instobj;
 }
 
 
 
 Enemy::~Enemy()
 {
-	m_object = nullptr;
+	ShutDown();
 }
 
-void Enemy::Instantiate(GameObjectClass* obj)
+EnemyInstancesData Enemy::Instantiate(float pos[3], EnemyState state, float m_TimePos)
 {
-	m_object = obj;
-	state = idle;
-	Animnum = state;
-	targetPosition[0] = m_Position[0];
-	targetPosition[1] = m_Position[1];
-	targetPosition[2] = m_Position[2];
+	float pos1[3] = { pos[0],pos[1],pos[2] };
+	int instID = m_instances.size();
+	EnemyCount++;
+	RenderedEnemyCount++;
+	return m_instances.emplace_back(EnemyInstancesData(instID, pos1, state, m_TimePos));
 }
 
-void Enemy::Instantiate(GameObjectClass* obj, int instanceID)
+bool Enemy::RemoveFromRender(int enemyID)
 {
-	Instantiate(obj);
-	m_InstanceID = instanceID;
+	if (enemyID < m_instances.size()) {
+
+		m_instances[enemyID].ifRender = false;
+		return true;
+	}
+	return false;
 }
+
+
+
 
 void Enemy::ShutDown()
 {
-	m_object = nullptr;
-}
-
-void Enemy::SetPosition(const float* pos)
-{
-	m_Position[0] = pos[0];
-	m_Position[1] = pos[1];
-	m_Position[2] = pos[2];
+	m_instobj = nullptr;
 
 }
 
-void Enemy::Draw(const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
+
+void Enemy::SetPosition(int enemyID, const float pos[3])
 {
-	m_object->m_Position.SetPosition(m_Position[0], m_Position[1], m_Position[2]);
-	m_object->SwitchAnim(Animnum);
-	m_object->Render(viewMatrix, projMatrix);
+	m_instances[enemyID].m_Position[0] = pos[0];
+	m_instances[enemyID].m_Position[1] = pos[1];
+	m_instances[enemyID].m_Position[2] = pos[2];
+}
+
+double Enemy::Draw(const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
+{
+	double drawAllEnemyTime = 0.0;
+	
+	for (int i = 0, ie = m_instances.size(); i < ie; i++)
+	{
+		if (m_instances[i].ifRender) {
+			m_instobj->m_Position.SetPosition(m_instances[i].m_Position);
+			m_instobj->SwitchAnim(m_instances[i].m_state);
+			drawAllEnemyTime += m_instances[i].rendertime = m_instobj->Render(viewMatrix, projMatrix,SameAnim);
+		}
+	}
+	return drawAllEnemyTime;
 }
 
 void Enemy::Frame(float frametime)
 {
-	MoveToRandomPoint(targetPosition, frametime);
-}
-
-void Enemy::AddRandomOffset()
-{
-	srand(time(NULL));
-	targetPosition[0] = m_Position[0] + ((rand() % 20) - 10);
-	targetPosition[2] = m_Position[2] + ((rand() % 20) - 10);
-}
-
-void Enemy::MoveToRandomPoint(float* target, float frametime)
-{
-	if (MoveTowardsPoint(targetPosition[0], m_Position[1], targetPosition[2], frametime))
+	for (int i = 0, ie = m_instances.size(); i < ie; i++)
 	{
-		AddRandomOffset();
+		if (m_instances[i].ifRender) {
+			m_instances[i].MoveToRandomPoint(frametime);
+		}
 	}
+}
+
+double Enemy::GetEnemyRenderTime(int enemyID)
+{
+	return m_instances[enemyID].rendertime;
 }
 
 

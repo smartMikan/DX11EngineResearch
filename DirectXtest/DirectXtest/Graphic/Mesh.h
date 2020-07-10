@@ -40,7 +40,7 @@ public:
 
 	void SetData(MeshParameters& params);
 
-	void Draw(IVertexShader* pVertexShader);
+	double Draw(IVertexShader* pVertexShader);
 
 	int GetIndexSize();
 	const DirectX::XMMATRIX& GetTransformMatrix();
