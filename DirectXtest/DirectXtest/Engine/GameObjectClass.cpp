@@ -33,8 +33,8 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 
 
 	// Set the initial position and rotation.
-	m_Position.SetPosition(10.0f, 0.0f, 10.0f);
-	m_Position.SetRotation(0.0f, 0.0f, 0.0f);
+	m_Transform.SetPosition(10.0f, 0.0f, 10.0f);
+	m_Transform.SetRotation(0.0f, 0.0f, 0.0f);
 	return true;
 }
 
@@ -57,6 +57,29 @@ bool GameObjectClass::AddAnimation(const std::string & filePath, bool disableroo
 	return m_Model->AddAnimation(filePath, &mAnimator, mAnimComp.get(),disablerootTrans, disablerootRot, disablerootScale);
 }
 
+int GameObjectClass::GetAnimCount()
+{
+	return mAnimator.GetNumAnimations();
+}
+
+bool GameObjectClass::InitBakedAnim(ConstantBuffer<ConstantBuffer_BakedBones>& cbufBones)
+{
+	m_baked_Animator = BakedAnimator(&cbufBones);
+
+	return true;
+}
+
+bool GameObjectClass::LoadBakedAnim(const std::string& filename)
+{
+
+	return m_baked_Animator.LoadAnimFromFile(filename);
+}
+
+int GameObjectClass::GetBakedAnimCount()
+{
+	return m_baked_Animator.bakedclips.size();
+}
+
 
 
 void GameObjectClass::Shutdown()
@@ -75,15 +98,45 @@ void GameObjectClass::Shutdown()
 
 }
 
-void GameObjectClass::Frame(InputClass* input)
+void GameObjectClass::Frame(float frametime)
 {
-
-
+	m_Transform.SetFrameTime(frametime);
 }
 
 double GameObjectClass::Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
 {	
-	return Draw(m_Position.GetWorldMatrix(), viewMatrix, projectionMatrix,sameanim);
+	return Draw(m_Transform.GetWorldMatrix(), viewMatrix, projectionMatrix,sameanim);
+}
+
+
+double GameObjectClass::RenderWithBakedAnim(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, int animnum, float& timepos)
+{
+	double drawTime, calanimtime;
+	LARGE_INTEGER t1, t2, tc;
+	QueryPerformanceFrequency(&tc);
+	QueryPerformanceCounter(&t1);
+
+	if (mPlayAnimtion)
+	{
+		if (timepos >= m_baked_Animator.bakedclips[animnum].animduration)
+		{
+			timepos = 0;
+		}
+	}
+	
+
+	m_baked_Animator.Bind(deviceContext, animnum, timepos);
+
+
+
+	QueryPerformanceCounter(&t2);
+	calanimtime = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
+
+
+
+	drawTime = m_Model->Draw(m_Transform.GetWorldMatrix(), viewMatrix, projectionMatrix);
+
+	return calanimtime + drawTime;
 }
 
 double GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
@@ -136,17 +189,16 @@ void GameObjectClass::StartAnim(int index)
 }
 
 
-
 XMMATRIX GameObjectClass::GetWorldMatrix()
 {
-	return XMMatrixTranslation(m_Position.GetPosition().x, m_Position.GetPosition().y, m_Position.GetPosition().z);
+	return XMMatrixTranslation(m_Transform.GetPosition().x, m_Transform.GetPosition().y, m_Transform.GetPosition().z);
 }
 
 bool GameObjectClass::SetWorldMatrix(XMMATRIX world)
 {
 	XMFLOAT4X4 pos;
 	XMStoreFloat4x4(&pos, world);
-	m_Position.SetPosition(pos._14,pos._24,pos._34);
+	m_Transform.SetPosition(pos._14,pos._24,pos._34);
 	return true;
 }
 

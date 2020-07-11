@@ -9,10 +9,8 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "AssimpSkinnedData.h"
-#include "../Engine/positionclass.h"
+#include "../Engine/Transform.h"
 #include "Renderer/RendererBase.h"
-
-
 
 using namespace DirectX;
 using namespace AssimpModel;
@@ -36,7 +34,6 @@ public:
 	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<CB_VS_MatrixBuffer>& wvpMatrix, ConstantBuffer<CB_PS_Material>& cb_ps_material, IVertexShader* pVertexShader);
 	
-	//void Update(float timepos);
 
 	double Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix);
 	bool InitAnimation(ConstantBuffer<ConstantBuffer_Bones>* cbufBone, Animator* animator_out, AnimationComponent* animComp);
@@ -51,8 +48,6 @@ private:
 	void LoadMaterialTextures(Material& material, aiMaterial* aimaterial, aiTextureType textureType, const aiScene* scene);
 	int GetTextureIndex(aiString* pStr);
 
-	//void ProcessMaterials(const aiScene* scene, vector<AssimpMaterial>& mats);
-	//ID3D11ShaderResourceView* CreateTexture(ID3D11Device* device, std::wstring FileName);
 
 	int AddBone(aiNode* node, aiBone* bone, int parent_index);
 	void AddAiBone(aiBone* pBone);

@@ -164,13 +164,24 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd,bool fullscreen
 
 
 	// Initialize the zone object.
-	result = m_Zone->Initialize(m_Direct3D, hwnd, screenWidth, screenHeight, SCREEN_DEPTH);
-  	if (!result)
+	int zresult = m_Zone->Initialize(m_Direct3D, hwnd, screenWidth, screenHeight, SCREEN_DEPTH);
+  	if (zresult == 0)
 	{
+		
+	}
+	switch (zresult)
+	{
+	case 0:
 		MessageBoxW(hwnd, L"Could not initialize the zone object.", L"Error", MB_OK);
 		return false;
+	case 1:
+		break;
+	case 2:
+		MessageBoxW(hwnd, L"BakeModelOver.", L"Error", MB_OK);
+		return false;
+	default:
+		break;
 	}
-
 
 	//Create the sound object
 	m_Sound = new SoundClass();

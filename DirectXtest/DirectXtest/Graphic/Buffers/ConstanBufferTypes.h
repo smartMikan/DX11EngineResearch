@@ -88,6 +88,13 @@ struct ConstantBuffer_Bones
 	DirectX::XMMATRIX bone_Transforms[MAX_BONES];
 };
 
+struct ConstantBuffer_BakedBones
+{
+	DirectX::XMMATRIX bone_Transforms_Prev[MAX_BONES];
+};
+
+
+
 //struct CB_VS_SkinBoneBumpMapMatrixBuffer
 //{
 //	DirectX::XMMATRIX world;

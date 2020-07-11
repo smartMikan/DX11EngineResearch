@@ -3,9 +3,7 @@
 
 LightClass::LightClass()
 {
-	
-	position.SetRotation(0.0f, 0.0f, 0.0f);
-	m_frameTime = 0.0f;
+	m_transform.SetRotation(0.0f, 0.0f, 0.0f);
 }
 
 
@@ -87,7 +85,7 @@ XMFLOAT3 LightClass::GetDirection()
 	lookAt.z = 1.0f;
 
 
-	position.GetRotation(m_rotationX, m_rotationY, m_rotationZ);
+	m_transform.GetRotation(m_rotationX, m_rotationY, m_rotationZ);
 	pitch = m_rotationX * 0.0174532925f;
 	yaw = m_rotationY * 0.0174532925f;
 	roll = m_rotationZ * 0.0174532925f;
@@ -172,13 +170,11 @@ void LightClass::GetProjectionMatrix(XMMATRIX& projectionMatrix)
 	return;
 }
 
-void LightClass::SetFrameTime(float time)
-{
-	m_frameTime = time;
-}
 
-void LightClass::Frame()
+void LightClass::Frame(float frametime)
 {
+	m_transform.SetFrameTime(frametime);
+
 
 	XMFLOAT3 up, lookAt;
 	XMVECTOR upVector, positionVector, lookAtVector;
@@ -195,7 +191,7 @@ void LightClass::Frame()
 	upVector = XMLoadFloat3(&up);
 
 	// Load it into a XMVECTOR structure.
-	positionVector = XMLoadFloat3(&position.GetPosition());
+	positionVector = XMLoadFloat3(&m_transform.GetPosition());
 
 	// Setup where the camera is looking by default.
 	lookAt.x = 0.0f;
@@ -204,7 +200,7 @@ void LightClass::Frame()
 
 	// Load it into a XMVECTOR structure.
 	lookAtVector = XMLoadFloat3(&lookAt);
-	position.GetRotation(pitch, yaw, roll);
+	m_transform.GetRotation(pitch, yaw, roll);
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 	pitch *= 0.0174532925f;
 	yaw *= 0.0174532925f;

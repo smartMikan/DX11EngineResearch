@@ -94,7 +94,7 @@ namespace AssimpModel
 		float duration;
 
 		//Get all bone trans at specific timepos
-		std::vector<DirectX::XMMATRIX> GetSample(float timepos, const std::vector<BoneNode>& nodeAvatar) const;
+		std::vector<DirectX::XMMATRIX> GetSample(float timepos, const std::vector<BoneNode>& bonenodes) const;
 	};
 
 	
@@ -109,7 +109,11 @@ namespace AssimpModel
 			m_BoneConstantBuffer(boneConstantBuffer)
 		{}
 
+
+
+
 		void Bind(ID3D11DeviceContext* deviceContext);
+
 
 		size_t GetNumAnimations() const { return m_Animations.size(); }
 		const AnimationClip& GetAnimation(size_t index)const { return m_Animations[index]; }
@@ -124,8 +128,10 @@ namespace AssimpModel
 		float GetTimePos() const { return m_TimePos; }
 		void SetTimpPos(float timepos) { m_TimePos = timepos; }
 
-	private:
+	
 		void GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos) const;
+
+		int GetBoneSize() const { return m_AllNodeAvator.size(); }
 
 	private:
 		std::vector<BoneData> m_Bones;

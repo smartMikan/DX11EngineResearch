@@ -180,6 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Animator\BakedAnimator.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Engine\ApplicationClass.cpp" />
     <ClCompile Include="Engine\Timer.cpp" />
@@ -223,7 +224,7 @@
     <ClCompile Include="Graphic\RasterTekObjects\multitextureshaderclass.cpp" />
     <ClCompile Include="Graphic\RasterTekObjects\ParticleShaderClass.cpp" />
     <ClCompile Include="Graphic\RasterTekObjects\ParticleSystemClass.cpp" />
-    <ClCompile Include="Engine\positionclass.cpp" />
+    <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="Graphic\RasterTekObjects\reflectshaderclass.cpp" />
     <ClCompile Include="Graphic\RasterTekObjects\rendertextureclass.cpp" />
     <ClCompile Include="Engine\ResourceManager.cpp" />
@@ -241,6 +242,7 @@
     <ClCompile Include="Graphic\Renderer\RendererBase.cpp" />
     <ClCompile Include="Graphic\ShaderManager.cpp" />
     <ClCompile Include="Engine\Core\Object.cpp" />
+    <ClCompile Include="Engine\ModelBaker\ModelBaker.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
@@ -258,8 +260,10 @@
     <ClCompile Include="ZoneClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Animator\BakedAnimator.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine\ApplicationClass.h" />
+    <ClInclude Include="ipch.h" />
     <ClInclude Include="Engine\Timer.h" />
     <ClInclude Include="Graphic\AssimpSkinnedData.h" />
     <ClInclude Include="Graphic\RasterTekObjects\bitmapclass.h" />
@@ -303,8 +307,9 @@
     <ClInclude Include="Graphic\RasterTekObjects\multitextureshaderclass.h" />
     <ClInclude Include="Graphic\RasterTekObjects\ParticleShaderClass.h" />
     <ClInclude Include="Graphic\RasterTekObjects\ParticleSystemClass.h" />
-    <ClInclude Include="Engine\positionclass.h" />
+    <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="Engine\Core\Object.h" />
+    <ClInclude Include="Engine\ModelBaker\ModelBaker.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ProjectInfo.h" />
     <ClInclude Include="Graphic\RasterTekObjects\reflectshaderclass.h" />

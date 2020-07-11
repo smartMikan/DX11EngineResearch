@@ -2,7 +2,7 @@
 
 
 #include <directxmath.h>
-#include "positionclass.h"
+#include "Transform.h"
 #include <directxmath.h>
 
 using namespace DirectX;
@@ -14,7 +14,7 @@ public:
 	LightClass(const LightClass&);
 	~LightClass();
 
-	Transform position;
+	Transform m_transform;
 
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
@@ -38,9 +38,7 @@ public:
 	void GenerateProjectionMatrix(float screenDepth, float screenNear);
 	void GetProjectionMatrix(XMMATRIX& projectionMatrix);
 
-	void SetFrameTime(float time);
-
-	void Frame();
+	void Frame(float frametime);
 
 
 	float ambientLightStrength = 0.1f;
@@ -60,6 +58,5 @@ private:
 	XMMATRIX m_orthoMatrix;
 	XMMATRIX m_projMatrix;
 	
-	float m_frameTime;
 };
 

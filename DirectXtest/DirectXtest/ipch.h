@@ -1,0 +1,23 @@
+#pragma once
+
+
+#include "Graphic/RasterTekObjects/shadermanagerclass.h"
+#include "Graphic/RasterTekObjects/userinterfaceclass.h"
+#include "Graphic/RasterTekObjects/skydomeclass.h"
+#include "Graphic/RasterTekObjects/skycubeclass.h"
+#include "Graphic/RasterTekObjects/particlesystemclass.h"
+#include "Graphic/RasterTekObjects/rendertextureclass.h"
+#include "Graphic/texturemanagerclass.h"
+#include "Graphic/ShaderManager.h"
+#include "Engine/ModelBaker/ModelBaker.h"
+#include "Engine/d3dclass.h"
+#include "Engine/inputclass.h"
+#include "Engine/timerclass.h"
+#include "Engine/cameraclass.h"
+#include "Engine/Transform.h"
+#include "Engine/GameObjectClass.h"
+#include "Engine/TerrainClass.h"
+#include "Engine/frustumclass.h"
+#include "Engine/lightclass.h"
+#include "Enemy.h"
+#include "Player.h"

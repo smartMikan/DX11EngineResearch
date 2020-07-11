@@ -113,7 +113,7 @@ namespace AssimpModel {
 		// No channels case
 		if (position_keyframes.empty() || rotation_keyframes.empty() || rotation_keyframes.empty())
 		{
-			assert(position_keyframes.empty() && rotation_keyframes.empty() && rotation_keyframes.empty(), "only one keyframe type provided");
+			assert(position_keyframes.empty() && rotation_keyframes.empty() && rotation_keyframes.empty(), "no keyframe type provided");
 			return DirectX::XMMatrixIdentity();
 		}
 
@@ -132,44 +132,41 @@ namespace AssimpModel {
 		last_scale_index = 0;
 	}
 
-	std::vector<DirectX::XMMATRIX> AnimationClip::GetSample(float timePos, const std::vector<BoneNode>& nodeAvatar) const
+	std::vector<DirectX::XMMATRIX> AnimationClip::GetSample(float timePos, const std::vector<BoneNode>& bonenodes) const
 	{
 
-		double time;
-		LARGE_INTEGER t1, t2, tc;
-		QueryPerformanceFrequency(&tc);
+		//double time;
+		//LARGE_INTEGER t1, t2, tc;
+		//QueryPerformanceFrequency(&tc);
 
 
 		std::vector<DirectX::XMMATRIX> node_localtransforms;
-		node_localtransforms.reserve(nodeAvatar.size());
+		node_localtransforms.reserve(bonenodes.size());
 
 
-		std::transform(nodeAvatar.begin(), nodeAvatar.end(), std::back_inserter(node_localtransforms), [](const BoneNode& node)
+		std::transform(bonenodes.begin(), bonenodes.end(), std::back_inserter(node_localtransforms), [](const BoneNode& node)
 		{
 			return DirectX::XMMatrixIdentity();
 
 		});
 
-		
-		
+		//QueryPerformanceCounter(&t1);
 
-		QueryPerformanceCounter(&t1);
-
-		/*for (const AnimationChannel& channel : channels)
+		for (const AnimationChannel& channel : channels)
 		{
 			node_localtransforms[channel.node_index] = channel.GetChannelKeyFrameSample(timePos);
-		}*/
+		}
 		
-		for (int i = 0,ie = channels.size();i<ie;i++)
+		/*for (int i = 0,ie = channels.size();i<ie;i++)
 		{
 			node_localtransforms[channels[i].node_index] = channels[i].GetChannelKeyFrameSample(timePos);
-		}
-		QueryPerformanceCounter(&t2);
-		time = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
+		}*/
+		//QueryPerformanceCounter(&t2);
+		//time = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
 
 		//
 		//all BoneNode WillGet OffsetTransformMatrix At keyFrame and Non-BoneNode will get XMMatrixIdentity();
-		ErrorLoger::Log(std::to_string(time) + "ms");
+		//ErrorLoger::Log(std::to_string(time) + "ms");
 
 
 		return node_localtransforms;
@@ -184,6 +181,8 @@ namespace AssimpModel {
 		m_BoneConstantBuffer->ApplyChanges();
 		deviceContext->VSSetConstantBuffers(1, 1, m_BoneConstantBuffer->GetAddress());
 	}
+
+	
 
 	const AnimationClip* Animator::GetAnimationByName(const std::string& name) const
 	{
@@ -207,8 +206,6 @@ namespace AssimpModel {
 		QueryPerformanceFrequency(&tc);*/
 
 		assert(m_Bones.size() <= MAX_BONES, "bone num out of limit");
-
-
 
 
 		//Contarins All Node include Non-Bone Nodes

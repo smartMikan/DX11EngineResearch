@@ -4,7 +4,7 @@ ZoneClass::ZoneClass()
 {
 	m_UserInterface = 0;
 	m_Camera = 0;
-	m_Position = 0;
+	m_Transform = 0;
 	m_Light = 0;
 	m_Terrain = 0;
 	m_SkyDome = 0;
@@ -30,7 +30,7 @@ ZoneClass::ZoneClass(const ZoneClass& other)
 {
 	this->m_UserInterface = other.m_UserInterface;
 	this->m_Camera = other.m_Camera;
-	this->m_Position = other.m_Position;
+	this->m_Transform = other.m_Transform;
 	this->m_Light = other.m_Light;
 	this->m_Terrain = other.m_Terrain;
 
@@ -55,7 +55,7 @@ ZoneClass::ZoneClass(const ZoneClass& other)
 ZoneClass::~ZoneClass()
 {
 }
-bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int screenHeight, float screenDepth)
+int ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int screenHeight, float screenDepth)
 {
 	bool result;
 
@@ -101,15 +101,15 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Camera->RenderBaseViewMatrix();
 
 	// Create the position object.
-	m_Position = new Transform;
-	if (!m_Position)
+	m_Transform = new Transform;
+	if (!m_Transform)
 	{
 		return false;
 	}
 
 	// Set the initial position and rotation.
-	m_Position->SetPosition(10.0f, 30.0f, 10.0f);
-	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
+	m_Transform->SetPosition(10.0f, 30.0f, 10.0f);
+	m_Transform->SetRotation(0.0f, 0.0f, 0.0f);
 
 
 	// Create the frustum object.
@@ -252,8 +252,8 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_sword->InitAnimation(cb_bones);
 	m_sword->AddAnimation("./3DModel/tianyi_idle.fbx");
 	m_sword->SwitchAnim(1);
-	m_sword->m_Position.SetScale(2.02f, 2.02f, 2.02f);
-	m_sword->m_Position.SetRotation(90.0f, 180.0f, 0.0f);
+	m_sword->m_Transform.SetScale(2.02f, 2.02f, 2.02f);
+	m_sword->m_Transform.SetRotation(90.0f, 180.0f, 0.0f);
 
 	// Create the model object.
 	m_tianyi = new GameObjectClass;
@@ -273,7 +273,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_tianyi->InitAnimation(cb_bones);
 	m_tianyi->AddAnimation("./3DModel/fighter.fbx");
 	m_tianyi->SwitchAnim(1);
-	m_tianyi->m_Position.SetScale(0.02f, 0.02f, 0.02f);
+	m_tianyi->m_Transform.SetScale(0.02f, 0.02f, 0.02f);
 
 
 	// Create the model object.
@@ -300,8 +300,8 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_AnimModel->AddAnimation("./3DModel/SwordPack/swordandshieldslash.fbx", true);
 
 
-	m_AnimModel->m_Position.SetScale(0.02f, 0.02f, 0.02f);
-	m_AnimModel->m_Position.SetRotation(0, 180, 0);
+	m_AnimModel->m_Transform.SetScale(0.02f, 0.02f, 0.02f);
+	m_AnimModel->m_Transform.SetRotation(0, 180, 0);
 
 	// Create the model object.
 	m_Player = new Player;
@@ -325,7 +325,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	}
 
 
-	m_Player->m_Position.SetScale(0.02f, 0.02f, 0.02f);
+	m_Player->m_Transform.SetScale(0.02f, 0.02f, 0.02f);
 
 
 	m_UnMoveModel = new GameObjectClass;
@@ -352,8 +352,8 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
 
-	m_Light->position.SetPosition(12.0, 8.0f, 12.0f);
-	m_Light->position.SetRotation(40.0f, 0.0f, 0.0f);
+	m_Light->m_transform.SetPosition(12.0, 8.0f, 12.0f);
+	m_Light->m_transform.SetRotation(40.0f, 0.0f, 0.0f);
 
 	m_Light->ambientLightStrength = 0.4f;
 	m_Light->dynamicLightStrength = 5.0f;
@@ -364,7 +364,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	m_Light->GenerateOrthoMatrix(100.0f, screenDepth, 1.0f);
 	m_Light->GenerateProjectionMatrix(screenDepth, 1.0f);
-	m_Light->Frame();
+	m_Light->Frame(0.0f);
 
 
 
@@ -416,7 +416,7 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 
 	//Initialize Enemies
 	m_enemies = new Enemy(m_AnimModel);
-	if (!m_enemies) 
+	if (!m_enemies)
 	{
 		return false;
 	}
@@ -450,16 +450,45 @@ bool ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int s
 	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 	cb_bones.SetDebugName("vs_bone_transforms");
 
+	hr = this->cb_baked_bones.Initialize(this->device.Get(), this->deviceContext.Get());
+	COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
+	cb_bones.SetDebugName("vs_Baked_bone_transforms");
+
+
+
+
+
 
 	this->cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	this->cb_ps_light.data.ambientLightStrength = 0.3f;
 
 
 
+	if (BakeModelMode)
+	{
+		AnimationBaker baker;
+
+		for (size_t i = 0; i < m_AnimModel->GetAnimCount(); i++)
+		{
+			baker.BakeAnim(m_AnimModel->GetAnimComp(), m_AnimModel->GetAnimComp()->GetAnimation(i), "mAnim" + to_string(i));
+		}
+
+		return 2;
+	}
+
+	m_AnimModel->InitBakedAnim(cb_baked_bones);
+	for (size_t i = 0; i < m_AnimModel->GetAnimCount(); i++)
+	{
+		result = m_AnimModel->LoadBakedAnim("manim" + to_string(i) + ".anim");
+		if (!result)
+		{
+			MessageBoxW(hwnd, L"Failed to load animation", L"Error", MB_OK);
+			return false;
+		}
+	}
 
 
-
-	return true;
+	return 1;
 }
 
 void ZoneClass::Shutdown()
@@ -572,10 +601,10 @@ void ZoneClass::Shutdown()
 	}
 
 	// Release the position object.
-	if (m_Position)
+	if (m_Transform)
 	{
-		delete m_Position;
-		m_Position = 0;
+		delete m_Transform;
+		m_Transform = 0;
 	}
 
 	// Release the camera object.
@@ -595,7 +624,7 @@ void ZoneClass::Shutdown()
 
 
 
-	if (m_enemies) 
+	if (m_enemies)
 	{
 		m_enemies->ShutDown();
 		delete m_enemies;
@@ -609,15 +638,16 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 {
 	bool result, foundHeight;
 	float posX, posY, posZ, rotX, rotY, rotZ, height;
+	// Set the frame time for calculating the updated position.
+	m_Transform->SetFrameTime(frameTime);
 
 	//TODO: update playerdata in gameObject class & need an engine work flow to do this
-	// Do the frame input processing.
-	HandleMovementInput(Input, frameTime, fps);
+	m_Light->Frame(frameTime);
+	m_Player->Frame(frameTime);
 
-	m_Light->Frame();
 	// Get the view point position/rotation.
-	m_Player->m_Position.GetPosition(posX, posY, posZ);
-	m_Position->GetRotation(rotX, rotY, rotZ);
+	m_Player->m_Transform.GetPosition(posX, posY, posZ);
+	m_Transform->GetRotation(rotX, rotY, rotZ);
 
 	// Do the frame processing for the user interface.
 	result = m_UserInterface->Frame(Direct3D->GetDeviceContext(), fps, cpu, posX, posY, posZ, rotX, rotY, rotZ);
@@ -638,19 +668,17 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 		{
 			// If there was a triangle under the camera then position the camera just above it by one meter.
 			//m_Camera->SetPosition(posX, height, posZ);
-			m_Player->m_Position.SetPosition(posX, height + m_Player->GetJumpHeight(), posZ);
+			m_Player->m_Transform.SetPosition(posX, height + m_Player->GetJumpHeight(), posZ);
 		}
-
-
 
 	}
 
 
+	// Do the frame input processing.
+	HandleMovementInput(Input, fps);
 
-	//EnemyMove
+	//EnemyFrame
 	m_enemies->Frame(frameTime);
-
-
 
 	// Run the frame processing for the particle system.
 	m_ParticleSystem->Frame(frameTime, Direct3D->GetDeviceContext());
@@ -685,7 +713,7 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 /// </summary>
 bool ZoneClass::CreateEnemy()
 {
-	float pos[3] = {0, 0, 0};
+	float pos[3] = { 0, 0, 0 };
 	m_enemies->Instantiate(pos);
 	return true;
 }
@@ -694,6 +722,10 @@ bool ZoneClass::CreateEnemyAtPositon(float pos[3])
 {
 	//Initialize the model object.
 	m_enemies->Instantiate(pos);
+
+	//
+	//m_enemies->SetInstanceAnim(m_enemies->GetAllEnemyCounts() - 1, m_enemies->GetAllEnemyCounts());
+
 	return true;
 }
 
@@ -705,7 +737,7 @@ bool ZoneClass::RemoveEnemyFromRender(int enemyID)
 
 
 
-void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fps)
+void ZoneClass::HandleMovementInput(InputClass* Input, int fps)
 {
 	//TODO: Update Inpot in a List of GameObject rather than in scene layer
 	// Determine if the user interface should be displayed or not.
@@ -743,33 +775,22 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 	//Player Input
 	bool keyDown;
 	float posX, posY, posZ, rotX, rotY, rotZ;
-	XMFLOAT3 orbitposition = m_Player->m_Position.GetPosition();
-
-	// Set the frame time for calculating the updated position.
-	m_Player->m_Position.SetFrameTime(frameTime);
-	m_Position->SetFrameTime(frameTime);
-	m_Light->SetFrameTime(frameTime);
-
-	//reset player animation to idle
-	if (!m_Player->isAttack && !m_Player->isJump) {
-		m_Player->SwitchAnim(1);
-	}
+	XMFLOAT3 orbitposition = m_Player->m_Transform.GetPosition();
 
 	// Handle player input.
-	m_Player->HandleInput(Input, frameTime, fps, m_Position);
-
+	m_Player->HandleInput(Input, m_Transform);
 
 
 	//Camera Input
 	keyDown = Input->IsKeyPressed(DIK_PGUP) || Input->IsKeyPressed(DIK_I);
-	m_Position->LookUpward(keyDown);
+	m_Transform->LookUpward(keyDown);
 
 	keyDown = Input->IsKeyPressed(DIK_PGDN) || Input->IsKeyPressed(DIK_K);
-	m_Position->LookDownward(keyDown);
+	m_Transform->LookDownward(keyDown);
 
 	// Get the view point position/rotation.
-	m_Position->GetPosition(posX, posY, posZ);
-	m_Position->GetRotation(rotX, rotY, rotZ);
+	m_Transform->GetPosition(posX, posY, posZ);
+	m_Transform->GetRotation(rotX, rotY, rotZ);
 
 	// Set the position of the camera.
 	m_Camera->SetPosition(posX, posY, posZ);
@@ -777,17 +798,17 @@ void ZoneClass::HandleMovementInput(InputClass* Input, float frameTime, float fp
 
 	//Sync the model rotation with camera
 
-	m_Player->m_Position.SetRotation(0, rotY, 0);
+	m_Player->m_Transform.SetRotation(0, rotY, 0);
 
 	//if is Directionlight set lightpos with camera pos
 	//TODO: more smarter global directional shadowmap
 	if (m_lightType == 0) {
-		m_Light->position.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
+		m_Light->m_transform.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
 	}
 	if (m_lightType == 1)
 	{
-		XMFLOAT3 pos = m_Player->m_Position.GetPosition();
-		m_Light->position.SetPosition(pos.x, pos.y + 1.0f, pos.z - 10.0f);
+		XMFLOAT3 pos = m_Player->m_Transform.GetPosition();
+		m_Light->m_transform.SetPosition(pos.x, pos.y + 1.0f, pos.z - 10.0f);
 	}
 
 
@@ -896,6 +917,9 @@ bool ZoneClass::Render(D3DClass* Direct3D, ShaderManagerClass* ShaderManager, Te
 
 	//NoAnim
 	RenderNonAnimationGameObjects(shaders.d3dvertexshader.get(), viewMatrix, projectionMatrix);
+
+	
+
 
 	//reset worldmatrix
 	Direct3D->GetWorldMatrix(worldMatrix);
@@ -1060,7 +1084,7 @@ bool ZoneClass::RenderTerrain(D3DClass* Direct3D, ShaderManagerClass* ShaderMana
 	bool result;
 
 	// Render the terrain cells (and cell lines if needed).
-	for (UINT i = 0; i < m_Terrain->GetCellCount(); i++)
+	for (int i = 0; i < m_Terrain->GetCellCount(); i++)
 	{
 		// Render each terrain cell if it is visible only.
 		result = m_Terrain->RenderCell(Direct3D->GetDeviceContext(), i, m_Frustum);
@@ -1098,26 +1122,26 @@ bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const 
 	deviceContext->IASetInputLayout(vertexshader->GetLayout());
 
 	//rander at pos 1;
-	m_AnimModel->m_Position.SetPosition(10.0f, 0.0f, 30.0);
+	m_AnimModel->m_Transform.SetPosition(10.0f, 0.0f, 30.0);
 	m_AnimModel->SwitchAnim(3);
 	m_AnimModel->Render(viewMatrix, projMatrix);
 
 	//rander at pos 2;
-	m_AnimModel->m_Position.SetPosition(15.0f, 0.0f, 30.0f);
+	m_AnimModel->m_Transform.SetPosition(15.0f, 0.0f, 30.0f);
 	m_AnimModel->SwitchAnim(1);
 	m_AnimModel->Render(viewMatrix, projMatrix);
 
 	//rander at pos 3;
-	m_AnimModel->m_Position.SetPosition(20.0f, 0.0f, 30.0f);
+	m_AnimModel->m_Transform.SetPosition(20.0f, 0.0f, 30.0f);
 	m_AnimModel->SwitchAnim(2);
 	m_AnimModel->Render(viewMatrix, projMatrix);
 
 	//rander at pos 4;
-	m_tianyi->m_Position.SetPosition(25.0f, 0.0f, 30.0f);
+	m_tianyi->m_Transform.SetPosition(25.0f, 0.0f, 30.0f);
 	m_tianyi->Render(viewMatrix, projMatrix);
 
 	//rander at pos 5;
-	m_sword->m_Position.SetPosition(30.0f, 0.2f, 30.0f);
+	m_sword->m_Transform.SetPosition(30.0f, 0.2f, 30.0f);
 	m_sword->Render(viewMatrix, projMatrix);
 
 
@@ -1126,9 +1150,8 @@ bool ZoneClass::RenderAnimationGameObjects(D3DVertexShader* vertexshader, const 
 
 
 
-	//render enemy
 	rendertime = m_enemies->Draw(viewMatrix, projMatrix);
-
+	rendertime *= 2;
 
 	return true;
 }
@@ -1139,27 +1162,29 @@ bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, con
 	deviceContext->IASetInputLayout(vertexshader->GetLayout());
 
 	//rander floor;
-	m_UnMoveModel->m_Position.SetPosition(50.0f, 0.1f, 50.0f);
-	m_UnMoveModel->m_Position.SetRotation(90.0f, 0.0f, 0.0f);
-	m_UnMoveModel->m_Position.SetScale(50.0f, 50.0f, 1.0f);
+	m_UnMoveModel->m_Transform.SetPosition(50.0f, 0.1f, 50.0f);
+	m_UnMoveModel->m_Transform.SetRotation(90.0f, 0.0f, 0.0f);
+	m_UnMoveModel->m_Transform.SetScale(50.0f, 50.0f, 1.0f);
 	m_UnMoveModel->Render(viewMatrix, projMatrix);
 
 	//rander brick front;
-	m_UnMoveModel->m_Position.SetPosition(wallTranslation[0], wallTranslation[1], wallTranslation[2]);
-	m_UnMoveModel->m_Position.SetRotation(wallRotation[0], wallRotation[1], wallRotation[2]);
-	m_UnMoveModel->m_Position.SetScale(wallScaling[0], wallScaling[1], wallScaling[2]);
+	m_UnMoveModel->m_Transform.SetPosition(wallTranslation[0], wallTranslation[1], wallTranslation[2]);
+	m_UnMoveModel->m_Transform.SetRotation(wallRotation[0], wallRotation[1], wallRotation[2]);
+	m_UnMoveModel->m_Transform.SetScale(wallScaling[0], wallScaling[1], wallScaling[2]);
 	m_UnMoveModel->Render(viewMatrix, projMatrix);
 
 	//TODO: change the wall object with a cube rather than a rectangle XD;
 	//rander brick back;
-	m_UnMoveModel->m_Position.SetPosition(wallTranslation[0], wallTranslation[1], wallTranslation[2] + 0.001f);
-	m_UnMoveModel->m_Position.SetRotation(wallRotation[0], wallRotation[1] + 180, wallRotation[2]);
-	m_UnMoveModel->m_Position.SetScale(wallScaling[0], wallScaling[1], wallScaling[2]);
+	m_UnMoveModel->m_Transform.SetPosition(wallTranslation[0], wallTranslation[1], wallTranslation[2] + 0.001f);
+	m_UnMoveModel->m_Transform.SetRotation(wallRotation[0], wallRotation[1] + 180, wallRotation[2]);
+	m_UnMoveModel->m_Transform.SetScale(wallScaling[0], wallScaling[1], wallScaling[2]);
 	m_UnMoveModel->Render(viewMatrix, projMatrix);
 
 
 	return true;
 }
+
+
 
 
 
@@ -1232,7 +1257,7 @@ void ZoneClass::SetLight(int lightType)
 	cb_ps_light.data.ambientLightStrength = m_Light->ambientLightStrength;
 	cb_ps_light.data.dynamicLightColor = XMFLOAT3(m_Light->GetDiffuseColor().x, m_Light->GetDiffuseColor().y, m_Light->GetDiffuseColor().z);
 	cb_ps_light.data.dynamicLightStrength = m_Light->dynamicLightStrength;
-	cb_ps_light.data.lightPosition = m_Light->position.GetPosition();
+	cb_ps_light.data.lightPosition = m_Light->m_transform.GetPosition();
 	cb_ps_light.data.dynamicLightAttenuation_a = m_Light->dynamicLightAttenuation_a;
 	cb_ps_light.data.dynamicLightAttenuation_b = m_Light->dynamicLightAttenuation_b;
 	cb_ps_light.data.dynamicLightAttenuation_c = m_Light->dynamicLightAttenuation_c;

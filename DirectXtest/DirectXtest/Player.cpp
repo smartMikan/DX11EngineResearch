@@ -59,10 +59,21 @@ bool Player::InitialAnimations(ConstantBuffer<ConstantBuffer_Bones>& cb_Bones)
 }
 
 
-bool Player::HandleInput(InputClass* Input, float frameTime, float fps, Transform * orbitTrans)
+void Player::Frame(float frametime)
+{
+	GameObjectClass::Frame(frametime);
+	if (isCyclone) {
+		Round(3);
+	}
+}
+
+bool Player::HandleInput(InputClass* Input, Transform * orbitTrans)
 {
 	bool keyDown = false;
-
+	//reset player animation to idle
+	if (!isAttack && !isJump) {
+		SwitchAnim(1);
+	}
 
 	//attack
 	keyDown = Input->GetMouseButtonDown(0) || Input->IsKeyPressed(DIK_LCONTROL);
@@ -110,8 +121,8 @@ bool Player::HandleInput(InputClass* Input, float frameTime, float fps, Transfor
 
 	//left
 	keyDown = Input->IsKeyPressed(DIK_LEFT) || Input->IsKeyPressed(DIK_A);
-	m_Position.TurnLeft(keyDown);
-	orbitTrans->Orbit(keyDown, true, m_Position.GetPosition());
+	m_Transform.TurnLeft(keyDown);
+	orbitTrans->Orbit(keyDown, true, m_Transform.GetPosition());
 
 	if (keyDown && !isJump) {
 		//switch the model animation to turnleft & reset idle animation
@@ -122,8 +133,8 @@ bool Player::HandleInput(InputClass* Input, float frameTime, float fps, Transfor
 
 	//right
 	keyDown = Input->IsKeyPressed(DIK_RIGHT) || Input->IsKeyPressed(DIK_D);
-	m_Position.TurnRight(keyDown);
-	orbitTrans->Orbit(keyDown, false, m_Position.GetPosition());
+	m_Transform.TurnRight(keyDown);
+	orbitTrans->Orbit(keyDown, false, m_Transform.GetPosition());
 
 	if (keyDown && !isJump) {
 		//switch the model animation to turnright & reset idle animation
@@ -134,7 +145,7 @@ bool Player::HandleInput(InputClass* Input, float frameTime, float fps, Transfor
 
 	//forward
 	keyDown = Input->IsKeyPressed(DIK_UP) || Input->IsKeyPressed(DIK_W);
-	m_Position.MoveForward(keyDown);
+	m_Transform.MoveForward(keyDown);
 
 	if (keyDown && !isJump) {
 		//switch the model animation to moveforward & reset idle animation
@@ -145,7 +156,7 @@ bool Player::HandleInput(InputClass* Input, float frameTime, float fps, Transfor
 
 	//back
 	keyDown = Input->IsKeyPressed(DIK_DOWN) || Input->IsKeyPressed(DIK_S);
-	m_Position.MoveBackward(keyDown);
+	m_Transform.MoveBackward(keyDown);
 
 	if (keyDown && !isJump) {
 
@@ -167,4 +178,10 @@ bool Player::HandleInput(InputClass* Input, float frameTime, float fps, Transfor
 
 
 	return true;
+}
+
+void Player::Round(float speed)
+{
+	m_Transform.TurnRight(speed);
+
 }

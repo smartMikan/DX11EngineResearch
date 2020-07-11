@@ -1,23 +1,12 @@
-#include "positionclass.h"
+#include "Transform.h"
 
 
 //The class constructor initializes the private member variables to zero to start with.
 Transform::Transform()
 {
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
-	
-	m_scaleX = 1.0f;
-	m_scaleY = 1.0f;
-	m_scaleZ = 1.0f;
+	scale = Vector3(1, 1, 1);
 
 	m_frameTime = 0.0f;
-
 	m_forwardSpeed = 0.0f;
 	m_backwardSpeed = 0.0f;
 	m_upwardSpeed = 0.0f;
@@ -26,22 +15,13 @@ Transform::Transform()
 	m_rightTurnSpeed = 0.0f;
 	m_lookUpSpeed = 0.0f;
 	m_lookDownSpeed = 0.0f;
-
 }
 
-Transform::Transform(const Transform &other)
+Transform::Transform(const Transform& other)
 {
-	m_positionX = other.m_positionX;
-	m_positionY = other.m_positionY;
-	m_positionZ = other.m_positionZ;
-
-	m_rotationX = other.m_rotationX;
-	m_rotationY = other.m_rotationY;
-	m_rotationZ = other.m_rotationZ;
-
-	m_scaleX = other.m_scaleX;
-	m_scaleY = other.m_scaleY;
-	m_scaleZ = other.m_scaleZ;
+	positon = other.positon;
+	rotation = other.rotation;
+	scale = other.scale;
 
 	m_frameTime = other.m_frameTime;
 
@@ -73,42 +53,39 @@ void Transform::SetFrameTime(float time)
 //The SetPosition and SetRotation functions are used for setting the position and rotation of the viewer/camera. These functions are generally used to initialize the position of the camera other than at the origin. In this tutorial the camera will be set slightly back from the grid and in the center of it.
 void Transform::SetPosition(float x, float y, float z)
 {
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
+	positon.pos3D.x = x;
+	positon.pos3D.y = y;
+	positon.pos3D.z = z;
 	return;
 }
 
 void Transform::SetPosition(float pos[3])
 {
-	m_positionX = pos[0];
-	m_positionY = pos[1];
-	m_positionZ = pos[2];
+	positon.pos3D.x = pos[0];
+	positon.pos3D.y = pos[1];
+	positon.pos3D.z = pos[2];
 }
 
 void Transform::SetPosition(Transform other)
 {
-	XMFLOAT3 pos = other.GetPosition();
-	m_positionX = pos.x;
-	m_positionY = pos.y;
-	m_positionZ = pos.z;
+	positon = other.positon;
 	return;
 }
 
 
 void Transform::SetRotation(float x, float y, float z)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
+	rotation.x = x;
+	rotation.y = y;
+	rotation.z = z;
 	return;
 }
 
 void Transform::SetScale(float x, float y, float z)
 {
-	m_scaleX = x;
-	m_scaleY = y;
-	m_scaleZ = z;
+	scale.x = x;
+	scale.y = y;
+	scale.z = z;
 	return;
 }
 
@@ -118,68 +95,68 @@ void Transform::SetScale(float x, float y, float z)
 //The GetPosition and GetRotation functions return the current position and rotation of the camera location. In this tutorial these functions are called to provide the location and rotation of the camera for display purposes. We will draw the position/rotation as text strings on the left side of the screen. This is very useful for debugging.
 void Transform::GetPosition(float& x, float& y, float& z)
 {
-	x = m_positionX;
-	y = m_positionY;
-	z = m_positionZ;
+	x = positon.pos3D.x;
+	y = positon.pos3D.y;
+	z = positon.pos3D.z;
 	return;
 }
 
 XMFLOAT3 Transform::GetPosition()
 {
-	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
+	return XMFLOAT3(positon.pos3D.x, positon.pos3D.y, positon.pos3D.z);
 }
 
 XMMATRIX Transform::GetPositionMatrix()
 {
-	return XMMatrixTranslation(m_positionX, m_positionY, m_positionZ);
+	return XMMatrixTranslation(positon.pos3D.x, positon.pos3D.y, positon.pos3D.z);
 }
 
 void Transform::GetRotation(float& x, float& y, float& z)
 {
-	x = m_rotationX;
-	y = m_rotationY;
-	z = m_rotationZ;
+	x = rotation.x;
+	y = rotation.y;
+	z = rotation.z;
 	return;
 }
 
 XMFLOAT3 Transform::GetRotation()
 {
-	return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
+	return XMFLOAT3(rotation.x, rotation.y, rotation.z);
 }
 
 XMMATRIX Transform::GetRotationMatrix()
 {
-	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_rotationX), XMConvertToRadians(m_rotationY+180.0f), XMConvertToRadians(m_rotationZ));
+	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y + 180.0f), XMConvertToRadians(rotation.z));
 }
 
 
 
 //GetRotation returns the Y-axis rotation of the viewer. 
-void Transform::GetRotation(float & y)
+void Transform::GetRotation(float& y)
 {
-	y = m_rotationY;
+	y = rotation.y;
 }
 
 float Transform::GetRotationY()
 {
-	return m_rotationY;
+	return rotation.y;
 }
 
-void Transform::GetScale(float & x, float & y, float & z)
+void Transform::GetScale(float& x, float& y, float& z)
 {
-	x = m_scaleX;
-	y = m_scaleY;
-	z = m_scaleZ;
+	x = scale.x;
+	y = scale.y;
+	z = scale.z;
 }
 
 XMFLOAT3 Transform::GetScale()
 {
-	return XMFLOAT3(m_scaleX, m_scaleY, m_scaleZ);
+	return XMFLOAT3(scale.x, scale.y, scale.z);
 }
 
 XMMATRIX Transform::GetScaleMatrix()
 {
-	return  XMMatrixScaling(m_scaleX, m_scaleY, m_scaleZ);
+	return  XMMatrixScaling(scale.x, scale.y, scale.z);
 }
 
 XMMATRIX Transform::GetWorldMatrix()
@@ -223,11 +200,11 @@ void Transform::MoveForward(bool keydown)
 	}
 
 	// Convert degrees to radians.
-	radians = m_rotationY * 0.0174532925f;
+	radians = rotation.y * 0.0174532925f;
 
 	// Update the position.
-	m_positionX += sinf(radians) * m_forwardSpeed;
-	m_positionZ += cosf(radians) * m_forwardSpeed;
+	positon.pos3D.x += sinf(radians) * m_forwardSpeed;
+	positon.pos3D.z += cosf(radians) * m_forwardSpeed;
 
 	return;
 }
@@ -259,11 +236,11 @@ void Transform::MoveBackward(bool keydown)
 	}
 
 	// Convert degrees to radians.
-	radians = m_rotationY * 0.0174532925f;
+	radians = rotation.y * 0.0174532925f;
 
 	// Update the position.
-	m_positionX -= sinf(radians) * m_backwardSpeed;
-	m_positionZ -= cosf(radians) * m_backwardSpeed;
+	positon.pos3D.x -= sinf(radians) * m_backwardSpeed;
+	positon.pos3D.z -= cosf(radians) * m_backwardSpeed;
 
 	return;
 }
@@ -291,7 +268,7 @@ void Transform::MoveUpward(bool keydown)
 	}
 
 	// Update the height position.
-	m_positionY += m_upwardSpeed;
+	positon.pos3D.y += m_upwardSpeed;
 
 	return;
 }
@@ -319,7 +296,7 @@ void Transform::MoveDownward(bool keydown)
 	}
 
 	// Update the height position.
-	m_positionY -= m_downwardSpeed;
+	positon.pos3D.y -= m_downwardSpeed;
 
 	return;
 }
@@ -339,8 +316,8 @@ void Transform::TurnLeft(bool keydown)
 	// If the key is pressed increase the speed at which the camera turns left.  If not slow down the turn speed.
 	if (keydown) {
 		m_leftTurnSpeed += m_frameTime * 0.01f;
-		if (m_leftTurnSpeed > (m_frameTime*0.15f)) {
-			m_leftTurnSpeed = m_frameTime*0.15f;
+		if (m_leftTurnSpeed > (m_frameTime * 0.15f)) {
+			m_leftTurnSpeed = m_frameTime * 0.15f;
 		}
 	}
 	else
@@ -352,12 +329,12 @@ void Transform::TurnLeft(bool keydown)
 	}
 
 	// Update the rotation using the turning speed.
-	m_rotationY -= m_leftTurnSpeed;
-	if (m_rotationY < 0.0f) {
-		m_rotationY += 360.0f;
+	rotation.y -= m_leftTurnSpeed;
+	if (rotation.y < 0.0f) {
+		rotation.y += 360.0f;
 	}
 	return;
-	
+
 }
 
 void Transform::TurnRight(bool keydown)
@@ -365,7 +342,7 @@ void Transform::TurnRight(bool keydown)
 	// If the key is pressed increase the speed at which the camera turns right.  If not slow down the turn speed.
 	if (keydown) {
 		m_rightTurnSpeed += m_frameTime * 0.01f;
-		if (m_rightTurnSpeed > (m_frameTime*0.15f)) {
+		if (m_rightTurnSpeed > (m_frameTime * 0.15f)) {
 			m_rightTurnSpeed = m_frameTime * 0.15f;
 		}
 	}
@@ -378,11 +355,21 @@ void Transform::TurnRight(bool keydown)
 	}
 
 	// Update the rotation using the turning speed.
-	m_rotationY += m_rightTurnSpeed;
-	if (m_rotationY > 0.0f) {
-		m_rotationY -= 360.0f;
+	rotation.y += m_rightTurnSpeed;
+	if (rotation.y > 360.0f) {
+		rotation.y -= 360.0f;
 	}
 	return;
+}
+
+double Transform::TurnRight(double speed)
+{
+	double deltaY = speed * m_frameTime * 0.001;
+	rotation.y += deltaY;
+	if (rotation.y > 360.0f) {
+		rotation.y -= 360.0f;
+	}
+	return deltaY;
 }
 
 void Transform::LookUpward(bool keydown)
@@ -408,12 +395,12 @@ void Transform::LookUpward(bool keydown)
 	}
 
 	// Update the rotation.
-	m_rotationX -= m_lookUpSpeed;
+	rotation.x -= m_lookUpSpeed;
 
 	// Keep the rotation maximum 90 degrees.
-	if (m_rotationX > 90.0f)
+	if (rotation.x > 90.0f)
 	{
-		m_rotationX = 90.0f;
+		rotation.x = 90.0f;
 	}
 
 	return;
@@ -442,12 +429,12 @@ void Transform::LookDownward(bool keydown)
 	}
 
 	// Update the rotation.
-	m_rotationX += m_lookDownSpeed;
+	rotation.x += m_lookDownSpeed;
 
 	// Keep the rotation maximum 90 degrees.
-	if (m_rotationX < -90.0f)
+	if (rotation.x < -90.0f)
 	{
-		m_rotationX = -90.0f;
+		rotation.x = -90.0f;
 	}
 
 	return;
@@ -459,7 +446,7 @@ void Transform::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
 		// If the key is pressed increase the speed at which the camera turns right.  If not slow down the turn speed.
 		if (keydown) {
 			m_rightTurnSpeed += m_frameTime * 0.01f;
-			if (m_rightTurnSpeed > (m_frameTime*0.15f)) {
+			if (m_rightTurnSpeed > (m_frameTime * 0.15f)) {
 				m_rightTurnSpeed = m_frameTime * 0.15f;
 			}
 		}
@@ -476,7 +463,7 @@ void Transform::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
 		// If the key is pressed increase the speed at which the camera turns left.  If not slow down the turn speed.
 		if (keydown) {
 			m_leftTurnSpeed += m_frameTime * 0.01f;
-			if (m_leftTurnSpeed > (m_frameTime*0.15f)) {
+			if (m_leftTurnSpeed > (m_frameTime * 0.15f)) {
 				m_leftTurnSpeed = m_frameTime * 0.15f;
 			}
 		}
@@ -489,49 +476,49 @@ void Transform::Orbit(bool keydown, bool isleft, XMFLOAT3 targetpsotion)
 		}
 	}
 	// Update the rotation using the turning speed.
-	m_rotationY += m_rightTurnSpeed - m_leftTurnSpeed;
-	if (m_rotationY > 360.0f) {
-		m_rotationY -= 360.0f;
+	rotation.y += m_rightTurnSpeed - m_leftTurnSpeed;
+	if (rotation.y > 360.0f) {
+		rotation.y -= 360.0f;
 	}
-	if (m_rotationY < 0.0f) {
-		m_rotationY += 360.0f;
+	if (rotation.y < 0.0f) {
+		rotation.y += 360.0f;
 	}
 	// Update the position using the roatation.
-	m_positionX = targetpsotion.x - sinf(m_rotationY * 0.0174532925f) * 8.0f;
-	m_positionZ = targetpsotion.z - cosf(m_rotationY * 0.0174532925f) * 8.0f;
-	m_positionY = targetpsotion.y + 6.0f;
+	positon.pos3D.x = targetpsotion.x - sinf(rotation.y * 0.0174532925f) * 8.0f;
+	positon.pos3D.y = targetpsotion.y + 6.0f;
+	positon.pos3D.z = targetpsotion.z - cosf(rotation.y * 0.0174532925f) * 8.0f;
 
 }
 
 bool Transform::MoveTowardsPoint(float x, float y, float z)
 {
 	bool reached;
-	float delta_x = x - m_positionX;
-	float delta_y = y - m_positionY;
-	float delta_z = z - m_positionZ;
+	float delta_x = x - positon.pos3D.x;
+	float delta_y = y - positon.pos3D.y;
+	float delta_z = z - positon.pos3D.z;
 
-	
+
 	XMVECTOR dir = XMLoadFloat3(&XMFLOAT3(delta_x, delta_y, delta_z));
 	XMFLOAT3 dirData;
 	XMStoreFloat3(&dirData, XMVector3LengthEst(dir));
 
 	if (dirData.x <= 1.0f) {
-		
+
 		return true;
 	}
 
 	XMStoreFloat3(&dirData, XMVector3Normalize(dir));
 
-	m_positionX += m_frameTime * dirData.x;
-	m_positionY += m_frameTime * dirData.y;
-	m_positionZ += m_frameTime * dirData.z;
+	positon.pos3D.x += m_frameTime * dirData.x;
+	positon.pos3D.y += m_frameTime * dirData.y;
+	positon.pos3D.z += m_frameTime * dirData.z;
 
 	return false;
 }
 
 bool Transform::MoveTowardsPoint(XMFLOAT3 targetpsotion)
 {
- 	return MoveTowardsPoint(targetpsotion.x, targetpsotion.y, targetpsotion.z);
+	return MoveTowardsPoint(targetpsotion.x, targetpsotion.y, targetpsotion.z);
 }
 
 

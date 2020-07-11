@@ -2,6 +2,8 @@
 #include "./Engine/GameObjectClass.h"
 
 const int MAX_ENEMY = 100;
+const bool DRAW_BAKED = true;
+
 
 enum EnemyState
 {
@@ -22,6 +24,8 @@ typedef struct EnemyInstancesData
 	int m_InstanceID;
 	bool ifRender = true;
 	double rendertime = 0.0;
+	int m_Animnum = 0;
+
 
 	EnemyInstancesData(int instanceID)
 	{
@@ -71,8 +75,23 @@ typedef struct EnemyInstancesData
 		targetPosition[1] = pos[1];
 		targetPosition[2] = pos[2];
 		m_InstanceID = instanceID;
-
 		m_TimePos = timepos;
+	}
+
+	EnemyInstancesData(int instanceID, float pos[3], EnemyState state = idle, float timepos = 0.0f,int animnum = 0)
+	{
+
+		m_state = state;
+
+		m_Position[0] = pos[0];
+		m_Position[1] = pos[1];
+		m_Position[2] = pos[2];
+		targetPosition[0] = pos[0];
+		targetPosition[1] = pos[1];
+		targetPosition[2] = pos[2];
+		m_InstanceID = instanceID;
+		m_TimePos = timepos;
+		m_Animnum = animnum;
 	}
 
 
@@ -82,7 +101,7 @@ typedef struct EnemyInstancesData
 
 	bool MoveTowardsPoint(float x, float y, float z, float frametime)
 	{
-		bool reached;
+		bool reached = false;
 		float delta_x = x - m_Position[0];
 		float delta_y = y - m_Position[1];
 		float delta_z = z - m_Position[2];
@@ -93,8 +112,8 @@ typedef struct EnemyInstancesData
 		XMStoreFloat3(&dirData, XMVector3LengthEst(dir));
 
 		if (dirData.x <= 1.0f) {
-
-			return true;
+			reached = true;
+			return reached;
 		}
 
 		XMStoreFloat3(&dirData, XMVector3Normalize(dir));
@@ -103,7 +122,7 @@ typedef struct EnemyInstancesData
 		m_Position[1] += frametime * dirData.y * 0.015f;
 		m_Position[2] += frametime * dirData.z * 0.015f;
 
-		return false;
+		return reached;
 	}
 
 	bool MoveTowardsPoint(XMFLOAT3 targetpsotion, float frametime)
@@ -126,6 +145,11 @@ typedef struct EnemyInstancesData
 			AddRandomOffset();
 		}
 	}
+
+	void UpdateTime(float time) {
+		m_TimePos += time;
+	}
+
 }EnemyInst;
 
 
@@ -136,13 +160,8 @@ public:
 	Enemy(const Enemy& rhs);
 	~Enemy();
 
-	bool SameAnim = true;
-	bool SwitchSameAnim() {
-		SameAnim = !SameAnim;
-		return SameAnim;
-	}
 	//
-	EnemyInstancesData Instantiate(float pos[3], EnemyState state = idle, float m_TimePos = 0.0f);
+	EnemyInstancesData Instantiate(float pos[3], EnemyState state = idle, float timePos = 0.0f);
 
 	bool RemoveFromRender(int enemyID);
 
@@ -163,6 +182,7 @@ public:
 
 	double GetEnemyRenderTime(int enemyID);
 
+	void SetInstanceAnim(int instID, int animnum);
 
 private:
 	Enemy(const Enemy&& rhs) {}

@@ -5,25 +5,9 @@ const int SHADOWMAP_HEIGHT = 1024;
 const float SHADOWMAP_DEPTH = 50.0f;
 const float SHADOWMAP_NEAR = 1.0f;
 
-#include "Graphic/RasterTekObjects/shadermanagerclass.h"
-#include "Graphic/RasterTekObjects/userinterfaceclass.h"
-#include "Graphic/RasterTekObjects/skydomeclass.h"
-#include "Graphic/RasterTekObjects/skycubeclass.h"
-#include "Graphic/RasterTekObjects/particlesystemclass.h"
-#include "Graphic/RasterTekObjects/rendertextureclass.h"
-#include "Graphic/texturemanagerclass.h"
-#include "Graphic/ShaderManager.h"
-#include "Engine/d3dclass.h"
-#include "Engine/inputclass.h"
-#include "Engine/timerclass.h"
-#include "Engine/cameraclass.h"
-#include "Engine/positionclass.h"
-#include "Engine/GameObjectClass.h"
-#include "Engine/TerrainClass.h"
-#include "Engine/frustumclass.h"
-#include "Engine/lightclass.h"
-#include "Enemy.h"
-#include "Player.h"
+#include "ipch.h"
+
+const bool BakeModelMode = false;
 
 
 class ZoneClass
@@ -37,7 +21,7 @@ public:
 	ZoneClass(const ZoneClass&);
 	~ZoneClass();
 
-	bool Initialize(D3DClass*, HWND, int, int, float);
+	int Initialize(D3DClass*, HWND, int, int, float);
 	void Shutdown();
 	bool Frame(D3DClass*, InputClass*, ShaderManagerClass*, TextureManagerClass*, float frametime, int fps, int cpu);
 
@@ -70,7 +54,7 @@ public:
 
 	
 private:
-	void HandleMovementInput(InputClass*, float frameTime,float fps);
+	void HandleMovementInput(InputClass*,int fps);
 	
 	bool RenderShadowMap(D3DClass* Direct3D, const XMMATRIX&, const XMMATRIX&);
 	
@@ -84,7 +68,7 @@ private:
 
 	bool RenderAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
 	bool RenderNonAnimationGameObjects(D3DVertexShader*, const XMMATRIX& ,const XMMATRIX&);
-
+	
 	//bool InitializeShaders();
 	void SetLight(int lightType);
 private:
@@ -93,7 +77,7 @@ private:
 
 	UserInterfaceClass * m_UserInterface;
 	CameraClass* m_Camera;
-	Transform* m_Position;
+	Transform* m_Transform;
 	TerrainClass* m_Terrain;
 	FrustumClass* m_Frustum;
 	SkyDomeClass* m_SkyDome;
@@ -134,5 +118,6 @@ private:
 	ConstantBuffer<CB_PS_Material> cb_ps_material;
 	ConstantBuffer<CB_PS_ShadowMatrix> cb_ps_shadowMatrix;
 	ConstantBuffer<ConstantBuffer_Bones> cb_bones;
+	ConstantBuffer<ConstantBuffer_BakedBones> cb_baked_bones;
 
 };

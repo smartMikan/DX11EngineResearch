@@ -34,19 +34,18 @@ void ImGuiClass::ShutDown()
 
 bool ImGuiClass::Frame(ZoneClass* zone)
 {
-	static float createEnemyPos[3] = { 0,0,0 };
-	int EnemyCount;
+	
 
 
 	static bool lighttype = false;
 	float lightRot[3];
 	float lightpos[3];
 
-	zone->m_Light->position.GetRotation(lightRot[0], lightRot[1], lightRot[2]);
+	zone->m_Light->m_transform.GetRotation(lightRot[0], lightRot[1], lightRot[2]);
 
-	lightpos[0] = zone->m_Light->position.GetPosition().x;
-	lightpos[1] = zone->m_Light->position.GetPosition().y;
-	lightpos[2] = zone->m_Light->position.GetPosition().z;
+	lightpos[0] = zone->m_Light->m_transform.GetPosition().x;
+	lightpos[1] = zone->m_Light->m_transform.GetPosition().y;
+	lightpos[2] = zone->m_Light->m_transform.GetPosition().z;
 
 
 	float ambientcolor[3];
@@ -86,8 +85,8 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::DragFloat3("Light Pos", lightpos, 0.1f);
 	ImGui::ColorEdit3("Light Ambient", ambientcolor);
 	ImGui::ColorEdit3("Light Diffuse", diffusecolor);
-	zone->m_Light->position.SetRotation(lightRot[0], lightRot[1], lightRot[2]);
-	zone->m_Light->position.SetPosition(lightpos[0], lightpos[1], lightpos[2]);
+	zone->m_Light->m_transform.SetRotation(lightRot[0], lightRot[1], lightRot[2]);
+	zone->m_Light->m_transform.SetPosition(lightpos[0], lightpos[1], lightpos[2]);
 	zone->m_Light->SetAmbientColor(ambientcolor[0], ambientcolor[1], ambientcolor[2], 1.0f);
 	zone->m_Light->SetDiffuseColor(diffusecolor[0], diffusecolor[1], diffusecolor[2], 1.0f);
 	ImGui::DragFloat("AmbientStrength", &zone->m_Light->ambientLightStrength, 0.01, 0.0f, 1.0f);
@@ -121,27 +120,37 @@ bool ImGuiClass::Frame(ZoneClass* zone)
 	ImGui::End();
 
 
-
+	
+	int EnemyCount;
+	int RenderedEnemyCount;
 	////Create Enemy!
 	ImGui::Begin("CreateEnemy");
-	ImGui::DragFloat3("Position X/Y/Z", createEnemyPos, 0.1f);
 	if (ImGui::Button("CreateEnemy!"))
 	{
-		zone->CreateEnemyAtPositon(createEnemyPos);
+		XMFLOAT3 pos = zone->m_Player->m_Transform.GetPosition();
+		zone->CreateEnemyAtPositon(reinterpret_cast<float*>(&pos));
 	}
-	EnemyCount = zone->m_enemies->GetRenderedEnemyCounts();
+	EnemyCount = zone->m_enemies->GetAllEnemyCounts();
 	ImGui::Text("EnemyCount: ");
 	ImGui::Text(to_string(EnemyCount).c_str());
+	RenderedEnemyCount = zone->m_enemies->GetRenderedEnemyCounts();
+	ImGui::Text("RenderedEnemyCount: ");
+	ImGui::Text(to_string(RenderedEnemyCount).c_str());
+
 	if (ImGui::Button("RemoveEnemy!"))
 	{
-		zone->RemoveEnemyFromRender(EnemyCount-1);
+		zone->RemoveEnemyFromRender(RenderedEnemyCount > 0 ? RenderedEnemyCount -1 : 0);
 	}
+
 	ImGui::Text("RenderTimeofLastEnemy:");
-	ImGui::Text(EnemyCount > 1 ? to_string(zone->m_enemies->GetEnemyRenderTime(EnemyCount-1)).c_str() : "0");
+	ImGui::Text(RenderedEnemyCount > 1 ? to_string(zone->m_enemies->GetEnemyRenderTime(RenderedEnemyCount-1)).c_str() : "0");
 	ImGui::Text("RenderTimeofAllEnemy:");
 	ImGui::Text(to_string(zone->rendertime).c_str());
-	
-	ImGui::Checkbox("ToggleIfRenderSameAnim", &zone->m_enemies->SameAnim);
+
+	//ImGui::Text("BakedAnimTimepos:");
+	/*static float timepos;
+	ImGui::DragFloat("TimePos", &timepos, 0.001f, 0.0f, 1.0f);
+	zone->m_AnimModel->SetBakedAnimTime(timepos);*/
 
 	ImGui::End();
 
