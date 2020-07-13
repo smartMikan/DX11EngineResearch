@@ -43,13 +43,12 @@ public:
 	
 
 	LightClass* m_Light;
-	//SkinnedModelInstance mCharacterInstance2;
+
 	GameObjectClass* m_AnimModel;
 	GameObjectClass* m_UnMoveModel;
-	Player* m_Player;
 	GameObjectClass* m_tianyi;
 	GameObjectClass* m_sword;
-
+	Player* m_Player;
 	Enemy* m_enemies;
 
 	

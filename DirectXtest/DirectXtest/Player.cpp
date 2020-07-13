@@ -63,7 +63,7 @@ void Player::Frame(float frametime)
 {
 	GameObjectClass::Frame(frametime);
 	if (isCyclone) {
-		Round(3);
+		Round(30);
 	}
 }
 
@@ -93,7 +93,10 @@ bool Player::HandleInput(InputClass* Input, Transform * orbitTrans)
 			isAttack = true;
 		}
 	}
-	
+	else
+	{
+		isAttack = false;
+	}
 
 
 	keyDown = Input->GetMouseButton(1);
@@ -103,17 +106,20 @@ bool Player::HandleInput(InputClass* Input, Transform * orbitTrans)
 		//if is attacking,continue the animation
 		if (isCyclone)
 		{
-			SwitchAnim(8);
+			SwitchAnim(7);
 		}
 		else
 		{
 			//start cyclone animation
-			StartAnim(8);
-			SwitchAnim(8);
+			StartAnim(7);
+			SwitchAnim(7);
 			isCyclone = true;
 		}
 	}
-	
+	else
+	{
+		isCyclone = false;
+	}
 
 
 
@@ -185,3 +191,28 @@ void Player::Round(float speed)
 	m_Transform.TurnRight(speed);
 
 }
+
+
+float Player::GetJumpHeight()
+{
+	float t = (float)m_jumpTimer.GetMiliseceondsElapsed() / (1000.0f);
+	float s = m_jumpSpeed * t - 0.5f * m_jumpAcce * t * t;
+	if (s < 0) {
+		s = 0;
+		isJump = false;
+		m_jumpAcce = 0;
+		m_jumpSpeed = 0;
+		m_jumpTimer.Stop();
+	}
+	return  s;
+}
+
+float Player::Jump(float startSpeed, float acce)
+{
+	m_jumpAcce = acce;
+	m_jumpSpeed = startSpeed;
+	m_jumpTimer.Restart();
+	isJump = true;
+	return 0.0f;
+}
+

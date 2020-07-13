@@ -470,7 +470,7 @@ int ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int sc
 
 		for (size_t i = 0; i < m_AnimModel->GetAnimCount(); i++)
 		{
-			baker.BakeAnim(m_AnimModel->GetAnimComp(), m_AnimModel->GetAnimComp()->GetAnimation(i), "mAnim" + to_string(i));
+			baker.BakeAnim(m_AnimModel->GetAnimator(), m_AnimModel->GetAnimator()->GetAnimation(i), "mAnim" + to_string(i));
 		}
 
 		return 2;
@@ -691,6 +691,10 @@ bool ZoneClass::Frame(D3DClass* Direct3D, InputClass* Input, ShaderManagerClass*
 	m_Light->GetOrthoMatrix(lightOrthoMatrix);
 	m_Light->GetProjectionMatrix(lightProjMatrix);
 
+	m_Camera->Frame(frameTime);
+
+
+
 	// Render ShadowMap
 	result = RenderShadowMap(Direct3D, lightViewMatrix, m_lightType == 0 ? lightOrthoMatrix : lightProjMatrix);
 	if (!result)
@@ -758,11 +762,11 @@ void ZoneClass::HandleMovementInput(InputClass* Input, int fps)
 		m_cellLines = !m_cellLines;
 	}
 
-	//// Determine if we should be locked to the terrain height when we move around or not.
-	//if (Input->IsKeyToggled(DIK_F4))
-	//{
-	//	m_heightLocked = !m_heightLocked;
-	//}
+	// Determine if we should be locked to the terrain height when we move around or not.
+	if (Input->IsKeyToggled(DIK_F4))
+	{
+		m_heightLocked = !m_heightLocked;
+	}
 
 
 
@@ -778,30 +782,25 @@ void ZoneClass::HandleMovementInput(InputClass* Input, int fps)
 	XMFLOAT3 orbitposition = m_Player->m_Transform.GetPosition();
 
 	// Handle player input.
-	m_Player->HandleInput(Input, m_Transform);
+	m_Player->HandleInput(Input, &m_Camera->m_transform);
 
 
 	//Camera Input
 	keyDown = Input->IsKeyPressed(DIK_PGUP) || Input->IsKeyPressed(DIK_I);
-	m_Transform->LookUpward(keyDown);
+	m_Camera->m_transform.LookUpward(keyDown);
 
 	keyDown = Input->IsKeyPressed(DIK_PGDN) || Input->IsKeyPressed(DIK_K);
-	m_Transform->LookDownward(keyDown);
+	m_Camera->m_transform.LookDownward(keyDown);
 
-	// Get the view point position/rotation.
-	m_Transform->GetPosition(posX, posY, posZ);
-	m_Transform->GetRotation(rotX, rotY, rotZ);
+	
 
-	// Set the position of the camera.
-	m_Camera->SetPosition(posX, posY, posZ);
-	m_Camera->SetRotation(rotX, rotY, rotZ);
-
-	//Sync the model rotation with camera
-
-	m_Player->m_Transform.SetRotation(0, rotY, 0);
+	////Sync the model rotation with camera
+	//if (!m_Player->isCyclone) {
+	//	m_Player->m_Transform.SetRotation(0, rotY + 180, 0);
+	//}
 
 	//if is Directionlight set lightpos with camera pos
-	//TODO: more smarter global directional shadowmap
+	//TODO: smarter global directional shadowmap
 	if (m_lightType == 0) {
 		m_Light->m_transform.SetPosition(orbitposition.x, orbitposition.y + 35, orbitposition.z - 35);
 	}
@@ -810,9 +809,6 @@ void ZoneClass::HandleMovementInput(InputClass* Input, int fps)
 		XMFLOAT3 pos = m_Player->m_Transform.GetPosition();
 		m_Light->m_transform.SetPosition(pos.x, pos.y + 1.0f, pos.z - 10.0f);
 	}
-
-
-
 
 
 	return;
@@ -1185,64 +1181,6 @@ bool ZoneClass::RenderNonAnimationGameObjects(D3DVertexShader* vertexshader, con
 }
 
 
-
-
-
-//bool ZoneClass::InitializeShaders()
-//{
-//	std::wstring shaderfolder = L"";
-//#pragma region DetermineShaderPath
-//	if (IsDebuggerPresent())
-//	{
-//#ifdef _DEBUG // Debug Mode
-//#ifdef _WIN64 // x64
-//		shaderfolder = L"..\\x64\\Debug\\";
-//#else	// x86
-//		shaderfolder = L"..\\Debug\\";
-//#endif
-//#else	// Release Mode
-//#ifdef _WIN64
-//		shaderfolder = L"..\\x64\\Release\\";
-//#else	// x86
-//		shaderfolder = L"..\\Release\\";
-//#endif
-//#endif
-//	}
-//
-//	d3dvertexshader = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "vertexShader.cso");
-//	d3dvertexshader_animation = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VertexShaderAnim.cso");
-//	d3dvertexshader_nolight = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VS_nolight.cso");
-//	d3dvertexshader_shadowmap = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VS_shadowmap.cso");
-//	d3dvertexshader_shadowmap_anim = std::make_unique<D3DVertexShader>(this->device, StringHelper::WideToString(shaderfolder) + "VS_shadowmap_anim.cso");
-//	
-//	bool result;
-//	result = pixelshader.Initialize(this->device, shaderfolder + L"pixelshader.cso");
-//	if (!result)
-//	{
-//		return false;
-//	}
-//	result = pixelshader_nolight.Initialize(this->device, shaderfolder + L"pixelshader_nolight.cso");
-//	if (!result)
-//	{
-//		return false;
-//	}
-//	result = pixelshader_toonmapping.Initialize(this->device, shaderfolder + L"pixelshader_toonmapping.cso");
-//	if (!result)
-//	{
-//		return false;
-//	}
-//	result = pixelshader_heightmapping.Initialize(this->device, shaderfolder + L"PixelShader_HeightMapping.cso");
-//	if (!result)
-//	{
-//		return false;
-//	}
-//	result = pixelshader_depthColor.Initialize(this->device, shaderfolder + L"PixelShader_Depth.cso");
-//	if (!result)
-//	{
-//		return false;
-//	}
-//	return true;
-//}
 
 
 

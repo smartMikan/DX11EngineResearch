@@ -67,6 +67,7 @@ public:
 	XMMATRIX GetRotationMatrix();
 	void GetRotation(float& y);
 	float GetRotationY();
+	float GetRotationYRaid();
 
 	void GetScale(float& x, float& y, float& z);
 	XMFLOAT3 GetScale();
@@ -96,6 +97,7 @@ private:
 	Positon positon;
 	Vector3 rotation;
 	Vector3 scale;
+	
 
 	float m_frameTime;
 
@@ -103,5 +105,11 @@ private:
 	float m_upwardSpeed, m_downwardSpeed;
 	float m_leftTurnSpeed, m_rightTurnSpeed;
 	float m_lookUpSpeed, m_lookDownSpeed;
+
+	Transform* parent = nullptr;
+	Transform* last = nullptr;
+	Transform* next = nullptr;
+	Transform* firstchild = nullptr;
+	int childcount = 0;
 
 };

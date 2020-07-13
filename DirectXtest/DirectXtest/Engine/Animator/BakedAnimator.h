@@ -1,10 +1,5 @@
 #pragma once
 
-//
-//#include<directxmath.h>
-//#include <string>
-//#include<vector>
-//#include "../../Graphic/Buffers/ConstantBuffer.h"
 #include"../ModelBaker/ModelBaker.h"
 using namespace DirectX;
 
@@ -18,7 +13,7 @@ public:
 	std::vector<BakedAnimationClip> bakedclips;
 
 
-	void Bind(ID3D11DeviceContext* deviceContext, int animnum, double timepos);
+	int Bind(ID3D11DeviceContext* deviceContext, int animnum, double timepos);
 
 
 	bool LoadAnimFromFile(std::string filename);

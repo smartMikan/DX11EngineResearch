@@ -1292,7 +1292,7 @@ static inline bool CanMergeDrawCommands(ImDrawCmd* a, ImDrawCmd* b)
 
 void ImDrawListSplitter::Merge(ImDrawList* draw_list)
 {
-    // Note that we never use or rely on channels.Size because it is merely a buffer that we never shrink back to 0 to keep all sub-buffers ready for use.
+    // Note that we never use or rely on bonechannels.Size because it is merely a buffer that we never shrink back to 0 to keep all sub-buffers ready for use.
     if (_Count <= 1)
         return;
 
@@ -1340,7 +1340,7 @@ void ImDrawListSplitter::Merge(ImDrawList* draw_list)
         if (int sz = ch._IdxBuffer.Size) { memcpy(idx_write, ch._IdxBuffer.Data, sz * sizeof(ImDrawIdx)); idx_write += sz; }
     }
     draw_list->_IdxWritePtr = idx_write;
-    draw_list->UpdateClipRect(); // We call this instead of AddDrawCmd(), so that empty channels won't produce an extra draw call.
+    draw_list->UpdateClipRect(); // We call this instead of AddDrawCmd(), so that empty bonechannels won't produce an extra draw call.
     draw_list->UpdateTextureID();
     _Count = 1;
 }

@@ -390,13 +390,13 @@ enum aiPostProcessSteps
 
     // -------------------------------------------------------------------------
     /** <hr>This step converts non-UV mappings (such as spherical or
-     *  cylindrical mapping) to proper texture coordinate channels.
+     *  cylindrical mapping) to proper texture coordinate bonechannels.
      *
      * Most applications will support UV mapping only, so you will
      * probably want to specify this step in every case. Note that Assimp is not
      * always able to match the original mapping implementation of the
      * 3D app which produced a model perfectly. It's always better to let the
-     * modelling app compute the UV channels - 3ds max, Maya, Blender,
+     * modelling app compute the UV bonechannels - 3ds max, Maya, Blender,
      * LightWave, and Modo do this for example.
      *
      * @note If this step is not requested, you'll need to process the
@@ -407,7 +407,7 @@ enum aiPostProcessSteps
 
     // -------------------------------------------------------------------------
     /** <hr>This step applies per-texture UV transformations and bakes
-     *  them into stand-alone vtexture coordinate channels.
+     *  them into stand-alone vtexture coordinate bonechannels.
      *
      * UV transformations are specified per-texture - see the
      * <tt>#AI_MATKEY_UVTRANSFORM</tt> material key for more information.

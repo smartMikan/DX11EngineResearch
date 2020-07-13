@@ -2,29 +2,16 @@
 //The class constructor will initialize the position and rotation of the camera to be at the origin of the scene.
 
 CameraClass::CameraClass()
-{
-	m_positionX = 0.0f;
-	m_positionY = 0.0f;
-	m_positionZ = 0.0f;
-
-	m_rotationX = 0.0f;
-	m_rotationY = 0.0f;
-	m_rotationZ = 0.0f;
-
-	
+{	
 }
 
 
 CameraClass::CameraClass(const CameraClass& other)
 {
-	m_positionX = other.m_positionX;
-	m_positionY = other.m_positionY;
-	m_positionZ = other.m_positionZ;
-
-	m_rotationX = other.m_rotationX;
-	m_rotationY = other.m_rotationY;
-	m_rotationZ = other.m_rotationZ;
-
+	m_transform = other.m_transform;
+	m_baseViewMatrix = other.m_baseViewMatrix;
+	m_reflectionViewMatrix = other.m_reflectionViewMatrix;
+	m_viewMatrix = other.m_viewMatrix;
 }
 
 
@@ -35,34 +22,34 @@ CameraClass::~CameraClass()
 
 void CameraClass::SetPosition(float x, float y, float z)
 {
-	m_positionX = x;
-	m_positionY = y;
-	m_positionZ = z;
-	return;
+	return m_transform.SetPosition(x, y, z);
 }
 
 
 
 void CameraClass::SetRotation(float x, float y, float z)
 {
-	m_rotationX = x;
-	m_rotationY = y;
-	m_rotationZ = z;
-	return;
+	
+	return m_transform.SetRotation(x,y,z);
 }
 //The GetPosition and GetRotation functions return the location and rotation of the camera to calling functions.
 
 XMFLOAT3 CameraClass::GetPosition()
 {
-	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
+	return m_transform.GetPosition();
 }
 
 
 XMFLOAT3 CameraClass::GetRotation()
 {
-	return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
+	return m_transform.GetRotation();
 }
 //The Render function uses the position and rotation of the camera to build and update the view matrix.We first setup our variables for up, position, rotation, and so forth.Then at the origin of the scene we first rotate the camera based on the x, y, and z rotation of the camera.Once it is properly rotated when then translate the camera to the position in 3D space.With the correct values in the position, lookAt, and up we can then use the XMMatrixLookAtLH function to create the view matrix to represent the current camera rotation and translation.
+
+void CameraClass::Frame(float frametime)
+{
+	m_transform.SetFrameTime(frametime);
+}
 
 void CameraClass::Render()
 {
@@ -76,17 +63,11 @@ void CameraClass::Render()
 	up.x = 0.0f;
 	up.y = 1.0f;
 	up.z = 0.0f;
-
 	// Load it into a XMVECTOR structure.
 	upVector = XMLoadFloat3(&up);
 
-	// Setup the position of the camera in the world.
-	position.x = m_positionX;
-	position.y = m_positionY;
-	position.z = m_positionZ;
-
 	// Load it into a XMVECTOR structure.
-	positionVector = XMLoadFloat3(&position);
+	positionVector = XMLoadFloat3(&m_transform.GetPosition());
 
 	// Setup where the camera is looking by default.
 	lookAt.x = 0.0f;
@@ -97,9 +78,11 @@ void CameraClass::Render()
 	lookAtVector = XMLoadFloat3(&lookAt);
 
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = XMConvertToRadians(m_rotationX);
-	yaw = XMConvertToRadians(m_rotationY);
-	roll = XMConvertToRadians(m_rotationZ);
+
+	XMFLOAT3 rotation = m_transform.GetRotation();
+	pitch = XMConvertToRadians(rotation.x);
+	yaw = XMConvertToRadians(rotation.y);
+	roll = XMConvertToRadians(rotation.z);
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
 	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
@@ -149,20 +132,19 @@ void CameraClass::RenderReflection(float height)
 
 	// Setup the position of the camera in the world.
 	// For planar reflection invert the Y position of the camera.
-	position.x = m_positionX;
-	position.y = -m_positionY + (height * 2.0f);
-	position.z = m_positionZ;
+	position = m_transform.GetPosition();
+	position.y = -position.y + (height * 2.0f);
 
 	// Load it into a XMVECTOR structure.
 	positionVector = XMLoadFloat3(&position);
-
+	
 	// Calculate the rotation in radians.
-	radians = XMConvertToRadians(m_rotationY);
+	radians = m_transform.GetRotationYRaid();
 
 	// Setup where the camera is looking.
-	lookAt.x = sinf(radians) + m_positionX;
+	lookAt.x = sinf(radians) + position.x;
 	lookAt.y = position.y;
-	lookAt.z = cosf(radians) + m_positionZ;
+	lookAt.z = cosf(radians) + position.z;
 
 	// Load it into a XMVECTOR structure.
 	lookAtVector = XMLoadFloat3(&lookAt);
@@ -191,9 +173,7 @@ void CameraClass::RenderBaseViewMatrix()
 	upVector = XMLoadFloat3(&up);
 
 	// Setup the position of the camera in the world.
-	position.x = m_positionX;
-	position.y = m_positionY;
-	position.z = m_positionZ;
+	position = m_transform.GetPosition();
 
 	// Load it into a XMVECTOR structure.
 	positionVector = XMLoadFloat3(&position);
@@ -206,13 +186,10 @@ void CameraClass::RenderBaseViewMatrix()
 	// Load it into a XMVECTOR structure.
 	lookAtVector = XMLoadFloat3(&lookAt);
 
-	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
-	pitch = m_rotationX * 0.0174532925f;
-	yaw = m_rotationY * 0.0174532925f;
-	roll = m_rotationZ * 0.0174532925f;
 
 	// Create the rotation matrix from the yaw, pitch, and roll values.
-	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+	rotationMatrix = m_transform.GetRotationMatrix();
+
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);

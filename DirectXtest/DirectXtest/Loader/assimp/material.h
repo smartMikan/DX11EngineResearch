@@ -138,7 +138,7 @@ enum aiTextureMapMode
  *
  *  Real-time applications typically require full UV coordinates, so the use of
  *  the aiProcess_GenUVCoords step is highly recommended. It generates proper
- *  UV channels for non-UV mapped objects, as long as an accurate description
+ *  UV bonechannels for non-UV mapped objects, as long as an accurate description
  *  how the mapping should look like (e.g spherical) is given.
  *  See the #AI_MATKEY_MAPPING property for more details.
  */

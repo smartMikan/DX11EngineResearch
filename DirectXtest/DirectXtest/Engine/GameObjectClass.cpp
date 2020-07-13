@@ -40,26 +40,30 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 
 bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBones)
 {
-	mAnimComp = std::make_unique<AnimationComponent>(&mAnimator);
+	mAnimComp = std::make_unique<AnimationComponent>(&m_Animator);
 	
 	mPlayAnimtion = true;
 	mAnimTimers.emplace_back(new Timer);
 	mAnimTimers[0]->Start();
 	//mAnimTimer.Start();
-	return m_Model->InitAnimation(&cbufBones, &mAnimator, mAnimComp.get());
+
+	return m_Model->InitAnimation(&cbufBones, &m_Animator, mAnimComp.get());
 }
 
 bool GameObjectClass::AddAnimation(const std::string & filePath, bool disablerootTrans, bool disablerootRot, bool disablerootScale)
 {
 	assert(mAnimComp.get() != nullptr);
+
 	mAnimTimers.emplace_back(new Timer);
-	mAnimTimers[mAnimator.GetNumAnimations()]->Start();
-	return m_Model->AddAnimation(filePath, &mAnimator, mAnimComp.get(),disablerootTrans, disablerootRot, disablerootScale);
+	
+	mAnimTimers.back()->Start();
+
+	return m_Model->AddAnimation(filePath, &m_Animator, mAnimComp.get(),disablerootTrans, disablerootRot, disablerootScale);
 }
 
 int GameObjectClass::GetAnimCount()
 {
-	return mAnimator.GetNumAnimations();
+	return m_Animator.GetNumAnimations();
 }
 
 bool GameObjectClass::InitBakedAnim(ConstantBuffer<ConstantBuffer_BakedBones>& cbufBones)
@@ -147,18 +151,18 @@ double GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & view
     QueryPerformanceFrequency(&tc);
     QueryPerformanceCounter(&t1);
 
-	int index = mAnimator.GetCurrentAnimationIndex();
+	int index = m_Animator.GetCurrentAnimationIndex();
 	if (!sameanim) {
 		if (mPlayAnimtion)
 		{
-			if ((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= mAnimator.GetCurrentAnimation().duration)
+			if ((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale) >= m_Animator.GetCurrentAnimation().duration)
 				mAnimTimers[index]->Restart();
-			mAnimator.SetTimpPos((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
+			m_Animator.SetTimpPos((float)mAnimTimers[index]->GetMiliseceondsElapsed() / (1000.0f / mAnimTimeScale));
 
-			const AnimationChannel* channel = mAnimComp->GetCurrentChannel();
+			const BoneChannel* channel = mAnimComp->GetCurrentBoneChannel();
 			if (channel)
 			{
-				mAnimator.Bind(deviceContext);
+				m_Animator.Bind(deviceContext);
 			}
 		}
 	}
@@ -173,12 +177,13 @@ double GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & view
 
 void GameObjectClass::SwitchAnim(int index)
 {
-	if (mAnimator.GetCurrentAnimationIndex() == index) {
+	assert(index < m_Animator.GetNumAnimations(), "AnimationOverHeads!");
+	if (m_Animator.GetCurrentAnimationIndex() == index) {
 		return;
 	}
 	else
 	{
-		mAnimator.SetCurrentAnimationIndex(index);
+		m_Animator.SetCurrentAnimationIndex(index);
 	}
 }
 
@@ -200,29 +205,6 @@ bool GameObjectClass::SetWorldMatrix(XMMATRIX world)
 	XMStoreFloat4x4(&pos, world);
 	m_Transform.SetPosition(pos._14,pos._24,pos._34);
 	return true;
-}
-
-float GameObjectClass::GetJumpHeight()
-{
-	float t = (float)m_jumpTimer.GetMiliseceondsElapsed() / (1000.0f);
-	float s = m_jumpSpeed * t - 0.5f * m_jumpAcce * t * t;
-	if (s < 0) {
-		s = 0;
-		isJump = false;
-		m_jumpAcce = 0;
-		m_jumpSpeed = 0;
-		m_jumpTimer.Stop();
-	}
-	return  s;
-}
-
-float GameObjectClass::Jump(float startSpeed,float acce)
-{
-	m_jumpAcce = acce;
-	m_jumpSpeed = startSpeed;
-	m_jumpTimer.Restart();
-	isJump = true;
-	return 0.0f;
 }
 
 

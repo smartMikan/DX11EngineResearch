@@ -424,28 +424,28 @@ struct aiAnimation {
     /** Ticks per second. 0 if not specified in the imported file */
     double mTicksPerSecond;
 
-    /** The number of bone animation channels. Each channel affects
+    /** The number of bone animation bonechannels. Each channel affects
      *  a single node. */
     unsigned int mNumChannels;
 
-    /** The node animation channels. Each channel affects a single node.
+    /** The node animation bonechannels. Each channel affects a single node.
      *  The array is mNumChannels in size. */
     C_STRUCT aiNodeAnim** mChannels;
 
 
-    /** The number of mesh animation channels. Each channel affects
+    /** The number of mesh animation bonechannels. Each channel affects
      *  a single mesh and defines vertex-based animation. */
     unsigned int mNumMeshChannels;
 
-    /** The mesh animation channels. Each channel affects a single mesh.
+    /** The mesh animation bonechannels. Each channel affects a single mesh.
      *  The array is mNumMeshChannels in size. */
     C_STRUCT aiMeshAnim** mMeshChannels;
 
-    /** The number of mesh animation channels. Each channel affects
+    /** The number of mesh animation bonechannels. Each channel affects
      *  a single mesh and defines morphing animation. */
     unsigned int mNumMorphMeshChannels;
 
-    /** The morph mesh animation channels. Each channel affects a single mesh.
+    /** The morph mesh animation bonechannels. Each channel affects a single mesh.
      *  The array is mNumMorphMeshChannels in size. */
     C_STRUCT aiMeshMorphAnim **mMorphMeshChannels;
 

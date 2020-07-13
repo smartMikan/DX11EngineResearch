@@ -1855,8 +1855,8 @@ struct ImDrawChannel
 struct ImDrawListSplitter
 {
     int                         _Current;    // Current channel number (0)
-    int                         _Count;      // Number of active channels (1+)
-    ImVector<ImDrawChannel>     _Channels;   // Draw channels (not resized down so _Count might be < Channels.Size)
+    int                         _Count;      // Number of active bonechannels (1+)
+    ImVector<ImDrawChannel>     _Channels;   // Draw bonechannels (not resized down so _Count might be < Channels.Size)
 
     inline ImDrawListSplitter()  { Clear(); }
     inline ~ImDrawListSplitter() { ClearFreeMemory(); }
@@ -1915,7 +1915,7 @@ struct ImDrawList
     ImVector<ImVec4>        _ClipRectStack;     // [Internal]
     ImVector<ImTextureID>   _TextureIdStack;    // [Internal]
     ImVector<ImVec2>        _Path;              // [Internal] current path building
-    ImDrawListSplitter      _Splitter;          // [Internal] for channels api
+    ImDrawListSplitter      _Splitter;          // [Internal] for bonechannels api
 
     // If you want to create ImDrawList instances, pass them ImGui::GetDrawListSharedData() or create and use your own ImDrawListSharedData (so you can use ImDrawList without ImGui)
     ImDrawList(const ImDrawListSharedData* shared_data) { _Data = shared_data; _OwnerName = NULL; Clear(); }
@@ -1973,8 +1973,8 @@ struct ImDrawList
     IMGUI_API ImDrawList* CloneOutput() const;                                  // Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer.
 
     // Advanced: Channels
-    // - Use to split render into layers. By switching channels to can render out-of-order (e.g. submit foreground primitives before background primitives)
-    // - Use to minimize draw calls (e.g. if going back-and-forth between multiple non-overlapping clipping rectangles, prefer to append into separate channels then merge at the end)
+    // - Use to split render into layers. By switching bonechannels to can render out-of-order (e.g. submit foreground primitives before background primitives)
+    // - Use to minimize draw calls (e.g. if going back-and-forth between multiple non-overlapping clipping rectangles, prefer to append into separate bonechannels then merge at the end)
     inline void     ChannelsSplit(int count)    { _Splitter.Split(this, count); }
     inline void     ChannelsMerge()             { _Splitter.Merge(this); }
     inline void     ChannelsSetCurrent(int n)   { _Splitter.SetCurrentChannel(this, n); }

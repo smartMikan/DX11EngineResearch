@@ -40,7 +40,7 @@ public:
 
 
 
-	Animator* GetAnimComp() { return &mAnimator; }
+	Animator* GetAnimator() { return &m_Animator; }
 
 
 
@@ -50,12 +50,7 @@ public:
 	Transform m_Transform;
 	Model* m_Model;
 
-	bool isJump;
-	bool isGround;
-	bool isAttack;
-	float attackDuration;
-	float GetJumpHeight();
-	float Jump(float startSpeed, float acce);
+	
 	
 	int m_animnum;
 
@@ -64,18 +59,13 @@ private:
 	ID3D11DeviceContext* deviceContext;
 	std::vector<Timer*>  mAnimTimers;
 	
-
-	
-	Timer m_jumpTimer;
 	//Timer mAnimTimer;
 	float mAnimTimeScale = 1.0f;
 	bool mPlayAnimtion = false;
-	Animator mAnimator;
+	Animator m_Animator;
 	std::unique_ptr<AnimationComponent> mAnimComp;
 	//AnimationComponent* mAnimComp;
-	float m_jumpAcce = 0;
-	float m_jumpSpeed = 0;
-
+	
 	
 	BakedAnimator m_baked_Animator;
 };

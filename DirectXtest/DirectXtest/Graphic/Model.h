@@ -57,7 +57,7 @@ private:
 	int AddAvatorNode(aiNode* node, int parent_index);
 	void BuildAvator(aiNode* node, int parent_index);
 	aiBone* GetAiBoneByName(const std::string& name);
-	void ProcessAnimation(Animator* animator_out, ConstantBuffer<ConstantBuffer_Bones>* cbufBone, AnimationComponent* animComp);
+	void ProcessAnimation(Animator* animator_out, ConstantBuffer<ConstantBuffer_Bones>* cbufBone, AnimationComponent* animComp, bool disablerootTrans = false, bool disablerootRot = false, bool disablerootScale = false);
 	
 
 private:
@@ -80,7 +80,7 @@ private:
 	std::unordered_map<std::string, int> m_mapNodeNameToIndex;
 	std::string RootBoneName;
 
-	std::vector<AssimpModel::AnimationClip> m_Animations;
+	
 };
 
 

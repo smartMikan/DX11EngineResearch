@@ -126,7 +126,7 @@ XMFLOAT3 Transform::GetRotation()
 
 XMMATRIX Transform::GetRotationMatrix()
 {
-	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y + 180.0f), XMConvertToRadians(rotation.z));
+	return XMMatrixRotationRollPitchYaw(XMConvertToRadians(rotation.x), XMConvertToRadians(rotation.y), XMConvertToRadians(rotation.z));
 }
 
 
@@ -140,6 +140,11 @@ void Transform::GetRotation(float& y)
 float Transform::GetRotationY()
 {
 	return rotation.y;
+}
+
+float Transform::GetRotationYRaid()
+{
+	return rotation.y * (XM_PI / 180.0f);
 }
 
 void Transform::GetScale(float& x, float& y, float& z)
@@ -203,8 +208,8 @@ void Transform::MoveForward(bool keydown)
 	radians = rotation.y * 0.0174532925f;
 
 	// Update the position.
-	positon.pos3D.x += sinf(radians) * m_forwardSpeed;
-	positon.pos3D.z += cosf(radians) * m_forwardSpeed;
+	positon.pos3D.x -= sinf(radians) * m_forwardSpeed;
+	positon.pos3D.z -= cosf(radians) * m_forwardSpeed;
 
 	return;
 }
@@ -239,8 +244,8 @@ void Transform::MoveBackward(bool keydown)
 	radians = rotation.y * 0.0174532925f;
 
 	// Update the position.
-	positon.pos3D.x -= sinf(radians) * m_backwardSpeed;
-	positon.pos3D.z -= cosf(radians) * m_backwardSpeed;
+	positon.pos3D.x += sinf(radians) * m_backwardSpeed;
+	positon.pos3D.z += cosf(radians) * m_backwardSpeed;
 
 	return;
 }
@@ -364,7 +369,7 @@ void Transform::TurnRight(bool keydown)
 
 double Transform::TurnRight(double speed)
 {
-	double deltaY = speed * m_frameTime * 0.001;
+	double deltaY = speed * m_frameTime * 0.015;
 	rotation.y += deltaY;
 	if (rotation.y > 360.0f) {
 		rotation.y -= 360.0f;

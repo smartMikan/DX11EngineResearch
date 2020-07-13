@@ -102,7 +102,7 @@ namespace AssimpModel {
 		return InterpolateScaleKeyFrame(keyframes[prev_key_frame], keyframes[next_key_frame], timePos);
 	}
 
-	DirectX::XMMATRIX AnimationChannel::GetChannelKeyFrameSample(float timePos) const
+	DirectX::XMMATRIX BoneChannel::GetChannelKeyFrameSample(float timePos) const
 	{
 		if (timePos < last_timepos)
 		{
@@ -110,7 +110,7 @@ namespace AssimpModel {
 		}
 		last_timepos = timePos;
 
-		// No channels case
+		// No bonechannels case
 		if (position_keyframes.empty() || rotation_keyframes.empty() || rotation_keyframes.empty())
 		{
 			assert(position_keyframes.empty() && rotation_keyframes.empty() && rotation_keyframes.empty(), "no keyframe type provided");
@@ -125,7 +125,7 @@ namespace AssimpModel {
 			DirectX::XMMatrixTranslation(interp_pos.x, interp_pos.y, interp_pos.z);
 	}
 
-	void AnimationChannel::ResetCache() const
+	void BoneChannel::ResetCache() const
 	{
 		last_pos_index = 0;
 		last_rot_index = 0;
@@ -152,14 +152,14 @@ namespace AssimpModel {
 
 		//QueryPerformanceCounter(&t1);
 
-		for (const AnimationChannel& channel : channels)
+		for (const BoneChannel& boneChannel : bonechannels)
 		{
-			node_localtransforms[channel.node_index] = channel.GetChannelKeyFrameSample(timePos);
+			node_localtransforms[boneChannel.node_index] = boneChannel.GetChannelKeyFrameSample(timePos);
 		}
 		
-		/*for (int i = 0,ie = channels.size();i<ie;i++)
+		/*for (int i = 0,ie = bonechannels.size();i<ie;i++)
 		{
-			node_localtransforms[channels[i].node_index] = channels[i].GetChannelKeyFrameSample(timePos);
+			node_localtransforms[bonechannels[i].node_index] = bonechannels[i].GetChannelKeyFrameSample(timePos);
 		}*/
 		//QueryPerformanceCounter(&t2);
 		//time = (double)(t2.QuadPart - t1.QuadPart) / (double)tc.QuadPart;
@@ -170,6 +170,11 @@ namespace AssimpModel {
 
 
 		return node_localtransforms;
+	}
+
+	void Animator::SetBufferPointer(ConstantBuffer<ConstantBuffer_Bones>* boneConstantBuffer)
+	{
+		m_BoneConstantBuffer = boneConstantBuffer;
 	}
 
 	void Animator::Bind(ID3D11DeviceContext* deviceContext)
@@ -196,7 +201,7 @@ namespace AssimpModel {
 
 	void Animator::AddAnim(AnimationClip& anim)
 	{
-		m_Animations.push_back(anim);
+		m_Animations.emplace_back(anim);
 	}
 
 	void Animator::GetPoseOffsetTransforms(DirectX::XMMATRIX* out, const AnimationClip& animation, float timePos) const

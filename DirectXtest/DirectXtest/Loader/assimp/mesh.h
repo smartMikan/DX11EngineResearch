@@ -96,7 +96,7 @@ extern "C" {
 #endif // !! AI_MAX_NUMBER_OF_COLOR_SETS
 
 /** @def AI_MAX_NUMBER_OF_TEXTURECOORDS
- *  Supported number of texture coord sets (UV(W) channels) per mesh */
+ *  Supported number of texture coord sets (UV(W) bonechannels) per mesh */
 
 #ifndef AI_MAX_NUMBER_OF_TEXTURECOORDS
 #   define AI_MAX_NUMBER_OF_TEXTURECOORDS 0x8
@@ -542,7 +542,7 @@ enum aiMorphingMethod
 * It usually consists of a number of vertices and a series of primitives/faces
 * referencing the vertices. In addition there might be a series of bones, each
 * of them addressing a number of vertices with a certain weight. Vertex data
-* is presented in channels with each channel containing a single per-vertex
+* is presented in bonechannels with each channel containing a single per-vertex
 * information such as a set of texture coords or a normal vector.
 * If a data pointer is non-null, the corresponding data stream is present.
 * From C++-programs you can also use the comfort functions Has*() to
@@ -634,14 +634,14 @@ struct aiMesh
     */
     C_STRUCT aiColor4D* mColors[AI_MAX_NUMBER_OF_COLOR_SETS];
 
-    /** Vertex texture coords, also known as UV channels.
+    /** Vertex texture coords, also known as UV bonechannels.
     * A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per
     * vertex. NULL if not present. The array is mNumVertices in size.
     */
     C_STRUCT aiVector3D* mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 
     /** Specifies the number of components for a given UV channel.
-    * Up to three channels are supported (UVW, for accessing volume
+    * Up to three bonechannels are supported (UVW, for accessing volume
     * or cube maps). If the value is 2 for a given channel n, the
     * component p.z of mTextureCoords[n][p] is set to 0.0f.
     * If the value is 1 for a given channel, p.y is set to 0.0f, too.
@@ -805,7 +805,7 @@ struct aiMesh
             return mTextureCoords[pIndex] != NULL && mNumVertices > 0;
     }
 
-    //! Get the number of UV channels the mesh contains
+    //! Get the number of UV bonechannels the mesh contains
     unsigned int GetNumUVChannels() const
     {
         unsigned int n = 0;
@@ -813,7 +813,7 @@ struct aiMesh
         return n;
     }
 
-    //! Get the number of vertex color channels the mesh contains
+    //! Get the number of vertex color bonechannels the mesh contains
     unsigned int GetNumColorChannels() const
     {
         unsigned int n = 0;

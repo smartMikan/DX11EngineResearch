@@ -63,7 +63,7 @@ namespace AssimpModel
 	using ScaleKeyFrame = KeyFrame<DirectX::XMFLOAT3>;   // Value is scale in bone space
 
 
-	class AnimationChannel
+	class BoneChannel
 	{
 	public:
 		//Get boneTrans of given time pos
@@ -73,7 +73,7 @@ namespace AssimpModel
 		std::vector<RotationKeyFrame> rotation_keyframes;
 		std::vector<ScaleKeyFrame> scale_keyframes;
 		int node_index;
-		std::string channel_name;
+		std::string bone_name;
 
 	private:
 		void ResetCache() const;
@@ -89,8 +89,8 @@ namespace AssimpModel
 	struct AnimationClip 
 	{
 		std::string name;
-		std::vector<AnimationChannel> channels;
-		AnimationChannel rootChannel;
+		std::vector<BoneChannel> bonechannels;
+		BoneChannel rootBoneChannel;
 		float duration;
 
 		//Get all bone trans at specific timepos
@@ -109,7 +109,8 @@ namespace AssimpModel
 			m_BoneConstantBuffer(boneConstantBuffer)
 		{}
 
-
+		void SetBufferPointer(ConstantBuffer<ConstantBuffer_Bones>* boneConstantBuffer);
+		void SetBones(std::vector<BoneNode> avator, std::vector<BoneData> bones) { m_AllNodeAvator = std::move(avator); m_Bones = std::move(bones); }
 
 
 		void Bind(ID3D11DeviceContext* deviceContext);
@@ -144,14 +145,14 @@ namespace AssimpModel
 
 	};
 
-	struct AnimationNameAndChannel
+	struct AnimationNameAndBoneChannel
 	{
-		AnimationNameAndChannel(const std::string& name, size_t channelIndex) :
-			name(name),
+		AnimationNameAndBoneChannel(const std::string& bonename, size_t channelIndex) :
+			m_bonename(bonename),
 			index(channelIndex)
 		{}
 
-		std::string name;
+		std::string m_bonename;
 		size_t index;
 
 	};
@@ -164,36 +165,36 @@ namespace AssimpModel
 			m_Animator(animator)
 		{}
 
-		void AddChannel(const std::string& nodeName, size_t channelIndex) 
+		void AddBoneChannel(const std::string& nodeName, size_t channelIndex) 
 		{
-			m_Channels.emplace_back(nodeName, channelIndex);
+			m_BoneChannels.emplace_back(nodeName, channelIndex);
 		}
 
 
-		const AnimationChannel* GetChannel(const std::string& name)
+		const BoneChannel* GetChannelByBoneName(const std::string& bonename)
 		{
-			for (const AnimationNameAndChannel& channel : m_Channels)
+			for (const AnimationNameAndBoneChannel& channel : m_BoneChannels)
 			{
-				if (channel.name == name) 
+				if (channel.m_bonename == bonename)
 				{
 					const AnimationClip& currentAnim = m_Animator->GetCurrentAnimation();
-					return &currentAnim.channels[channel.index];
+					return &currentAnim.bonechannels[channel.index];
 				}
 			}
 			return nullptr;
 		}
 
 
-		const AnimationChannel* GetCurrentChannel() 
+		const BoneChannel* GetCurrentBoneChannel() 
 		{
 			const AnimationClip& currentAnim = m_Animator->GetCurrentAnimation();
-			return GetChannel(currentAnim.channels[0].channel_name);
+			return GetChannelByBoneName(currentAnim.bonechannels[0].bone_name);
 		}
 
 
 		DirectX::XMMATRIX GetSample()
 		{
-			const AnimationChannel* channel = GetCurrentChannel();
+			const BoneChannel* channel = GetCurrentBoneChannel();
 			float timepos = m_Animator->GetTimePos();
 			return channel->GetChannelKeyFrameSample(timepos);
 		}
@@ -208,7 +209,7 @@ namespace AssimpModel
 	private:
 		
 
-		std::vector<AnimationNameAndChannel> m_Channels;
+		std::vector<AnimationNameAndBoneChannel> m_BoneChannels;
 		Animator* m_Animator;
 	};
 
