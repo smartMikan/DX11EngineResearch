@@ -1,7 +1,8 @@
 #pragma once
 #include "./Engine/GameObjectClass.h"
+#include "Utility/RandomHelper.h"
 
-const int MAX_ENEMY = 100;
+//const int MAX_ENEMY = 100;
 const bool DRAW_BAKED = true;
 
 
@@ -18,7 +19,7 @@ typedef struct EnemyInstancesData
 	EnemyState m_state = idle;
 	float m_TimePos = 0.0f;
 
-	//
+	//temp ai
 	float targetPosition[3] = { 0.0f,0.0f,0.0f };
 	//
 	int m_InstanceID;
@@ -78,7 +79,7 @@ typedef struct EnemyInstancesData
 		m_TimePos = timepos;
 	}
 
-	EnemyInstancesData(int instanceID, float pos[3], EnemyState state = idle, float timepos = 0.0f,int animnum = 0)
+	EnemyInstancesData(int instanceID, float pos[3], EnemyState state = idle, float timepos = 0.0f, int animnum = 0)
 	{
 
 		m_state = state;
@@ -94,6 +95,9 @@ typedef struct EnemyInstancesData
 		m_Animnum = animnum;
 	}
 
+	void UpdateTime(float time) {
+		m_TimePos += time;
+	}
 
 	void SwitchState(EnemyState state) {
 		m_state = state;
@@ -131,11 +135,12 @@ typedef struct EnemyInstancesData
 	}
 
 
+	///temp ai
+	///
 	void AddRandomOffset()
 	{
-		srand(time(NULL));
-		targetPosition[0] = m_Position[0] + ((rand() % 20) - 10);
-		targetPosition[2] = m_Position[2] + ((rand() % 20) - 10);
+		targetPosition[0] = m_Position[0] + (Utility::GetRandom(-20, 20));
+		targetPosition[2] = m_Position[2] + (Utility::GetRandom(-20, 20));
 	}
 
 	void MoveToRandomPoint(float frametime)
@@ -146,9 +151,7 @@ typedef struct EnemyInstancesData
 		}
 	}
 
-	void UpdateTime(float time) {
-		m_TimePos += time;
-	}
+	
 
 }EnemyInst;
 

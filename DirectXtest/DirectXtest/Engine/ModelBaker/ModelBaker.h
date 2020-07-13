@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include"../../Graphic/AssimpSkinnedData.h"
 const int BAKE_FPS = 30;
 const std::string MyAnimFileExtension = ".anim";

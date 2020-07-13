@@ -4,7 +4,6 @@
 #include "Transform.h"
 #include "../Graphic/Model.h"
 #include "Timer.h"
-#include "Component.h"
 #include "Animator/BakedAnimator.h"
 
 class GameObjectClass

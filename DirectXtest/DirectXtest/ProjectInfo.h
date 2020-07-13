@@ -1,7 +1,43 @@
 ﻿#pragma once
-//参考:http://rastertek.com/dx11s2tut02.html
+
 //説明(Description):
 /*骨組み(Framework):
+
+//予定:
+
+
+//			WinMain
+				|
+				|
+			Engine<----------------<Utility,StringHelper,ipch,Com,DebugHelper,Timer
+				|<-----ImGUI
+		________|______________________________________________________________________________________________________________________________________________________________
+		|				|				|					  							|											|											ResourceManager
+	Graphic			 Input			  Sound	    									Scene											Model<<<<<AssimpLoader,originalloader
+		|<-----FrameRender()															|<------FrameUpdate()						|
+	____|____________________________________________________________					|					________________________|______________________________________________
+	|					|								|			Renderqueue			|			Mesh<<<<VertexType,VertexBuffer,IndexBUffer			Material		Bone	Animation	
+	D3D				BuiltInShader<<<ConstBufferType		Effects			|				|			Texture,Color			      |
+	|					|											MeshRenderer		|										  |
+	|				VertexShader,PixelShader(2D,3D)										|										  |
+	RenderState																			|									      |
+																						|									      |
+																						l									      |
+																					Component<<<<<<Transform    		          |
+																			____________|________________					      |
+																		Camera						GameObject<<Update()	      |
+																										|					      |
+																							____________|___________		      |
+																						2DObjct					3DObject<------
+
+																						
+*/
+
+/*
+
+初期案:
+//参考:http://rastertek.com/dx11s2tut02.html
+
 							WinMain
 							   |
 							   |
@@ -27,8 +63,8 @@
 
 
 Terrain:
-																																																													 
-																																									
+
+
 							WinMain
 							   |
 							   |
@@ -38,56 +74,23 @@ Terrain:
 						ApplicationClass
 							   |
 				  _____________|____________________________________________________________________________________________________________________________________
-				 |					 |							|							|						|						|						|								
-				 |					 |							|							|						|						|						|								
+				 |					 |							|							|						|						|						|
+				 |					 |							|							|						|						|						|
 			InputClass			ZoneClass			         SoundClass					FPSClass				CPUClass				TimerClass				D3DClass  ShaderManagerClass---------------------------------->ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass	...
 									 |
 		  ___________________________|__________________________________________________________________________
 		  |				|		        |                  |						         |					|
 	 CameraClass    Transform	  TerrainClass		UserInterfaceClass	          LightClass			ParticleSystemClass
-|															|				       
+|															|
 |													 _______|_______
-                                 					 |			   |
-												  	 |			   |	
+													 |			   |
+													 |			   |
 												FontClass	FontShaderClass
 													 |
 													 |
 												TextureClass
 
-														
-
-
-
-//予定:
-
-
-//			WinMain
-				|
-				|
-			Engine<----------------<Utility,StringHelper,ipch,Com,DebugHelper
-				|<-----ImGUI
-		________|______________________________________________________________________________________________________________________________________________________________
-		|				|				|					  |							|										|											ResourceManager
-	Graphic			 Input			  Sound	    			Timer					  Scene									Model<<<<<AssimpLoader
-		|<-----FrameRender()															|<------FrameUpdate()					|
-	____|____________________________________________________________					|				________________________|______________________________________________
-	|					|								|			Renderqueue			|		Mesh<<<<VertexType,VertexBuffer,IndexBUffer			Material		Bone	Animation	
-	D3D				BuiltInShader<<<ConstBufferType		Effects			|				|		Texture,Color			      |
-	|					|											MeshRenderer		|									  |
-	|				VertexShader,PixelShader(2D,3D)										|								      |
-	RenderState																			|									  |
-																						|									  |
-																						l									  |
-																					Object<<<<<<Transform<<<<<<Component	      |
-																			____________|________________					  |
-																		Camera						GameObject<<Update()	  |
-																										|					  |
-																							____________|___________		  |
-																						2DObjct					3DObject<------
-
-																						
 */
-
 
 
 //2D:

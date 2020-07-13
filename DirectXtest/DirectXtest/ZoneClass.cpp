@@ -733,6 +733,11 @@ bool ZoneClass::CreateEnemyAtPositon(float pos[3])
 	return true;
 }
 
+/// <summary>
+/// InGui§À π§¶
+/// </summary>
+/// <param name="enemyID"></param>
+/// <returns></returns>
 bool ZoneClass::RemoveEnemyFromRender(int enemyID)
 {
 	return m_enemies->RemoveFromRender(enemyID);
@@ -794,10 +799,10 @@ void ZoneClass::HandleMovementInput(InputClass* Input, int fps)
 
 	
 
-	////Sync the model rotation with camera
-	//if (!m_Player->isCyclone) {
-	//	m_Player->m_Transform.SetRotation(0, rotY + 180, 0);
-	//}
+	//Sync the model rotation with camera
+	if (!m_Player->isCyclone) {
+		m_Player->m_Transform.SetRotation(0, m_Camera->m_transform.GetRotationY() + 180, 0);
+	}
 
 	//if is Directionlight set lightpos with camera pos
 	//TODO: smarter global directional shadowmap

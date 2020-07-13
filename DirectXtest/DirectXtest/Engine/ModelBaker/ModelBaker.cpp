@@ -46,7 +46,7 @@ bool AnimationBaker::ReadBakedFile(BakedAnimationClip& outputAddress, std::strin
 		for (size_t j = 0; j < AnimClip.bonesize; j++)
 		{
 			XMFLOAT4X4 matrix;
-			
+
 			for (size_t k = 0; k < 4; k++)
 			{
 				for (size_t l = 0; l < 4; l++)

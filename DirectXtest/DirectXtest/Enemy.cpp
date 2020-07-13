@@ -1,5 +1,6 @@
 #include "Enemy.h"
 
+
 Enemy::Enemy(GameObjectClass* obj)
 {
 	m_instobj = obj;
