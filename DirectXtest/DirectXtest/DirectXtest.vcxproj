@@ -241,7 +241,6 @@
     <ClCompile Include="Graphic\Texture.cpp" />
     <ClCompile Include="Graphic\Renderer\RendererBase.cpp" />
     <ClCompile Include="Graphic\ShaderManager.cpp" />
-    <ClCompile Include="Engine\Core\Object.cpp" />
     <ClCompile Include="Engine\ModelBaker\ModelBaker.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
