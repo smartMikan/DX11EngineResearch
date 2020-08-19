@@ -1,5 +1,5 @@
 #include "Enemy.h"
-
+#include "Utility/RandomHelper.h"
 
 Enemy::Enemy(GameObjectClass* obj)
 {
@@ -136,5 +136,11 @@ void Enemy::SetInstanceAnim(int instID, int animnum)
 	m_instances[instID].m_Animnum = animnum;
 }
 
+///temp ai
+///
 
-
+inline void EnemyInstancesData::AddRandomOffset()
+{
+	targetPosition[0] = m_Position[0] + (Utility::GetRandom(-20, 20));
+	targetPosition[2] = m_Position[2] + (Utility::GetRandom(-20, 20));
+}

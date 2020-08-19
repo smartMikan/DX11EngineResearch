@@ -2,22 +2,8 @@
 
 #include"../../Graphic/AssimpSkinnedData.h"
 const int BAKE_FPS = 30;
-const std::string MyAnimFileExtension = ".anim";
+const std::wstring MyAnimFileExtension = L".anim";
 
-#ifdef _DEBUG // Debug Mode
-#ifdef _WIN64 // x64
-const std::string bakedmodelfolder = "..\\x64\\Debug\\BakedModels\\";
-#else	// x86
-const std::string bakedmodelfolder = "..\\Debug\\BakedModels\\";
-
-#endif
-#else	// Release Mode
-#ifdef _WIN64
-const std::string bakedmodelfolder = "..\\x64\\Release\\BakedModels\\";
-#else	// x86
-const std::string bakedmodelfolder = "..\\Release\\BakedModels\\";
-#endif
-#endif
 
 using namespace DirectX;
 
@@ -46,7 +32,7 @@ public:
 	AnimationBaker();
 	~AnimationBaker();
 
-	bool ReadBakedFile(BakedAnimationClip& outputAddress, std::string filename);
-	bool BakeAnim(AssimpModel::Animator* animator, const AssimpModel::AnimationClip& animation, std::string outputfilename);
+	bool ReadBakedFile(BakedAnimationClip& outputAddress, std::wstring filename);
+	bool BakeAnim(AssimpModel::Animator* animator, const AssimpModel::AnimationClip& animation, std::wstring outputfilename);
 
 };

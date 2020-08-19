@@ -1,6 +1,6 @@
 #pragma once
 #include "./Engine/GameObjectClass.h"
-#include "Utility/RandomHelper.h"
+
 
 //const int MAX_ENEMY = 100;
 const bool DRAW_BAKED = true;
@@ -137,11 +137,7 @@ typedef struct EnemyInstancesData
 
 	///temp ai
 	///
-	void AddRandomOffset()
-	{
-		targetPosition[0] = m_Position[0] + (Utility::GetRandom(-20, 20));
-		targetPosition[2] = m_Position[2] + (Utility::GetRandom(-20, 20));
-	}
+	void AddRandomOffset();
 
 	void MoveToRandomPoint(float frametime)
 	{

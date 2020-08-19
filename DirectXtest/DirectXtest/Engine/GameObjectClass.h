@@ -21,7 +21,7 @@ public:
 
 
 	bool InitBakedAnim(ConstantBuffer<ConstantBuffer_BakedBones>& cbufBones);
-	bool LoadBakedAnim(const std::string& filename);
+	bool LoadBakedAnim(const std::wstring& filename);
 	int GetBakedAnimCount();
 
 

@@ -16,7 +16,7 @@ int BakedAnimator::Bind(ID3D11DeviceContext* deviceContext, int animnum, double 
 	return curnnetindex;
 }
 
-bool BakedAnimator::LoadAnimFromFile(std::string filename)
+bool BakedAnimator::LoadAnimFromFile(std::wstring filename)
 {
 	AnimationBaker baker;
 

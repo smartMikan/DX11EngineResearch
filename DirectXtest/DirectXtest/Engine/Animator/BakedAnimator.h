@@ -16,7 +16,7 @@ public:
 	int Bind(ID3D11DeviceContext* deviceContext, int animnum, double timepos);
 
 
-	bool LoadAnimFromFile(std::string filename);
+	bool LoadAnimFromFile(std::wstring filename);
 
 	float GetAnimDuration(int animindex);
 

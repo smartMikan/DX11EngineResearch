@@ -20,8 +20,26 @@ AnimationBaker::~AnimationBaker()
 {
 }
 
-bool AnimationBaker::ReadBakedFile(BakedAnimationClip& outputAddress, std::string filename)
+bool AnimationBaker::ReadBakedFile(BakedAnimationClip& outputAddress, std::wstring filename)
 {
+	std::wstring bakedmodelfolder = L"BakedModels/";
+	if (IsDebuggerPresent())
+	{
+#ifdef _DEBUG // Debug Mode
+#ifdef _WIN64 // x64
+		bakedmodelfolder = L"../x64/Debug/BakedModels/";
+#else	// x86
+		bakedmodelfolder = L"../Debug/BakedModels/";
+
+#endif
+#else	// Release Mode
+#ifdef _WIN64
+		bakedmodelfolder = L"../x64/Release/BakedModels/";
+#else	// x86
+		bakedmodelfolder = L"../Release/BakedModels/";
+#endif
+#endif
+	}
 	BakedAnimationClip AnimClip;
 
 
@@ -29,7 +47,7 @@ bool AnimationBaker::ReadBakedFile(BakedAnimationClip& outputAddress, std::strin
 
 	if (!inputfile.is_open())
 	{
-		ErrorLoger::Log("File Doesn't exist");
+		ErrorLoger::Log(L"File Doesn't exist" + bakedmodelfolder + filename);
 		return false;
 	}
 
@@ -66,9 +84,27 @@ bool AnimationBaker::ReadBakedFile(BakedAnimationClip& outputAddress, std::strin
 	return true;
 }
 
-bool AnimationBaker::BakeAnim(AssimpModel::Animator* animator, const AssimpModel::AnimationClip& animation, std::string outputfilename)
+bool AnimationBaker::BakeAnim(AssimpModel::Animator* animator, const AssimpModel::AnimationClip& animation, std::wstring outputfilename)
 {
+	std::wstring bakedmodelfolder = L"BakedModels/";
 
+	if (IsDebuggerPresent())
+	{
+#ifdef _DEBUG // Debug Mode
+#ifdef _WIN64 // x64
+		bakedmodelfolder = L"../x64/Debug/BakedModels/";
+#else	// x86
+		bakedmodelfolder = L"../Debug/BakedModels/";
+
+#endif
+#else	// Release Mode
+#ifdef _WIN64
+		bakedmodelfolder = L"../x64/Release/BakedModels/";
+#else	// x86
+		bakedmodelfolder = L"../Release/BakedModels/";
+#endif
+#endif
+	}
 	BakedAnimationClip outputclip;
 
 	outputclip.bonesize = animator->GetBoneSize();

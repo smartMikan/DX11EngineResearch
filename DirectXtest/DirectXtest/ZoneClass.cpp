@@ -470,7 +470,7 @@ int ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int sc
 
 		for (size_t i = 0; i < m_AnimModel->GetAnimCount(); i++)
 		{
-			baker.BakeAnim(m_AnimModel->GetAnimator(), m_AnimModel->GetAnimator()->GetAnimation(i), "mAnim" + to_string(i));
+			baker.BakeAnim(m_AnimModel->GetAnimator(), m_AnimModel->GetAnimator()->GetAnimation(i), L"mAnim" + to_wstring(i));
 		}
 
 		return 2;
@@ -479,7 +479,7 @@ int ZoneClass::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int sc
 	m_AnimModel->InitBakedAnim(cb_baked_bones);
 	for (size_t i = 0; i < m_AnimModel->GetAnimCount(); i++)
 	{
-		result = m_AnimModel->LoadBakedAnim("manim" + to_string(i) + ".anim");
+		result = m_AnimModel->LoadBakedAnim(L"mAnim" + to_wstring(i) + L".anim");
 		if (!result)
 		{
 			MessageBoxW(hwnd, L"Failed to load animation", L"Error", MB_OK);
@@ -783,7 +783,7 @@ void ZoneClass::HandleMovementInput(InputClass* Input, int fps)
 
 	//Player Input
 	bool keyDown;
-	float posX, posY, posZ, rotX, rotY, rotZ;
+	//float posX, posY, posZ, rotX, rotY, rotZ;
 	XMFLOAT3 orbitposition = m_Player->m_Transform.GetPosition();
 
 	// Handle player input.

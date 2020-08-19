@@ -73,7 +73,7 @@ bool GameObjectClass::InitBakedAnim(ConstantBuffer<ConstantBuffer_BakedBones>& c
 	return true;
 }
 
-bool GameObjectClass::LoadBakedAnim(const std::string& filename)
+bool GameObjectClass::LoadBakedAnim(const std::wstring& filename)
 {
 
 	return m_baked_Animator.LoadAnimFromFile(filename);

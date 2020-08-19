@@ -7,6 +7,12 @@ void ErrorLoger::Log(std::string message)
 	MessageBoxA(NULL, error_message.c_str(), "Error", MB_ICONERROR);
 }
 
+void ErrorLoger::Log(std::wstring message)
+{
+	std::wstring error_message = L"Error: " + message + L"\n";
+	MessageBoxW(NULL, error_message.c_str(), L"Error", MB_ICONERROR);
+}
+
 void ErrorLoger::Log(HRESULT hr, std::string message)
 {
 	_com_error error(hr);
