@@ -1,5 +1,18 @@
 #include "applicationclass.h"
 
+#include "inputclass.h"
+#include "timerclass.h"
+#include "fpsclass.h"
+#include "cpuclass.h"
+#include "soundclass.h"
+#include "d3dclass.h"
+
+
+#include "../Graphic/RasterTekObjects/ShaderManagerClass.h"
+#include "../Graphic/texturemanagerclass.h"
+#include "../MainGame.h"
+
+
 ApplicationClass::ApplicationClass()
 {
 	m_Input = 0;
@@ -97,6 +110,19 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, bool fullscree
 	}
 
 
+	//Initialize Sound
+	m_Sound = new SoundClass();
+	if (!m_Sound) {
+		return false;
+	}
+	result = m_Sound->Initialize(hwnd);
+	if (!result)
+	{
+		MessageBoxW(hwnd, L"Could not initialize Sound Object.", L"Error", MB_OK);
+		return false;
+	}
+
+
 	//Initialize shader manager.
 	m_ShaderManager = new ShaderManagerClass;
 	if (!m_ShaderManager)
@@ -111,8 +137,6 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, bool fullscree
 		MessageBoxW(hwnd, L"Could not initialize the shader manager object.", L"Error", MB_OK);
 		return false;
 	}
-
-
 
 	//Initialize texture manager.
 	m_TextureManager = new TextureManagerClass;
@@ -143,20 +167,6 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, bool fullscree
 		return false;
 	}
 
-
-	//Initialize Sound
-	m_Sound = new SoundClass();
-	if (!m_Sound) {
-		return false;
-	}
-	result = m_Sound->Initialize(hwnd);
-	if (!result)
-	{
-		MessageBoxW(hwnd, L"Could not initialize Sound Object.", L"Error", MB_OK);
-		return false;
-	}
-
-
 	//Initialize Main Game.
 	m_Game = new MainGame;
 	if (!m_Game)
@@ -182,6 +192,9 @@ bool ApplicationClass::Initialize(HINSTANCE hinstance, HWND hwnd, bool fullscree
 	default:
 		break;
 	}
+
+	
+
 
 	//Initialize ImGui
 	m_ImGui = new ImGuiClass();

@@ -10,7 +10,7 @@ public:
 
     void Frame(float frametime);
 
-    bool HandleInput(InputClass* Input, Transform* orbitTrans);
+    bool HandleInput(class InputClass* Input, Transform* orbitTrans);
 
     void Round(float speed);
 

@@ -1,6 +1,5 @@
 #pragma once
 #include <list>
-#include "inputclass.h"
 #include "Transform.h"
 #include "../Graphic/Model.h"
 #include "Timer.h"

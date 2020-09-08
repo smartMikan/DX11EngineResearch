@@ -123,7 +123,7 @@ int MainGame::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scr
 	}
 
 	// Initialize the sky dome object.
-	result = m_SkyDome->Initialize(Direct3D->GetDevice());
+	result = m_SkyDome->Initialize(device.Get());
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sky dome object.", L"Error", MB_OK);
@@ -138,7 +138,7 @@ int MainGame::Initialize(D3DClass* Direct3D, HWND hwnd, int screenWidth, int scr
 	}
 
 	// Initialize the sky dome object.
-	result = m_DayLightSkyCube->Initialize(Direct3D->GetDevice(), Direct3D->GetDeviceContext(), L"./Resources/Texture/daylight.jpg");
+	result = m_DayLightSkyCube->Initialize(device.Get(), deviceContext.Get(), L"./Resources/Texture/daylight.jpg");
 	if (!result)
 	{
 		MessageBoxW(hwnd, L"Could not initialize the sky cube object.", L"Error", MB_OK);

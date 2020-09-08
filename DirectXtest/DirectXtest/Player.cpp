@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include "Engine/inputclass.h"
 
 
 Player::Player(MainGame* game):GameObject(game)

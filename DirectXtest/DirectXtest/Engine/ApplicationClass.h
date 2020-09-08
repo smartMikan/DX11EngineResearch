@@ -10,16 +10,6 @@ const float SCREEN_NEAR = 0.1f;
 #include <stdio.h>
 #include <unordered_map>
 
-#include "inputclass.h"
-#include "timerclass.h"
-#include "fpsclass.h"
-#include "cpuclass.h"
-#include "soundclass.h"
-#include "d3dclass.h"
-
-#include "../Graphic/RasterTekObjects/ShaderManagerClass.h"
-#include "../Graphic/texturemanagerclass.h"
-#include "../MainGame.h"
 #include "../ImGuiClass.h"
 
 /// <summary>
@@ -39,19 +29,20 @@ public:
 
 private:
 	//Game logic
-	MainGame* m_Game;
+	class MainGame* m_Game;
 
 	//hardware
-	InputClass * m_Input;
-	D3DClass* m_Direct3D;
-	TimerClass* m_Timer;
-	FpsClass* m_Fps;
-	CpuClass* m_Cpu;
+	class InputClass * m_Input;
+	class TimerClass* m_Timer;
+	class FpsClass* m_Fps;
+	class CpuClass* m_Cpu;
+
+	class D3DClass* m_Direct3D;
 
 	//resource
-	SoundClass* m_Sound;
-	ShaderManagerClass* m_ShaderManager;
-	TextureManagerClass* m_TextureManager;
+	class SoundClass* m_Sound;
+	class ShaderManagerClass* m_ShaderManager;
+	class TextureManagerClass* m_TextureManager;
 
 	//extern
 	ImGuiClass* m_ImGui;
