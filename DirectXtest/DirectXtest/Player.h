@@ -1,8 +1,11 @@
 #pragma once
 #include "Engine/GameObjectClass.h"
-class Player : public GameObjectClass
+class Player : public GameObject
 {
 public:
+    Player(class MainGame* game);
+
+
     bool InitialAnimations(ConstantBuffer<ConstantBuffer_Bones>& cb_Bones);
 
     void Frame(float frametime);

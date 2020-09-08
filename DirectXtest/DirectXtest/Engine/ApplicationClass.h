@@ -1,10 +1,6 @@
 #pragma once
 
-#ifndef _APPLICATIONCLASS_H_
-#define _APPLICATIONCLASS_H_
 
-
-//const bool FULL_SCREEN = full;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -12,6 +8,7 @@ const float SCREEN_NEAR = 0.1f;
 
 #include <fstream>
 #include <stdio.h>
+#include <unordered_map>
 
 #include "inputclass.h"
 #include "timerclass.h"
@@ -22,9 +19,12 @@ const float SCREEN_NEAR = 0.1f;
 
 #include "../Graphic/RasterTekObjects/ShaderManagerClass.h"
 #include "../Graphic/texturemanagerclass.h"
-#include "../zoneclass.h"
+#include "../MainGame.h"
 #include "../ImGuiClass.h"
 
+/// <summary>
+/// Application interface
+/// </summary>
 class ApplicationClass
 {
 public:
@@ -36,17 +36,24 @@ public:
 	void Shutdown();
 	bool Frame();
 
+
 private:
+	//Game logic
+	MainGame* m_Game;
+
+	//hardware
 	InputClass * m_Input;
 	D3DClass* m_Direct3D;
-	ShaderManagerClass* m_ShaderManager;
-	TextureManagerClass* m_TextureManager;
 	TimerClass* m_Timer;
 	FpsClass* m_Fps;
 	CpuClass* m_Cpu;
-	ZoneClass* m_Zone;
-	SoundClass* m_Sound;
-	ImGuiClass* m_ImGui;
-};
 
-#endif
+	//resource
+	SoundClass* m_Sound;
+	ShaderManagerClass* m_ShaderManager;
+	TextureManagerClass* m_TextureManager;
+
+	//extern
+	ImGuiClass* m_ImGui;
+
+};

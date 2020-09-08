@@ -84,9 +84,6 @@
     <ClCompile Include="Loader\WICTextureLoader.cpp">
       <Filter>ソース ファイル\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="ZoneClass.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Utility\ErrorLoger.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -306,6 +303,12 @@
     <ClCompile Include="Engine\Transform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\SpriteComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProjectInfo.h">
@@ -319,9 +322,6 @@
     </ClInclude>
     <ClInclude Include="Loader\WICTextureLoader.h">
       <Filter>ヘッダー ファイル\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="ZoneClass.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Utility\ErrorLoger.h">
       <Filter>Utility</Filter>
@@ -591,6 +591,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Utility\RandomHelper.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGame.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\SpriteComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

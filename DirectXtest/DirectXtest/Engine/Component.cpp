@@ -1,24 +1,22 @@
 #include "Component.h"
 
+#include"GameObjectClass.h"
 
-template<typename T>
-Component<T>::Component()
+
+Component::Component(GameObject* owner, int updateOrder)
+	:m_Owner(owner)
+	,m_UpdateOrder(updateOrder)
 {
-	
+	m_Owner->AddComponent(this);
+
 }
 
-
-template<typename T>
-Component<T>::~Component()
+Component::~Component()
 {
+	m_Owner->RemoveComponent(this);
 }
 
-template<typename T>
-void Component<T>::Frame()
+void Component::Frame(float deltatime)
 {
-	
+
 }
-
-
-
-

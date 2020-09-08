@@ -1,22 +1,36 @@
 #include "GameObjectClass.h"
+#include "../MainGame.h"
+#include "Component.h"
 
-
-GameObjectClass::GameObjectClass()
+GameObject::GameObject(MainGame* game)
+	:m_State(GActive)
+	,m_Game(game)
 {
+
 	m_Model = 0;
+
+	m_Game->AddGameobject(this);
 }
 
-GameObjectClass::GameObjectClass(const GameObjectClass& other)
+GameObject::GameObject(const GameObject& other)
 {
 
 }
 
-GameObjectClass::~GameObjectClass()
+GameObject::~GameObject()
 {
+	m_Game->RemoveGameobject(this);
+	//delete component
+	while (!m_Components.empty()) 
+	{
+		delete m_Components.back();
+	}
+
 	Shutdown();
+
 }
 
-bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
+bool GameObject::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	ConstantBuffer<CB_VS_MatrixBuffer>& wvpMatrix, ConstantBuffer<CB_PS_Material>& cb_ps_material, IVertexShader* pVertexShader)
 {
 	bool result;
@@ -38,7 +52,7 @@ bool GameObjectClass::Initialize(const std::string& filePath, ID3D11Device* devi
 	return true;
 }
 
-bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBones)
+bool GameObject::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBones)
 {
 	mAnimComp = std::make_unique<AnimationComponent>(&m_Animator);
 	
@@ -50,7 +64,7 @@ bool GameObjectClass::InitAnimation(ConstantBuffer<ConstantBuffer_Bones>& cbufBo
 	return m_Model->InitAnimation(&cbufBones, &m_Animator, mAnimComp.get());
 }
 
-bool GameObjectClass::AddAnimation(const std::string & filePath, bool disablerootTrans, bool disablerootRot, bool disablerootScale)
+bool GameObject::AddAnimation(const std::string & filePath, bool disablerootTrans, bool disablerootRot, bool disablerootScale)
 {
 	assert(mAnimComp.get() != nullptr);
 
@@ -61,32 +75,32 @@ bool GameObjectClass::AddAnimation(const std::string & filePath, bool disableroo
 	return m_Model->AddAnimation(filePath, &m_Animator, mAnimComp.get(),disablerootTrans, disablerootRot, disablerootScale);
 }
 
-int GameObjectClass::GetAnimCount()
+int GameObject::GetAnimCount()
 {
 	return m_Animator.GetNumAnimations();
 }
 
-bool GameObjectClass::InitBakedAnim(ConstantBuffer<ConstantBuffer_BakedBones>& cbufBones)
+bool GameObject::InitBakedAnim(ConstantBuffer<ConstantBuffer_BakedBones>& cbufBones)
 {
 	m_baked_Animator = BakedAnimator(&cbufBones);
 
 	return true;
 }
 
-bool GameObjectClass::LoadBakedAnim(const std::wstring& filename)
+bool GameObject::LoadBakedAnim(const std::wstring& filename)
 {
 
 	return m_baked_Animator.LoadAnimFromFile(filename);
 }
 
-int GameObjectClass::GetBakedAnimCount()
+int GameObject::GetBakedAnimCount()
 {
 	return m_baked_Animator.bakedclips.size();
 }
 
 
 
-void GameObjectClass::Shutdown()
+void GameObject::Shutdown()
 {
 	// Release the position object.
 	if (m_Model)
@@ -102,18 +116,63 @@ void GameObjectClass::Shutdown()
 
 }
 
-void GameObjectClass::Frame(float frametime)
+void GameObject::Frame(float deltatime)
 {
-	m_Transform.SetFrameTime(frametime);
+	m_Transform.SetFrameTime(deltatime);
+	if (m_State == GActive) 
+	{
+		UpdateComponents(deltatime);
+		UpdateGameObject(deltatime);
+	}
 }
 
-double GameObjectClass::Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
+void GameObject::UpdateComponents(float deltatime)
+{
+	for (auto comp : m_Components)
+	{
+		comp->Frame(deltatime);
+	}
+}
+
+void GameObject::UpdateGameObject(float deltatime)
+{
+	//virtual
+}
+
+
+
+void GameObject::AddComponent(Component* component)
+{
+	int myOrder = component->GetUpdateOrder();
+	auto iter = m_Components.begin();
+	//search for first component has higher order 
+	for (; iter!=m_Components.end();iter++)
+	{
+		if (myOrder<(*iter)->GetUpdateOrder())
+		{
+			break;
+		}
+	}
+	//insert component
+	m_Components.insert(iter, component);
+}
+
+void GameObject::RemoveComponent(Component* component)
+{
+	auto iter = std::find(m_Components.begin(), m_Components.end(), component);
+	if (iter != m_Components.end()) 
+	{
+		m_Components.erase(iter);
+	}
+}
+
+double GameObject::Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
 {	
 	return Draw(m_Transform.GetWorldMatrix(), viewMatrix, projectionMatrix,sameanim);
 }
 
 
-double GameObjectClass::RenderWithBakedAnim(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, int animnum, float& timepos)
+double GameObject::RenderWithBakedAnim(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, int animnum, float& timepos)
 {
 	double drawTime, calanimtime;
 	LARGE_INTEGER t1, t2, tc;
@@ -143,7 +202,7 @@ double GameObjectClass::RenderWithBakedAnim(const XMMATRIX& viewMatrix, const XM
 	return calanimtime + drawTime;
 }
 
-double GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
+double GameObject::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix,bool sameanim)
 {
 	double drawTime, calanimtime;
 
@@ -175,7 +234,7 @@ double GameObjectClass::Draw(const XMMATRIX & worldMatrix, const XMMATRIX & view
 	return calanimtime > drawTime ? calanimtime: drawTime;
 }
 
-void GameObjectClass::SwitchAnim(int index)
+void GameObject::SwitchAnim(int index)
 {
 	assert(index < m_Animator.GetNumAnimations(), "AnimationOverHeads!");
 	if (m_Animator.GetCurrentAnimationIndex() == index) {
@@ -187,19 +246,19 @@ void GameObjectClass::SwitchAnim(int index)
 	}
 }
 
-void GameObjectClass::StartAnim(int index)
+void GameObject::StartAnim(int index)
 {
 	SwitchAnim(index);
 	mAnimTimers[index]->Restart();
 }
 
 
-XMMATRIX GameObjectClass::GetWorldMatrix()
+XMMATRIX GameObject::GetWorldMatrix()
 {
 	return XMMatrixTranslation(m_Transform.GetPosition().x, m_Transform.GetPosition().y, m_Transform.GetPosition().z);
 }
 
-bool GameObjectClass::SetWorldMatrix(XMMATRIX world)
+bool GameObject::SetWorldMatrix(XMMATRIX world)
 {
 	XMFLOAT4X4 pos;
 	XMStoreFloat4x4(&pos, world);

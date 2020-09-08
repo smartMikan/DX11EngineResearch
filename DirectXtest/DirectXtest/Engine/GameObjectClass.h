@@ -6,12 +6,29 @@
 #include "Timer.h"
 #include "Animator/BakedAnimator.h"
 
-class GameObjectClass
+
+
+
+
+class GameObject
 {
 public:
-	GameObjectClass();
-	GameObjectClass(const GameObjectClass& other);
-	~GameObjectClass();
+	//Object State
+	enum State
+	{
+		GActive,
+		GPaused,
+		GDead
+	};
+
+
+	GameObject(class MainGame* game);
+	GameObject(const GameObject& other);
+	virtual ~GameObject();
+
+
+
+
 
 	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<CB_VS_MatrixBuffer>& wvpMatrix, ConstantBuffer<CB_PS_Material>& cb_ps_material, IVertexShader* pVertexShader);
@@ -27,7 +44,19 @@ public:
 
 	void Shutdown();
 	
-	void Frame(float frametime);
+	void Frame(float deltatime);
+	void UpdateComponents(float deltatime);
+	virtual void UpdateGameObject(float deltatime);
+	
+	State GetState() const { return m_State; };
+	void SetState(State state) { m_State = state; }
+
+	class MainGame* GetGame() { return m_Game; }
+
+	//add/remove component
+	void AddComponent(class Component* component);
+	void RemoveComponent(class Component* component);
+
 
 	double Render(const XMMATRIX & viewMatrix, const XMMATRIX & projectionMatrix, bool sameanim = false);
 	
@@ -54,6 +83,11 @@ public:
 	int m_animnum;
 
 private:
+	State m_State;
+	class MainGame* m_Game;
+
+
+	std::vector<Component*> m_Components;
 
 	ID3D11DeviceContext* deviceContext;
 	std::vector<Timer*>  mAnimTimers;

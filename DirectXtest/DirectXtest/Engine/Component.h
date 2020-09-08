@@ -1,62 +1,31 @@
 #pragma once
 
-#include <memory>
-#include <intsafe.h>
-#include <string>
+//#include <memory>
+//#include <intsafe.h>
+//#include <string>
 
-enum ComponentType
-{
-
-};
-
-
-template<typename T>
 class Component
 {
 public:
-	//Component<T>();
-	//~Component<T>();
-
-
-	//Block non-T
-	Component();
-	~Component();
-
-	bool operator==(const Component& rhs) 
-	{
-
-		if (this->m_type != rhs.m_type) 
-		{
-			return false;
-		}
-
-		if (this->m_name != rhs.m_name) 
-		{
-			return false;
-		}
-
-		if (this->uuid != rhs.uuid) 
-		{
-			return false;
-		}
-		
-		return true;
-	}
-
 	
+	Component(class GameObject* owner, int updateOrder = 100);
+	virtual ~Component();
 
-	Component<T>& operator = (const Component<T>& rhs) {
-		this->Value = rhs.Value;
+
+	Component& operator = (const Component& rhs) {
+		
 		return *this;
 	}
 	
-	T Value;
-	virtual void Frame();
+	virtual void Frame(float deltatime);
+	int GetUpdateOrder() const { return m_UpdateOrder; }
 
-private:
 
-	ComponentType m_type;
-	std::string uuid;
-	std::string m_name;
+protected:
+
+	class GameObject* m_Owner;
+	int m_UpdateOrder;
+
+	//std::string uuid;
+	//std::string m_name;
 };
-

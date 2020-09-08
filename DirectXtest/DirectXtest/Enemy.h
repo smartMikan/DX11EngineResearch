@@ -155,7 +155,7 @@ typedef struct EnemyInstancesData
 class Enemy
 {
 public:
-	Enemy(GameObjectClass* obj);
+	Enemy(GameObject* obj);
 	Enemy(const Enemy& rhs);
 	~Enemy();
 
@@ -188,7 +188,7 @@ private:
 	int EnemyCount = 0, RenderedEnemyCount = 0;
 
 	std::vector<EnemyInstancesData> m_instances;
-	GameObjectClass* m_instobj;
+	GameObject* m_instobj;
 
 };
 

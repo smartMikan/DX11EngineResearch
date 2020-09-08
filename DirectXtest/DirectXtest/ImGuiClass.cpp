@@ -32,7 +32,7 @@ void ImGuiClass::ShutDown()
 }
 
 
-bool ImGuiClass::Frame(ZoneClass* zone)
+bool ImGuiClass::Frame(MainGame* zone)
 {
 	
 

@@ -58,10 +58,17 @@ void TimerClass::Frame()
 	return;
 }
 
-//GetTime returns the most recent frame time that was calculated.
+//returns the most recent frame time that was calculated.
 
-float TimerClass::GetTime()
+float TimerClass::GetDeltaTime()
 {
 	return m_frameTime;
+}
+
+INT64 TimerClass::TimeSinceStart()
+{
+	INT64 currentTime;
+	QueryPerformanceCounter((LARGE_INTEGER*)&currentTime);
+	return currentTime;
 }
 

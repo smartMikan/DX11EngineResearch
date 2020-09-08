@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include "Utility/RandomHelper.h"
 
-Enemy::Enemy(GameObjectClass* obj)
+Enemy::Enemy(GameObject* obj)
 {
 	m_instobj = obj;
 }

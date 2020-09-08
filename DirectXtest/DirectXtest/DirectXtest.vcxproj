@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x86\debug;C:\Users\student\Documents\Dx11Test\DirectXtest\x64\Debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)DirectXtest\FBX\lib\vs2017\x86\debug;$(SolutionDir)DirectXtest\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)DirectXtest\FBX\include;$(SolutionDir)DirectXtest\Loader;$(IncludePath)</IncludePath>
@@ -243,6 +243,7 @@
     <ClCompile Include="Graphic\ShaderManager.cpp" />
     <ClCompile Include="Engine\ModelBaker\ModelBaker.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Engine\SpriteComponent.cpp" />
     <ClCompile Include="Utility\ErrorLoger.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="systemclass.cpp" />
@@ -256,7 +257,7 @@
     <ClCompile Include="Graphic\RasterTekObjects\translateshaderclass.cpp" />
     <ClCompile Include="Graphic\RasterTekObjects\transparentshaderclass.cpp" />
     <ClCompile Include="Graphic\RasterTekObjects\UserInterfaceClass.cpp" />
-    <ClCompile Include="ZoneClass.cpp" />
+    <ClCompile Include="MainGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Animator\BakedAnimator.h" />
@@ -334,6 +335,7 @@
     <ClInclude Include="Graphic\RasterTekObjects\TerrainShaderClass.h" />
     <ClInclude Include="Graphic\Texture.h" />
     <ClInclude Include="Graphic\ShaderManager.h" />
+    <ClInclude Include="Engine\SpriteComponent.h" />
     <ClInclude Include="Utility\COMException.h" />
     <ClInclude Include="Utility\ErrorLoger.h" />
     <ClInclude Include="Graphic\Light.h" />
@@ -353,7 +355,7 @@
     <ClInclude Include="Graphic\RasterTekObjects\translateshaderclass.h" />
     <ClInclude Include="Graphic\RasterTekObjects\transparentshaderclass.h" />
     <ClInclude Include="Graphic\RasterTekObjects\UserInterfaceClass.h" />
-    <ClInclude Include="ZoneClass.h" />
+    <ClInclude Include="MainGame.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphic\Shaders\PSCommon.hlsli" />

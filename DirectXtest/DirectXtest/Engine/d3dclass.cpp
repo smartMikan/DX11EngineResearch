@@ -52,14 +52,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	float screenDepth, float screenNear)
 {
 	HRESULT result;
-	IDXGIFactory* factory;
-	IDXGIAdapter* adapter;
-	IDXGIOutput* adapterOutput;
-	unsigned int numModes, i, numerator, denominator;
-	unsigned long long stringLength;
-	DXGI_MODE_DESC* displayModeList;
-	DXGI_ADAPTER_DESC adapterDesc;
-	int error;
+	unsigned int numerator, denominator;
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	D3D_FEATURE_LEVEL featureLevel;
 	ID3D11Texture2D* backBufferPtr;
@@ -75,106 +68,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Store the vsync setting.
 	m_vsync_enabled = vsync;
 
-	//Before we can initialize Direct3D we have to get the refresh rate from the video card / monitor.
-	//Each computer may be slightly different so we will need to query for that information.
-	//We query for the numeratorand denominator valuesand then pass them to DirectX during the setupand it will calculate the proper refresh rate.
-	//If we don't do this and just set the refresh rate to a default value which may not exist on all computers 
-	//then DirectX will respond by performing a blit instead of a buffer flip 
-	//which will degrade performance and give us annoying errors in the debug output.
-
-	// Create a DirectX graphics interface factory.
-	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Use the factory to create an adapter for the primary graphics interface (video card).
-	result = factory->EnumAdapters(0, &adapter);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Enumerate the primary adapter output (monitor).
-	result = adapter->EnumOutputs(0, &adapterOutput);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output (monitor).
-	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Create a list to hold all the possible display modes for this monitor/video card combination.
-	displayModeList = new DXGI_MODE_DESC[numModes];
-	if (!displayModeList)
-	{
-		return false;
-	}
-
-	// Now fill the display mode list structures.
-	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Now go through all the display modes and find the one that matches the screen width and height.
-	// When a match is found store the numerator and denominator of the refresh rate for that monitor.
-	for (i = 0; i < numModes; i++)
-	{
-		if (displayModeList[i].Width == (unsigned int)screenWidth)
-		{
-			if (displayModeList[i].Height == (unsigned int)screenHeight)
-			{
-				numerator = displayModeList[i].RefreshRate.Numerator;
-				denominator = displayModeList[i].RefreshRate.Denominator;
-			}
-		}
-	}
-	//We now have the numeratorand denominator for the refresh rate.
-	//The last thing we will retrieve using the adapter is the name of the video cardand the amount of video memory.
-	// Get the adapter (video card) description.
-
-	result = adapter->GetDesc(&adapterDesc);
-	if (FAILED(result))
-	{
-		return false;
-	}
-
-	// Store the dedicated video card memory in megabytes.
-	m_videoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
-
-	// Convert the name of the video card to a character array and store it.
-	error = wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
-	if (error != 0)
-	{
-		return false;
-	}
-
-	//Now that we have stored the numeratorand denominator for the refresh rate and the video card information 
-	//We can release the structuresand interfaces used to get that information.
-
-	// Release the display mode list.
-	delete[] displayModeList;
-	displayModeList = 0;
-
-	// Release the adapter output.
-	adapterOutput->Release();
-	adapterOutput = 0;
-
-	// Release the adapter.
-	adapter->Release();
-	adapter = 0;
-
-	// Release the factory.
-	factory->Release();
-	factory = 0;
+	GetRefreshrate(screenWidth, screenHeight, numerator, denominator);
 
 	//Now that we have the refresh rate from the system we can start the DirectX initialization.
 	//The first thing we'll do is fill out the description of the swap chain. 
@@ -979,6 +873,122 @@ void D3DClass::ResetViewport()
 
 	return;
 
+}
+
+bool D3DClass::GetRefreshrate(int screenWidth, int screenHeight,unsigned int& numerator, unsigned int& denominator)
+{
+	HRESULT result;
+	IDXGIFactory* factory;
+	IDXGIAdapter* adapter;
+	IDXGIOutput* adapterOutput;
+	unsigned int numModes, i;
+	unsigned long long stringLength;
+	DXGI_MODE_DESC* displayModeList;
+	DXGI_ADAPTER_DESC adapterDesc;
+	int error;
+
+	//Before we can initialize Direct3D we have to get the refresh rate from the video card / monitor.
+	//Each computer may be slightly different so we will need to query for that information.
+	//We query for the numeratorand denominator valuesand then pass them to DirectX during the setupand it will calculate the proper refresh rate.
+	//If we don't do this and just set the refresh rate to a default value which may not exist on all computers 
+	//then DirectX will respond by performing a blit instead of a buffer flip 
+	//which will degrade performance and give us annoying errors in the debug output.
+
+	// Create a DirectX graphics interface factory.
+	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Use the factory to create an adapter for the primary graphics interface (video card).
+	result = factory->EnumAdapters(0, &adapter);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Enumerate the primary adapter output (monitor).
+	result = adapter->EnumOutputs(0, &adapterOutput);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Get the number of modes that fit the DXGI_FORMAT_R8G8B8A8_UNORM display format for the adapter output (monitor).
+	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Create a list to hold all the possible display modes for this monitor/video card combination.
+	displayModeList = new DXGI_MODE_DESC[numModes];
+	if (!displayModeList)
+	{
+		return false;
+	}
+
+	// Now fill the display mode list structures.
+	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Now go through all the display modes and find the one that matches the screen width and height.
+	// When a match is found store the numerator and denominator of the refresh rate for that monitor.
+	for (i = 0; i < numModes; i++)
+	{
+		if (displayModeList[i].Width == (unsigned int)screenWidth)
+		{
+			if (displayModeList[i].Height == (unsigned int)screenHeight)
+			{
+				numerator = displayModeList[i].RefreshRate.Numerator;
+				denominator = displayModeList[i].RefreshRate.Denominator;
+			}
+		}
+	}
+	//We now have the numeratorand denominator for the refresh rate.
+	//The last thing we will retrieve using the adapter is the name of the video cardand the amount of video memory.
+	// Get the adapter (video card) description.
+
+	result = adapter->GetDesc(&adapterDesc);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	// Store the dedicated video card memory in megabytes.
+	m_videoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
+
+	// Convert the name of the video card to a character array and store it.
+	error = wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
+	if (error != 0)
+	{
+		return false;
+	}
+
+	//Now that we have stored the numeratorand denominator for the refresh rate and the video card information 
+	//We can release the structuresand interfaces used to get that information.
+
+	// Release the display mode list.
+	delete[] displayModeList;
+	displayModeList = 0;
+
+	// Release the adapter output.
+	adapterOutput->Release();
+	adapterOutput = 0;
+
+	// Release the adapter.
+	adapter->Release();
+	adapter = 0;
+
+	// Release the factory.
+	factory->Release();
+	factory = 0;
+
+	return true;
 }
 
 

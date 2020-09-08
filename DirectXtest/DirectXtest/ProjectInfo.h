@@ -76,7 +76,7 @@ Terrain:
 				  _____________|____________________________________________________________________________________________________________________________________
 				 |					 |							|							|						|						|						|
 				 |					 |							|							|						|						|						|
-			InputClass			ZoneClass			         SoundClass					FPSClass				CPUClass				TimerClass				D3DClass  ShaderManagerClass---------------------------------->ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass	...
+			InputClass			MainGame			         SoundClass					FPSClass				CPUClass				TimerClass				D3DClass  ShaderManagerClass---------------------------------->ColorShaderClass	   TextureShaderClass    LightShaderClass      MultiTexShaderClass		FogShaderClass	...
 									 |
 		  ___________________________|__________________________________________________________________________
 		  |				|		        |                  |						         |					|

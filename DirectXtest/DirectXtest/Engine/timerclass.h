@@ -5,17 +5,11 @@
 //In this tutorial we won't have a use for it but we will implement it in the code so you can see how to apply it to your projects.
 //The most common usage of the TimerClass is to use the frame time to figure out what percentage of a second has passed in the current frame and then move the objects by that percentage.
 
-#ifndef _TIMERCLASS_H_
-#define _TIMERCLASS_H_
-//////////////
-// INCLUDES //
-//////////////
+
 #include <windows.h>
 
 
-////////////////////////////////////////////////////////////////////////////////
 // Class name: TimerClass
-////////////////////////////////////////////////////////////////////////////////
 class TimerClass
 {
 public:
@@ -26,7 +20,8 @@ public:
 	bool Initialize();
 	void Frame();
 
-	float GetTime();
+	float GetDeltaTime();
+	INT64 TimeSinceStart();
 
 private:
 	INT64 m_frequency;
@@ -35,4 +30,3 @@ private:
 	float m_frameTime;
 };
 
-#endif

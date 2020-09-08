@@ -413,7 +413,7 @@ CODE
  - 2018/08/21 (1.63) - removed ImGuiInputTextCallbackData::ReadOnly since it is a duplication of (ImGuiInputTextCallbackData::Flags & ImGuiInputTextFlags_ReadOnly).
  - 2018/08/01 (1.63) - removed per-window ImGuiWindowFlags_ResizeFromAnySide beta flag in favor of a global io.ConfigResizeWindowsFromEdges [update 1.67 renamed to ConfigWindowsResizeFromEdges] to enable the feature.
  - 2018/08/01 (1.63) - renamed io.OptCursorBlink to io.ConfigCursorBlink [-> io.ConfigInputTextCursorBlink in 1.65], io.OptMacOSXBehaviors to ConfigMacOSXBehaviors for consistency.
- - 2018/07/22 (1.63) - changed ImGui::GetTime() return value from float to double to avoid accumulating floating point imprecisions over time.
+ - 2018/07/22 (1.63) - changed ImGui::GetDeltaTime() return value from float to double to avoid accumulating floating point imprecisions over time.
  - 2018/07/08 (1.63) - style: renamed ImGuiCol_ModalWindowDarkening to ImGuiCol_ModalWindowDimBg for consistency with other features. Kept redirection enum (will obsolete).
  - 2018/06/08 (1.62) - examples: the imgui_impl_xxx files have been split to separate platform (Win32, Glfw, SDL2, etc.) from renderer (DX11, OpenGL, Vulkan,  etc.).
                        old bindings will still work as is, however prefer using the separated bindings as they will be updated to support multi-viewports.

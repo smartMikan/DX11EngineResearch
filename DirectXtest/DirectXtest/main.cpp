@@ -1,20 +1,6 @@
 #include "systemclass.h"
 
 
-///WINAPI:WindowsOSアプリケーションインターフェース。WINAPIによって、__stdcallの呼び出し規則を実装します
-///__stdcallについいて：https://docs.microsoft.com/ja-jp/cpp/cpp/stdcall?view=vs-2019
-///						https://docs.microsoft.com/ja-jp/cpp/cpp/argument-passing-and-naming-conventions?view=vs-2019
-///中国語:https://www.cnblogs.com/yejianyong/p/7506465.html
-///英語:https://docs.microsoft.com/en-us/cpp/cpp/stdcall?view=vs-2019
-
-///HINSTANCE:Handle Instance  、クラスのインスタンスに対する"Handle"TypeのIDです、
-///WindosOSが管理されるメモリーアドレスシステムです
-///https://www.wdic.org/w/TECH/HINSTANCE
-///中:https://baike.baidu.com/item/HINSTANCE/5123010?fr=aladdin
-///英:https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
-
-////この関数はWindowsMessageLoopモデルで、"Program"をWindosシステムに生成する;
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 	SystemClass* System;

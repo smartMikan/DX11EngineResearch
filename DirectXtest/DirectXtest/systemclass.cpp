@@ -199,7 +199,7 @@ void SystemClass::InitializeWindows(int& screenWidth, int& screenHeight)
 	m_hinstance = GetModuleHandle(NULL);
 
 	// Give the application a name.
-	m_applicationName = "DX11_ENGINE_RESEARCH";
+	m_applicationName = "CrazyWizard";
 
 	// Setup the windows class with default settings.
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;

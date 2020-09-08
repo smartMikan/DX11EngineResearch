@@ -2,6 +2,10 @@
 
 
 
+Player::Player(MainGame* game):GameObject(game)
+{
+}
+
 bool Player::InitialAnimations(ConstantBuffer<ConstantBuffer_Bones>& cb_Bones)
 {
 	bool result;
@@ -61,7 +65,7 @@ bool Player::InitialAnimations(ConstantBuffer<ConstantBuffer_Bones>& cb_Bones)
 
 void Player::Frame(float frametime)
 {
-	GameObjectClass::Frame(frametime);
+	GameObject::Frame(frametime);
 	if (isCyclone) {
 		Round(30);
 	}

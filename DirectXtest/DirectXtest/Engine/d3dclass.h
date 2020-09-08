@@ -1,41 +1,20 @@
 ﻿#pragma once
-////////////////////////////////////////////////////////////////////////////////
-// Filename: d3dclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _D3DCLASS_H_
-#define _D3DCLASS_H_
 
-//First thing in the header is to specify the libraries to link when using this object module.
 
-/////////////
-// LINKING //
-/////////////
+
 #pragma comment(lib, "d3d11.lib")  //The first library contains all the Direct3D functionality for setting upand drawing 3D graphics in DirectX 11. 
 #pragma comment(lib, "dxgi.lib")  //The second library contains tools to interface with the hardware on the computer to obtain information about the refresh rate of the monitor, the video card being used, and so forth.
 #pragma comment(lib, "d3dcompiler.lib")  //The third library contains functionality for compiling shaders which we will cover in the next project.
 
-//The next thing we do is include the headers for those libraries that we are linking to this object module as well as headers for DirectX type definitions and math functionality.
 
-//////////////
-// INCLUDES //
-//////////////
+
 #include <d3d11.h>
 #include <directxmath.h>
 #include <directxcolors.h>
 #include <assert.h>
 using namespace DirectX;
 
-//The class definition for the D3DClass is kept as simple as possible here.
-//It has the regular constructor, copy constructor, and destructor.
-//Then more importantly it has the Initializeand Shutdown function.
-//This will be what we are mainly focused on in this project.
-//Other than that I have a couple helper functions which aren't important to this project 
-//and a number of private member variables that will be looked at when we examine the d3dclass.cpp file. 
-//For now just realize the Initialize and Shutdown functions are what concerns us.
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: D3DClass
-////////////////////////////////////////////////////////////////////////////////
 class D3DClass
 {
 public:
@@ -43,10 +22,10 @@ public:
 	D3DClass(const D3DClass&);
 	~D3DClass();
 
-	bool Initialize(int, int, bool, HWND, bool, float, float);
+	bool Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen, float screenDepth, float screenNear);
 	void Shutdown();
 
-	void BeginScene(float, float, float, float);
+	void BeginScene(float red, float green, float blue, float alpha);
 	void EndScene();
 
 	ID3D11Device* GetDevice();
@@ -75,11 +54,13 @@ public:
 	void TurnOnParticleBlending();
 	void TurnOffParticleBlending();
 
-	//There is now a new function called GetDepthStencilView for getting access to the depth stencil view and a new function called SetBackBufferRenderTarget for setting the back buffer render target in this class to be the active one.
 	ID3D11DepthStencilView* GetDepthStencilView();
 	void SetBackBufferRenderTarget();
 
 	void ResetViewport();
+
+private:
+	bool GetRefreshrate(int screenWidth, int screenHeight,unsigned int& numerator, unsigned int& denominator);
 
 private:
 	bool m_vsync_enabled;
@@ -94,7 +75,7 @@ private:
 	ID3D11DepthStencilState* m_depthStencilState;
 	ID3D11DepthStencilState* m_depthStencilStateLessEqual;
 	ID3D11DepthStencilState* m_depthDisabledStencilState;
-	
+
 	ID3D11DepthStencilView* m_depthStencilView;
 
 	ID3D11RasterizerState* m_rasterState;
@@ -115,7 +96,6 @@ private:
 	D3D11_VIEWPORT m_viewport;
 };
 
-#endif
 
 //For those familiar with Direct3D already you may notice I don't have a view matrix variable in this class. 
 //The reason being is that I will be putting it in a camera class that we will be looking at in future projects.
